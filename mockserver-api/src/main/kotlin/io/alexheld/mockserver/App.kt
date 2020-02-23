@@ -3,30 +3,21 @@
  */
 package io.alexheld.mockserver
 
-import com.sun.net.ssl.internal.ssl.Provider.*
 import io.ktor.application.*
-import io.ktor.features.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
 
-
 fun main(args: Array<String>) {
 
     val server: NettyApplicationEngine = embeddedServer(Netty, 8080){
-        install(CachingHeaders)
-        install(CallId)
-        install(CallLogging)
-        install(DataConversion)
-        install(PartialContent)
-        install(StatusPages)
-        install(CORS)
-        install(StatusPages)
-        install(Routing)
-        install(StatusPages)
-        install(StatusPages)
-        install(auth)
+       routing {
+           get("/hello"){
+               call.respondWith("sfsdf")
+           }
+           get
+       }
     }
 
 

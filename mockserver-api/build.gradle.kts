@@ -1,9 +1,9 @@
 val kotlin_version: String by project
 val logback_version: String by project
-val ktor_version: String by project
+//val ktor_version: String by project
 val mockk_version: String by project
 val koin_version: String by project
-
+var ktor_version = "1.3.0"
 
 plugins {
     kotlin("jvm")
@@ -16,11 +16,13 @@ buildscript {
 
     repositories {
         mavenCentral()
-        /* jcenter()
-         maven { url = uri("https://kotlin.bintray.com/ktor") }*/
+        jcenter()
+        //  maven { url = uri("https://kotlin.bintray.com/ktor") }
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
+        // classpath("org.koin:koin-gradle-plugin:2.0.1")
+
     }
 }
 
@@ -61,15 +63,16 @@ buildscript {
     testImplementation("org.koin:koin-test:$koin_version")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.mockk:mockk:$mockk_version")
+//    testImplementation("io.mockk:mockk:$mockk_version")
+//
 
+    implementation("com.microsoft.azure:applicationinsights-core:2.6.0-BETA.2")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     testImplementation(group = "junit", name = "junit", version = "4.12")
 }
 
 application {
     mainClassName = "AppKt"
-
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
     }

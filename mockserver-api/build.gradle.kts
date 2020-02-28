@@ -1,9 +1,8 @@
 val kotlin_version: String by project
 val logback_version: String by project
-//val ktor_version: String by project
 val mockk_version: String by project
 val koin_version: String by project
-var ktor_version = "1.3.0"
+val ktor_version: String by project
 
 plugins {
     kotlin("jvm")
@@ -17,23 +16,19 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-        //  maven { url = uri("https://kotlin.bintray.com/ktor") }
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
-        // classpath("org.koin:koin-gradle-plugin:2.0.1")
-
     }
 }
 
 
 
-    dependencies {
+dependencies {
 
     kotlin("stdlib-jdk8")
 
     // Ktor - Server
-  //  implementation("io.ktor:ktor-server:$ktor_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
 
@@ -55,6 +50,9 @@ buildscript {
     // Ktor - DI
     implementation("org.koin:koin-core:$koin_version")
 
+    // Ktor - Templating
+    implementation("io.ktor:ktor-mustache:$ktor_version")
+
     // Ktor - Test
     testImplementation("io.ktor:ktor-client-mock-jvm:$ktor_version")
     testImplementation("io.ktor:ktor-client-mock:$ktor_version")
@@ -62,9 +60,11 @@ buildscript {
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.koin:koin-test:$koin_version")
 
+
+
     implementation("ch.qos.logback:logback-classic:$logback_version")
-//    testImplementation("io.mockk:mockk:$mockk_version")
-//
+ //   testImplementation("io.mockk:mockk:$mockk_version")
+
 
     implementation("com.microsoft.azure:applicationinsights-core:2.6.0-BETA.2")
     implementation("ch.qos.logback:logback-classic:1.2.3")
@@ -72,7 +72,8 @@ buildscript {
 }
 
 application {
-    mainClassName = "AppKt"
+    mainClassName = "io.ktor.server.netty.EngineMain"
+
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
     }

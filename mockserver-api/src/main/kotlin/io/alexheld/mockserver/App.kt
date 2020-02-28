@@ -3,23 +3,117 @@
  */
 package io.alexheld.mockserver
 
+import com.github.mustachejava.*
 import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.metrics.dropwizard.*
+import io.ktor.mustache.Mustache
+import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.sessions.*
+import org.slf4j.event.*
 
 
 fun main(args: Array<String>) {
+    java.util.logging.Logger.getAnonymousLogger().warning("STARTING IN MAIN")
 
-    val server: NettyApplicationEngine = embeddedServer(Netty, 8080){
-       routing {
-           get("/hello"){
-               call.respondWith("sfsdf")
-           }
-           get
-       }
+    embeddedServer(Netty, commandLineEnvironment(args)).start()
+}
+
+
+@Suppress("unused") // Referenced in application.conf
+fun Application.module() {
+
+    java.util.logging.Logger.getAnonymousLogger().warning("STARTING IN Application.module")
+
+    install(CallLogging) {
+        level = Level.TRACE
+        filter { call -> call.request.path().startsWith("/mock-server") }
     }
 
+    install(StatusPages) {
+
+        when {
+
+            isDev -> {
+                this.exception<Throwable> { e ->
+                    run {
+                        call.respondText(e.localizedMessage, ContentType.Text.Plain, HttpStatusCode.InternalServerError)
+                        throw e
+                    }
+                }
+            }
+
+            isTest -> {
+                this.exception<Throwable> { e ->
+                    call.response.status(HttpStatusCode.InternalServerError)
+                }
+            }
+
+            isProd -> {
+                this.exception<Throwable> { e ->
+
+                    call.respondText(e.localizedMessage, ContentType.Text.Plain, HttpStatusCode.InternalServerError)
+                    throw e
+
+                }
+            }
+        }
+    }
+
+    install(Mustache) {
+        mustacheFactory = DefaultMustacheFactory("templates")
+    }
+
+    installAdditionalFeatures(false)
+
+    install(Routing) {
+        if (isDev) trace {
+            application.log.trace(it.buildText())
+        }
+
+        // These calls should be inside the routing
+        // todos()
+        // staticResources()
+
+    }
+
+}
+
+
+data class UserSession(val name: String)
+
+val Application.envKind get() = environment.config.property("ktor.environment").getString()
+val Application.isDev get() = envKind == "dev"
+val Application.isTest get() = envKind == "test"
+val Application.isProd get() = envKind != "dev" && envKind != "test"
+
+
+fun installAdditionalFeatures(enabled: Boolean ) : Unit {
+
+    if(!enabled) return
+
+    val server: NettyApplicationEngine = embeddedServer(Netty, 8080) {
+        install(CachingHeaders)
+        install(CallId)
+        install(CallLogging)
+        install(DataConversion)
+        install(PartialContent)
+        install(StatusPages)
+        install(CORS)
+        install(StatusPages)
+        install(Routing)
+        install(StatusPages)
+        install(StatusPages)
+        install(Authentication)
+        install(Sessions)
+        install(DropwizardMetrics)
+    }
 
     server.start(wait = true)
 }

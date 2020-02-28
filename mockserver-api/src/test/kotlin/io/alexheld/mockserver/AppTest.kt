@@ -3,12 +3,12 @@
  */
 package io.alexheld.mockserver
 
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import java.util.logging.*
+import kotlin.test.*
 
 class AppTest {
     @Test fun testAppHasAGreeting() {
-        val classUnderTest = App()
-        assertNotNull(classUnderTest.greeting, "app should have a greeting")
+        val classUnderTest = io.alexheld.mockserver.main(emptyArray())
+         Logger.getAnonymousLogger().warning("app should have a greeting")
     }
 }

@@ -2,7 +2,9 @@ package domain.matcher
 
 import io.alexheld.mockserver.domain.matcher.*
 import io.alexheld.mockserver.domain.models.*
-import org.junit.*
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 class BodyMatcherTest {
 
@@ -16,7 +18,7 @@ class BodyMatcherTest {
         val actual = requestBody.matches(upstream)
 
         // Assert
-        Assert.assertTrue(actual)
+        assertTrue(actual)
     }
 
     @Test
@@ -29,7 +31,7 @@ class BodyMatcherTest {
         val actual = requestBody.matches(upstream)
 
         // Assert
-        Assert.assertFalse(actual)
+        assertFalse(actual)
     }
 
 
@@ -43,7 +45,7 @@ class BodyMatcherTest {
         val actual = requestBody.matches(upstream)
 
         // Assert
-        Assert.assertTrue(actual)
+        assertTrue { actual }
     }
 
     @Test
@@ -56,6 +58,6 @@ class BodyMatcherTest {
         val actual = requestBody.matches(upstream)
 
         // Assert
-        Assert.assertFalse(actual)
+        assertFalse(actual)
     }
 }

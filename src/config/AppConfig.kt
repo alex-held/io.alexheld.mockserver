@@ -20,7 +20,6 @@ const val SERVER_PORT = 8081
 @EngineAPI
 fun setup(isCio: Boolean = true): BaseApplicationEngine {
 
-    // DbConfig.setup("jdbc:h2:mem:DATABASE_TO_UPPER=false;", "sa", "")
     return server(if (isCio) CIO else Netty)
 }
 

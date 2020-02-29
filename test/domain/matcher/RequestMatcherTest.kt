@@ -2,7 +2,8 @@ package domain.matcher
 
 import io.alexheld.mockserver.domain.matcher.*
 import io.alexheld.mockserver.domain.models.*
-import org.junit.*
+import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class RequestMatcherTest {
 
@@ -13,6 +14,6 @@ internal class RequestMatcherTest {
 
         val actual = default.matches(other)
 
-        Assert.assertTrue(actual)
+        assertTrue(actual)
     }
 }

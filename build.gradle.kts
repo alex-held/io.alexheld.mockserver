@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.plugin.*
+import org.jetbrains.kotlin.gradle.dsl.Coroutines.*
 
 val koin_version: String by project
 val ktor_version: String by project
@@ -29,53 +29,47 @@ repositories {
     maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
     maven { url = uri("https://dl.bintray.com/kotlin/exposed") }
 }
-application{
+
+application {
     mainClassName = "io.ktor.server.cio.EngineMain"
 }
 
+kotlin.sourceSets["main"].kotlin.srcDirs("src")
+kotlin.sourceSets["test"].kotlin.srcDirs("test")
+
+sourceSets["main"].resources.srcDirs("resources")
+sourceSets["test"].resources.srcDirs("testresources")
+
+dependencies {
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+    implementation("io.ktor:ktor-server-cio:$ktor_version")
+    //implementation("io.ktor:ktor-server-netty:$ktor_version")
+    implementation("io.ktor:ktor-locations:$ktor_version")
+    implementation("io.ktor:ktor-jackson:$ktor_version")
+    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-server-host-common:$ktor_version")
+
+    implementation("org.koin:koin-ktor:$koin_version")
+    implementation("org.koin:koin-core:$koin_version")
+
+    implementation("ch.qos.logback:logback-classic:$logback_version")
+/*    implementation("org.jetbrains.exposed:exposed:0.3.2") {
+        exclude(module = "log4j")
+        exclude(module = "slf4j-log4j12")
+        exclude(module = "kotlin-stdlib")
+    }*/
+
+    testImplementation("org.koin:koin-test:$koin_version")
+    testImplementation("io.mockk:mockk:$mockk_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+}
+
 kotlin {
-    sourceSets {
 
-        val main by getting {
-            languageSettings.apply {
-                apiVersion = "1.3"
-                languageVersion = "1.3"
-            }
-            kotlin.srcDir("src")
-            resources.srcDir("resources")
+    experimental {
+        this.coroutines = ENABLE
 
-            dependencies {
-
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-                implementation("io.ktor:ktor-server-cio:$ktor_version")
-            //    implementation("io.ktor:ktor-server-netty:$ktor_version")
-                implementation("io.ktor:ktor-locations:$ktor_version")
-                implementation("io.ktor:ktor-jackson:$ktor_version")
-                implementation("io.ktor:ktor-server-core:$ktor_version")
-                implementation("io.ktor:ktor-server-host-common:$ktor_version")
-
-                implementation("org.koin:koin-ktor:$koin_version")
-
-                implementation("ch.qos.logback:logback-classic:$logback_version")
-                implementation("org.jetbrains.exposed:exposed:0.3.2") {
-                    exclude(module = "log4j")
-                    exclude(module = "slf4j-log4j12")
-                    exclude(module = "kotlin-stdlib")
-                }
-            }
-        }
-
-        val test by getting {
-            dependsOn(main)
-            kotlin.srcDir("test")
-
-            dependencies {
-                implementation("org.koin:koin-test:$koin_version")
-
-                implementation("io.mockk:mockk:$mockk_version")
-                implementation("io.ktor:ktor-server-test-host:$ktor_version")
-            }
-        }
     }
 }
 

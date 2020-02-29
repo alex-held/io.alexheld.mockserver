@@ -1,7 +1,31 @@
 package io.alexheld.mockserver
 
-public data class Setup(public var id: Int?, public var request: RequestMatcher?)
-public class RequestMatcher(var path: String?, var method: String?)
+import com.fasterxml.jackson.annotation.*
+import org.koin.dsl.*
+import org.koin.experimental.builder.*
+
+val setupModule = module {
+    singleBy<SetupService, SetupServiceImpl>()
+    singleBy<SetupRepository, SetupRepositoryImpl>()
+}
+
+//@JsonIgnoreProperties(ignoreUnknown = true)
+public data class Setup(
+
+    @JsonProperty(required = false)
+    public var id: Int?,
+
+    @JsonProperty(required = false)
+    public var requestMatcher: RequestMatcher?
+)
+
+public class RequestMatcher(
+    @JsonProperty(required = false)
+    var path: String?,
+
+    @JsonProperty(required = false)
+    var method: String?
+)
 
 interface SetupRepository {
     fun list(): List<Setup>
@@ -9,15 +33,16 @@ interface SetupRepository {
     fun delete(id: Int): Setup?
 }
 
-class SetupRepositoryImpl : SetupRepository {
-    private var setups = mutableMapOf<Int, Setup>()
+class SetupRepositoryImpl() : SetupRepository {
+    private val setups: MutableMap<Int, Setup> = mutableMapOf<Int, Setup>()
 
     override fun list(): List<Setup> {
         return setups.values.toList()
     }
 
     override fun add(setup: Setup): Setup {
-        val id = setups.keys.max() ?: 1
+        var id = setups.keys.max() ?: 0
+        id++
         setup.id = id
         setups[id] = setup
         return setup

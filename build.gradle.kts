@@ -9,7 +9,9 @@ val mockk_version: String by project
 buildscript {
     repositories {
         jcenter()
-         maven {
+        gradlePluginPortal()
+        mavenCentral()
+        maven {
              url = uri("https://plugins.gradle.org/m2/")
         }
     }
@@ -20,19 +22,22 @@ buildscript {
     }
 }
 
-apply(plugin = "org.sonarqube")
+repositories {
+    jcenter()
+    gradlePluginPortal()
+    mavenCentral()
+    maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
+    maven { url = uri("https://plugins.gradle.org/m2/") }
+    maven { url = uri("https://dl.bintray.com/kotlin/exposed") }
+}
 
+apply(plugin = "org.sonarqube")
 plugins {
     application
     id("org.jetbrains.dokka") version "0.10.1"
+    id("jacoco")
+    id("idea")
     kotlin("jvm") version "1.3.61"
-}
-
-repositories {
-    jcenter()
-    mavenCentral()
-    maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
-    maven { url = uri("https://dl.bintray.com/kotlin/exposed") }
 }
 
 application {

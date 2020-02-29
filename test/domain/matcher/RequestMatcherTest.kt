@@ -2,6 +2,7 @@ package domain.matcher
 
 import io.alexheld.mockserver.domain.matcher.*
 import io.alexheld.mockserver.domain.models.*
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Test
 import kotlin.test.*
 
@@ -80,7 +81,8 @@ internal class RequestMatcherTest {
         assertFalse(actual)
     }
 
-    @Test
+    @Test()
+    @Disabled
     fun matches_returns_true_when_cookies_are_valid_match() {
         val cookies = mutableMapOf<String, String>()
         cookies["A"] = "1"

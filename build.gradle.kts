@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import org.jetbrains.kotlin.gradle.dsl.Coroutines.*
 
 val koin_version: String by project
@@ -7,6 +9,8 @@ val logback_version: String by project
 val mockk_version: String by project
 val spek_version: String by project
 val junit_version: String by project
+val arrow_version: String by rootProject
+
 
 buildscript {
     repositories {
@@ -35,6 +39,7 @@ repositories {
 apply(plugin = "org.sonarqube")
 plugins {
     kotlin("jvm") version "1.3.61"
+    kotlin("kapt") version "1.3.61"
     id("org.jetbrains.dokka") version "0.10.1"
     application
     java
@@ -52,6 +57,14 @@ kotlin.sourceSets["test"].kotlin.srcDirs("test")
 sourceSets["main"].resources.srcDirs("resources")
 //sourceSets["test"].resources.srcDirs("testresources")
 
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url = uri("https://dl.bintray.com/arrow-kt/arrow-kt/") }
+        maven { url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local/") } // for SNAPSHOT builds
+    }
+}
 
 dependencies {
 
@@ -67,6 +80,10 @@ dependencies {
     implementation("joda-time:joda-time:2.10.5")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("com.google.code.gson:gson:2.8.6")
+
+    implementation("io.arrow-kt:arrow-core:$arrow_version")
+            implementation("io.arrow-kt:arrow-syntax:$arrow_version")
+    kapt("io.arrow-kt:arrow-meta:$arrow_version")
 
     // TEST
 

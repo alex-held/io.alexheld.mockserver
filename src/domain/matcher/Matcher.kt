@@ -25,7 +25,7 @@ fun MutableMap<String, String>.withoutCookies(map: Map<String, String>?): Map<St
 
     for ((key, value) in safeMap) {
         if (containsKey(key)) {
-            var val1 = get(key)
+            val val1 = get(key)
             if (val1 == null || value != val1)
                 removableMap.remove(key)
         }
@@ -58,39 +58,6 @@ fun MutableMap<String, MutableSet<String>>.withoutHeaders(map: Map<String, Mutab
     return removableList.toMap().toMutableMap()
 }
 
-
-fun <TKey, TInner> MutableMap<TKey, TInner>.without(map: Map<TKey, TInner>?): Map<TKey, TInner> {
-
-    val safeMap = map ?: emptyMap()
-    val removableMap = this.toMutableMap()
-
-    for ((key, value) in safeMap) {
-        if (containsKey(key)) {
-
-        }
-    }
-
-
-    val removableList = this.toList().toMutableList()
-    removableList.removeIf {
-        try {
-            println(jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(removableList))
-            println("Attempting to remove:\nKey=${it.first}; Value=${jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(it.second)}")
-
-            val mutableMap = (map ?: emptyMap())
-                .map { entry -> Pair<TKey, TInner?>(entry.key, entry.value) }
-                .toMap()
-                .toMutableMap()
-            val matchingKey = mutableMap.getOrDefault(it.first, defaultValue = null)
-            return@removeIf matchingKey?.equals(it.second) ?: false
-        } catch (e: Exception) {
-            println("Message=${e.localizedMessage}")
-            return@removeIf false
-        }
-    }
-
-    return this
-}
 
 fun Request.matches(other: Request?): Boolean {
 

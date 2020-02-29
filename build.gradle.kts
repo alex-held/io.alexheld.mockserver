@@ -9,16 +9,22 @@ val mockk_version: String by project
 buildscript {
     repositories {
         jcenter()
+         maven {
+             url = uri("https://plugins.gradle.org/m2/")
+        }
     }
 
     dependencies {
         classpath(kotlin("gradle-plugin", version = "1.3.61"))
+        classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8")
     }
 }
 
+apply(plugin = "org.sonarqube")
 
 plugins {
     application
+    id("org.jetbrains.dokka") version "0.10.1"
     kotlin("jvm") version "1.3.61"
 }
 

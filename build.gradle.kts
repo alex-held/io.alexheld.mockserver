@@ -20,24 +20,25 @@ buildscript {
 
     dependencies {
         classpath(kotlin("gradle-plugin", version = "1.3.61"))
- //       classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8")
+        classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8")
     }
 }
 
 repositories {
     jcenter()
+    gradlePluginPortal()
     mavenCentral()
     maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
     maven { url = uri("https://dl.bintray.com/kotlin/exposed") }
 }
 
-//apply(plugin = "org.sonarqube")
+apply(plugin = "org.sonarqube")
 plugins {
+    kotlin("jvm") version "1.3.61"
+    id("org.jetbrains.dokka") version "0.10.1"
     application
     java
-    //jacoco
-    //id("org.jetbrains.dokka") version "0.10.1"
-    kotlin("jvm") version "1.3.61"
+    jacoco
 }
 
 application {
@@ -65,20 +66,20 @@ dependencies {
 
     implementation("joda-time:joda-time:2.10.5")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("com.google.code.gson:gson:2.8.6")
 
     // TEST
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 kotlin {
     experimental { coroutines = ENABLE }
-}
-
-tasks {
-
-    test {
-        useJUnitPlatform()
-    }
-
 }

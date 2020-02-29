@@ -1,16 +1,33 @@
 package io.alexheld.mockserver.logging
 
-import ch.qos.logback.classic.*
-import org.joda.time.*
+import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.databind.annotation.*
+import io.alexheld.mockserver.domain.models.*
+import org.slf4j.event.*
 import java.util.*
 
-public data class Log(
-    val id: UUID = UUID.randomUUID(),
-    val level: Level = Level.DEBUG,
-    val timestamp: DateTime = DateTime.now()
-) {
 
-    public val date: String = DateTime.now().toString("yyyy-MM-dd HH:mm:ss")
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+public data class Log(
+
+    @JsonSerialize(contentAs = String::class)
+    val id: UUID,
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val timestamp: Date,
+
+    @JsonIgnore
+    val level: Level? = null,
+
+    @JsonIgnore
+    val type: LogMessageType? = null,
+
+    val requests: MutableList<Request>? = null,
+
+    val setup: Setup? = null
+) {
+    @JsonCreator
+    constructor() : this(UUID.randomUUID(), Date())
 
     enum class LogMessageType {
         RUNNABLE,

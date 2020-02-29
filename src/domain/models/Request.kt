@@ -10,7 +10,7 @@ data class Request(
     val path: String? = null,
 
     @JsonProperty(required = false)
-    val headers: MutableMap<String, MutableList<String>>? = null,
+    val headers: MutableMap<String, MutableSet<String>>? = null,
 
     @JsonProperty(required = false)
     val cookies: MutableMap<String, String>? = null,

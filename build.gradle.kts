@@ -22,7 +22,6 @@ plugins {
     kotlin("jvm") version "1.3.61"
 }
 
-
 repositories {
     jcenter()
     mavenCentral()
@@ -31,6 +30,7 @@ repositories {
 }
 
 application {
+    group = "io.alexheld"
     mainClassName = "io.ktor.server.cio.EngineMain"
 }
 
@@ -44,7 +44,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     implementation("io.ktor:ktor-server-cio:$ktor_version")
-    //implementation("io.ktor:ktor-server-netty:$ktor_version")
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
@@ -54,11 +54,7 @@ dependencies {
     implementation("org.koin:koin-core:$koin_version")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
-/*    implementation("org.jetbrains.exposed:exposed:0.3.2") {
-        exclude(module = "log4j")
-        exclude(module = "slf4j-log4j12")
-        exclude(module = "kotlin-stdlib")
-    }*/
+    implementation("org.jetbrains.exposed:exposed:0.14.1")
 
     testImplementation("org.koin:koin-test:$koin_version")
     testImplementation("io.mockk:mockk:$mockk_version")

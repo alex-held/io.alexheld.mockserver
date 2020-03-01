@@ -13,5 +13,4 @@ class LoggingController {
         logs.add(log)
     }
 }
-package io.alexheld.mockserver.web.controllers
 

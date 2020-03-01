@@ -2,8 +2,8 @@ package domain.matcher
 
 import io.alexheld.mockserver.domain.matcher.*
 import io.alexheld.mockserver.domain.models.*
-import org.junit.jupiter.api.Test
-import kotlin.test.*
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.*
 
 internal class RequestMatcherTest {
 

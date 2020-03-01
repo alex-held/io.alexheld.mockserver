@@ -4,17 +4,14 @@ import io.alexheld.mockserver.logging.Log.*
 import io.alexheld.mockserver.serialization.*
 import io.kotlintest.*
 import io.kotlintest.matchers.types.*
-import kotlinx.serialization.*
 import org.junit.jupiter.api.*
 import org.slf4j.event.*
 import java.time.*
 import java.util.*
 
 
-@ImplicitReflectionSerializer
 class LogTests {
 
-    @UnstableDefault
     @Test
     fun should() {
 

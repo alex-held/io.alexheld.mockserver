@@ -79,8 +79,8 @@ internal class RequestMatcherTest {
         val actual = default.matches(other)
         assertFalse(actual)
     }
-/*
 
+/*
     @Test() //TODO: Enable test again
     fun matches_returns_true_when_cookies_are_valid_match() {
         val cookies = mutableMapOf<String, String>()

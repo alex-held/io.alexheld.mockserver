@@ -2,7 +2,9 @@ package io.alexheld.mockserver.logging
 
 import arrow.fx.*
 import io.alexheld.mockserver.domain.models.*
+import org.slf4j.*
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory.*
 import org.slf4j.helpers.*
 import java.lang.System.*
 import java.util.logging.*
@@ -16,16 +18,25 @@ fun MockServerLogger.LevelHelper.isEnabled(): Boolean = getProperty("io.alexheld
 
 class MockServerLogger {
 
+
+    /**
+    TODO: Create a scope factory for the mock server logger, so that
+    any class wo gets the Logger injected, the logger will use the classes' name
+     **/
+    private val defaultLogger get() = getLogger("DEFAULT_MOCKSERVER_LOGGER")
+    private var logger: Logger = defaultLogger
+
+
+    fun isEnabled(level: LogLevel?) = Level >= level
+    val name: String get() = logger.name
+
     constructor(httpStateHandler: HttpStateHandler) : this() {
         LevelHelper.httpStateHandler = httpStateHandler
     }
 
-    private val logger: Logger? = null
-
-    constructor() : this(Util.getCallingClass().resolveName)
-
-    constructor(name: String) {
-        logger?.debug("The calling classname = $name")
+    constructor(name: String = Util.getCallingClass().resolveName) {
+        logger = getLogger(name)
+        logger.debug("The calling classname = $name")
     }
 
     fun withHttpStateHandler(httpStateHandler: HttpStateHandler): MockServerLogger {
@@ -39,7 +50,7 @@ class MockServerLogger {
     }
 
     init {
-        logger?.debug("Initializing the MockServerLogger..")
+        logger.debug("Initializing the MockServerLogger..")
 
         try {
             if (LevelHelper.isEnabled()) {
@@ -73,7 +84,7 @@ class MockServerLogger {
             if (httpStateHandler != null) {
                 httpStateHandler?.log(logEntry)
             } else {
-                writeToSystemOut(logger ?: NOPLogger.NOP_LOGGER, logEntry)
+                writeToSystemOut(logger, logEntry)
             }
         }
     }
@@ -92,10 +103,6 @@ class MockServerLogger {
             LogLevel.TRACE -> logger.trace(logEntry.message, logEntry.throwable)
         }
     }
-
-
-    private fun isEnabled(level: LogLevel?): Boolean = Level >= level
-    val name: String get() = logger?.name ?: "DEFAULT_MOCKSERVER_LOGGER"
 }
 
 typealias LogSetupCreated = (setup: Setup) -> IO<Log>

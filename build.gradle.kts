@@ -15,7 +15,6 @@ val guice_version: String by rootProject
 buildscript {
     repositories {
         jcenter()
-        gradlePluginPortal()
         mavenCentral()
         maven {
             url = uri("https://plugins.gradle.org/m2/")
@@ -30,7 +29,6 @@ buildscript {
 
 repositories {
     jcenter()
-    gradlePluginPortal()
     mavenCentral()
     maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
 }
@@ -38,7 +36,6 @@ repositories {
 apply(plugin = "org.sonarqube")
 plugins {
     kotlin("jvm") version "1.3.61"
-    //  kotlin("kapt") version "1.3.61"
     id("org.jetbrains.dokka") version "0.10.1"
     application
     java
@@ -49,6 +46,8 @@ application {
     group = "io.alexheld"
     mainClassName = "io.ktor.server.cio.EngineMain"
 }
+
+
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
 kotlin.sourceSets["test"].kotlin.srcDirs("test")

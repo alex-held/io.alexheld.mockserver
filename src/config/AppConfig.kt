@@ -1,6 +1,6 @@
 package io.alexheld.mockserver.config
 
-import io.alexheld.mockserver.logging.*
+import com.google.inject.*
 import io.alexheld.mockserver.web.*
 import io.alexheld.mockserver.web.controllers.*
 import io.ktor.application.*
@@ -11,41 +11,38 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.util.*
-import org.kodein.di.*
-import org.kodein.di.generic.*
-import org.kodein.di.ktor.*
-import org.koin.ktor.ext.*
-import java.time.*
-import java.util.*
+import java.lang.System.*
 
-const val SERVER_PORT = 8081
 
 @KtorExperimentalAPI
 @EngineAPI
-fun setup(isCio: Boolean = true): BaseApplicationEngine {
-
-    return server(if (isCio) CIO else Netty)
+fun setup(): BaseApplicationEngine {
+    return server(CIO)
 }
 
 @KtorExperimentalAPI
 @EngineAPI
 fun server(engine: ApplicationEngineFactory<BaseApplicationEngine, out ApplicationEngine.Configuration>): BaseApplicationEngine = embeddedServer(
-    engine, port = SERVER_PORT, watchPaths = listOf("mainModule"), module = Application::mainModule
+    engine, port = (getenv("PORT")?.toIntOrNull() ?: 8080), watchPaths = listOf("mainModule"), module = Application::mainModule
 )
 
 @KtorExperimentalAPI
 fun Application.mainModule() {
 
-    Kodein {
-        this.extend(ModulesConfig.CoreModule)
-    }
+    val injector = Guice.createInjector(Core(this))
+    val ctrl = injector.getInstance(LoggingController::class.java)
+    val setupController = injector.getInstance(SetupController::class.java)
 
+
+
+/*
+    val t by kodein().newInstance { LoggingController() }
+    val test by kodein().newInstance { SetupServiceImpl(instance()) }
     val httpStateHandler by kodein().newInstance { HttpStateHandler(instance(), instance(), instance(), instance()) }
 
     httpStateHandler.log(Log(UUID.randomUUID().asLogId(), Date.from(Instant.EPOCH), message = "Hello World!"))
-    val setupController: SetupController by inject()
+    val setupController: SetupController by inject()*/
 
     install(CallLogging)
     install(ContentNegotiation) { jackson {} }

@@ -9,6 +9,7 @@ val mockk_version: String by project
 val spek_version: String by project
 val junit_version: String by project
 val arrow_version: String by rootProject
+val guice_version: String by rootProject
 
 
 buildscript {
@@ -32,13 +33,12 @@ repositories {
     gradlePluginPortal()
     mavenCentral()
     maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
-    maven { url = uri("https://dl.bintray.com/kotlin/exposed") }
 }
 
 apply(plugin = "org.sonarqube")
 plugins {
     kotlin("jvm") version "1.3.61"
-    kotlin("kapt") version "1.3.61"
+    //  kotlin("kapt") version "1.3.61"
     id("org.jetbrains.dokka") version "0.10.1"
     application
     java
@@ -69,31 +69,30 @@ allprojects {
 dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$ktor_version")
-    implementation("org.kodein.di:kodein-di-generic-jvm:$kodein_version")
-    implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:$kodein_version")
     implementation("io.ktor:ktor-server-cio:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-locations:$ktor_version")
+    // implementation("io.ktor:ktor-locations:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-host-common:$ktor_version")
-    implementation("org.koin:koin-ktor:$koin_version")
 
     implementation("joda-time:joda-time:2.10.5")
+    implementation("com.google.inject:guice:$guice_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("com.google.code.gson:gson:2.8.6")
+    // implementation("com.google.code.gson:gson:2.8.6")
 
     implementation("io.arrow-kt:arrow-core:$arrow_version")
-    implementation("io.arrow-kt:arrow-optics:$arrow_version")
+    // implementation("io.arrow-kt:arrow-optics:$arrow_version")
     implementation("io.arrow-kt:arrow-fx:$arrow_version")
-    implementation("io.arrow-kt:arrow-syntax:$arrow_version")
-    kapt("io.arrow-kt:arrow-meta:$arrow_version")
+    //implementation("io.arrow-kt:arrow-syntax:$arrow_version")
+    // kapt("io.arrow-kt:arrow-meta:$arrow_version")
 
     // TEST
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
-    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+
+    // testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
 }
 
 tasks.withType<Test> {

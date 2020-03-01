@@ -2,12 +2,13 @@ package io.alexheld.mockserver.web.controllers
 
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.domain.services.*
+import io.alexheld.mockserver.logging.*
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 
-class SetupController(private val service: SetupService) {
+class SetupController(private val service: SetupService, val stateHandler: HttpStateHandler) {
 
     suspend fun getAllSetups(call: ApplicationCall) {
         val setups = service.list()

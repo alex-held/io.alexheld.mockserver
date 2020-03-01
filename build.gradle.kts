@@ -1,8 +1,7 @@
-@file:Suppress("SpellCheckingInspection")
-
-import org.jetbrains.kotlin.gradle.dsl.Coroutines.*
+import org.jetbrains.kotlin.gradle.tasks.*
 
 val koin_version: String by project
+val kodein_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -58,6 +57,7 @@ sourceSets["main"].resources.srcDirs("resources")
 //sourceSets["test"].resources.srcDirs("testresources")
 
 allprojects {
+
     repositories {
         mavenCentral()
         jcenter()
@@ -69,6 +69,8 @@ allprojects {
 dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$ktor_version")
+    implementation("org.kodein.di:kodein-di-generic-jvm:$kodein_version")
+    implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:$kodein_version")
     implementation("io.ktor:ktor-server-cio:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-locations:$ktor_version")
@@ -82,11 +84,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
 
     implementation("io.arrow-kt:arrow-core:$arrow_version")
-            implementation("io.arrow-kt:arrow-syntax:$arrow_version")
+    implementation("io.arrow-kt:arrow-optics:$arrow_version")
+    implementation("io.arrow-kt:arrow-fx:$arrow_version")
+    implementation("io.arrow-kt:arrow-syntax:$arrow_version")
     kapt("io.arrow-kt:arrow-meta:$arrow_version")
 
     // TEST
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
@@ -97,6 +100,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-kotlin {
-    experimental { coroutines = ENABLE }
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

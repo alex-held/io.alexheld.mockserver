@@ -8,26 +8,33 @@ import java.util.*
 
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public data class Log(
+data class Log(
 
     @JsonSerialize(contentAs = String::class)
-    val id: UUID,
+    val id: LogId,
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val timestamp: Date,
 
     @JsonIgnore
-    val level: Level? = null,
+    var level: Level? = null,
 
     @JsonIgnore
-    val type: LogMessageType? = null,
+    var type: LogMessageType? = null,
 
     val requests: MutableList<Request>? = null,
 
-    val setup: Setup? = null
+    var message: String? = null,
+
+    val setup: Setup? = null,
+
+    @JsonIgnore
+    var throwable: Throwable? = null
 ) {
+
+
     @JsonCreator
-    constructor() : this(UUID.randomUUID(), Date())
+    constructor() : this(UUID.randomUUID().asLogId(), Date())
 
     enum class LogMessageType {
         RUNNABLE,
@@ -38,9 +45,9 @@ public data class Log(
         EXCEPTION,
         CLEARED,
         RETRIEVED,
-        UPDATED_EXPECTATION,
-        CREATED_EXPECTATION,
-        REMOVED_EXPECTATION,
+        Setup_Created,
+        Setup_Updated,
+        Setup_Deleted,
         RECEIVED_REQUEST,
         EXPECTATION_RESPONSE,
         EXPECTATION_NOT_MATCHED_RESPONSE,
@@ -52,4 +59,26 @@ public data class Log(
         TEMPLATE_GENERATED,
         SERVER_CONFIGURATION
     }
+}
+
+fun Log.hasMessage(): Boolean = this.message.isNullOrBlank()
+
+fun Log.withType(logType: Log.LogMessageType): Log {
+    this.type = logType
+    return this
+}
+
+fun Log.withLogLevel(logLevel: Level): Log {
+    this.level = logLevel
+    return this
+}
+
+fun Log.withMessageFormat(msg: String): Log {
+    this.message = msg
+    return this
+}
+
+fun Log.withThrowable(throwable: Throwable?): Log {
+    this.throwable = throwable
+    return this
 }

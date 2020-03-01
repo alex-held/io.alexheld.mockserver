@@ -13,5 +13,4 @@ import io.ktor.util.*
 @EngineAPI
 fun main() {
     setup().start(wait = true)
-    //embeddedServer(CIO, commandLineEnvironment(args)).start()
 }

@@ -13,6 +13,6 @@ fun Routing.setupAPI(controller: SetupController) {
 
         post { controller.createSetup(call) }
 
-        delete("/{id}") { controller.deleteById(call)}
+        delete("/{id}") { controller.deleteById(call) }
     }
 }

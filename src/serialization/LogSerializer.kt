@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.*
 import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.logging.*
 
-public object LogSerializer {
+object LogSerializer {
 
     private val logReader = jacksonObjectMapper()
         .registerKotlinModule()
@@ -16,6 +16,6 @@ public object LogSerializer {
         .writerWithDefaultPrettyPrinter()
 
 
-    public fun serialize(log: Log): String = logWriter.writeValueAsString(this)
-    public fun deserialize(json: String): Log = logReader.readValue(json)
+    fun serialize(log: Log): String = logWriter.writeValueAsString(log)
+    fun deserialize(json: String): Log = logReader.readValue(json)
 }

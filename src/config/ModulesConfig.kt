@@ -2,21 +2,24 @@ package io.alexheld.mockserver.config
 
 import io.alexheld.mockserver.domain.repositories.*
 import io.alexheld.mockserver.domain.services.*
-import org.koin.core.*
-import org.koin.core.module.*
-import org.koin.dsl.*
-import org.koin.experimental.builder.*
+import io.alexheld.mockserver.logging.*
+import org.kodein.di.*
+import org.kodein.di.generic.*
+import org.slf4j.*
 
 
 object ModulesConfig {
 
-    @JvmStatic
-    val setupModule: Module = module {
-        singleBy<SetupService, SetupServiceImpl>()
-        singleBy<SetupRepository, SetupRepositoryImpl>()
-    }
-
-    fun registerModules(koin: KoinApplication): KoinApplication {
-        return koin.modules(setupModule)
+    val CoreModule: Kodein = Kodein {
+        bind<SetupRepository>() with singleton { SetupRepositoryImpl() }
+        bind<SetupService>() with singleton { SetupServiceImpl(instance()) }
+        bind<MockServerLogger>() with singleton { MockServerLogger() }
+        bind<Scheduler>() with singleton { Scheduler(instance()) }
+        bind<LoggingHandler>() with singleton { LoggingHandler(instance()) }
+        bind<StandardOutConsoleHandler>() with singleton { StandardOutConsoleHandler() }
+        bind<HttpStateHandler>() with singleton { HttpStateHandler(instance(), instance(), instance(), instance()) }
+        bind<Logger>() with singleton {
+            LoggerFactory.getILoggerFactory().getLogger(Logger.ROOT_LOGGER_NAME)
+        }
     }
 }

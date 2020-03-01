@@ -21,17 +21,18 @@ fun RequestBody.matches(other: RequestBody?): Boolean {
 fun MutableMap<String, String>.withoutCookies(map: Map<String, String>?): Map<String, String> {
 
     val safeMap = map ?: emptyMap()
-    val removableMap = this.toMutableMap()
-
-    for ((key, value) in safeMap) {
-        if (containsKey(key)) {
-            val val1 = get(key)
-            if (val1 == null || value != val1)
-                removableMap.remove(key)
+    val removableList = this.toList().toMutableList()
+    removableList.removeIf {
+        try {
+            println(jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(removableList))
+            println("Attempting to remove:\nKey=${it.first}; Value=${jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(it.second)}")
+            return@removeIf removableList.contains(it)
+        } catch (e: Exception) {
+            println("Message=${e.localizedMessage}")
+            return@removeIf false
         }
     }
-
-    return removableMap
+    return removableList.toMap().toMutableMap()
 }
 
 fun MutableMap<String, MutableSet<String>>.withoutHeaders(map: Map<String, MutableSet<String>>?): Map<String, MutableSet<String>> {

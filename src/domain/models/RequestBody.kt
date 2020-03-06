@@ -7,7 +7,7 @@ data class RequestBody(
     val body: String? = null,
 
     @JsonProperty(required = false)
-    val exact: Boolean? = null
+    val exact: Boolean = false
 )
 
 

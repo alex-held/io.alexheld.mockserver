@@ -4,6 +4,7 @@ import arrow.fx.*
 import io.alexheld.mockserver.domain.models.*
 import org.slf4j.*
 import org.slf4j.Logger
+import org.slf4j.event.*
 import org.slf4j.LoggerFactory.*
 import org.slf4j.helpers.*
 import java.lang.System.*
@@ -23,7 +24,7 @@ class MockServerLogger {
     TODO: Create a scope factory for the mock server logger, so that
     any class wo gets the Logger injected, the logger will use the classes' name
      **/
-    private val defaultLogger get() = getLogger("DEFAULT_MOCKSERVER_LOGGER")
+    private val defaultLogger get() = LoggerFactory.getLogger("DEFAULT_MOCKSERVER_LOGGER")
     private var logger: Logger = defaultLogger
 
 
@@ -35,7 +36,7 @@ class MockServerLogger {
     }
 
     constructor(name: String = Util.getCallingClass().resolveName) {
-        logger = getLogger(name)
+        logger =  LoggerFactory.getLogger(name)
         logger.debug("The calling classname = $name")
     }
 

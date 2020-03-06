@@ -5,6 +5,7 @@ package io.alexheld.mockserver.logging
 import io.netty.util.NettyRuntime.*
 import io.netty.util.internal.SystemPropertyUtil.*
 import kotlinx.atomicfu.*
+import org.slf4j.event.*
 import java.lang.Runtime.*
 
 fun <T> ConfigurationProperties.Options.Value(): T {
@@ -24,7 +25,7 @@ class ConfigurationProperties(private val options: Options) {
         MOCKSERVER_PERSISTED_EXPECTATIONS_PATH("MOCKSERVER_PERSISTED_EXPECTATIONS_PATH", "persistedExpectations.json"),
 
         MOCKSERVER_LOCAL_BOUND_IP("mockserver.localBoundIP", ""),
-        DEFAULT_LOG_LEVEL("mockserver.logLevel", ch.qos.logback.classic.Level.INFO),
+        DEFAULT_LOG_LEVEL("mockserver.logLevel", Level.INFO),
         MOCKSERVER_MAX_LOG_ENTRIES("mockserver.maxLogEntries", 5000),
         MOCKSERVER_MAX_EXPECTATIONS("mockserver.maxExpectations", 5000),
         PROPERTY_FILE("mockserver.propertyFile", System.getenv("MOCKSERVER_PROPERTY_FILE") ?: "mockserver.properties"),

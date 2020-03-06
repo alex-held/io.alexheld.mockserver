@@ -1,22 +1,20 @@
 package io.alexheld.mockserver.domain.matcher
 
-import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.domain.models.*
-import java.io.*
 
 
-class Match(private val _errors: MutableList<MatchError<*>>) {
-    private constructor() : this(mutableListOf())
+class Match {
 
-    public fun isSuccess() = !errors.any()
-    public val errors: List<MatchError<*>> = _errors
+    private val _errors: MutableList<MatchError<*>> = mutableListOf()
+    val errors: List<MatchError<*>> = _errors
 
+    fun isSuccess() = !errors.any()
     fun <T> addMatchError(member: String, expected: T, value: T) = _errors.add(MatchError(member, expected, value))
 
 
     companion object {
 
-        fun Requests(a: Request, b: Request): Match {
+        fun requests(a: Request, b: Request): Match {
             val match = Match()
 
             if (a.method != null && a.method != b.method)
@@ -43,7 +41,7 @@ class Match(private val _errors: MutableList<MatchError<*>>) {
 
 
 fun RequestBody.matches(other: RequestBody?): Boolean {
-    if(body == null) return true
+    if (body == null) return true
     if (other?.body == null) return false
     if (exact) return body == other.body
     return body.contains(other.body)
@@ -51,45 +49,29 @@ fun RequestBody.matches(other: RequestBody?): Boolean {
 
 
 fun MutableMap<String, String>.withoutCookies(map: Map<String, String>?): Map<String, String> {
-
-    val safeMap = map ?: emptyMap()
-    val removableList = this.toList().toMutableList()
-    removableList.removeIf {
-        try {
-            if (!safeMap.containsKey(it.first))  return@removeIf false
-            val value = safeMap.getValue(it.first)
-            val equals = value == it.second
-            return@removeIf equals
-        } catch (e: Exception) {
-            println("Message=${e.localizedMessage}")
-            return@removeIf false
+    return this
+        .toList()
+        .filter {
+            try {
+                return@filter (map ?: emptyMap()).getValue(it.first) != it.second
+            } catch (e: Exception) {
+                return@filter true
+            }
         }
-    }
-    return removableList.toMap().toMutableMap()
+        .toMap()
 }
 
 fun MutableMap<String, MutableSet<String>>.withoutHeaders(map: Map<String, MutableSet<String>>?): Map<String, MutableSet<String>> {
-
-    val safeMap = map ?: emptyMap()
-    val removableList = this.toList().toMutableList()
-    removableList.removeIf {
-        try {
-            println(jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(removableList))
-            println("Attempting to remove:\nKey=${it.first}; Value=${jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(it.second)}")
-
-            val mutableMap = safeMap.toMutableMap()
-            if (mutableMap.containsKey(it.first)) {
-                val headerValues = mutableMap[it.first] ?: throw InvalidObjectException("")
-                return@removeIf it.second.containsAll(headerValues)
+    return this
+        .toList()
+        .filter {
+            try {
+                return@filter !it.second.containsAll((map ?: emptyMap())[it.first]!!)
+            } catch (e: Exception) {
+                return@filter true
             }
-
-            return@removeIf false
-        } catch (e: Exception) {
-            println("Message=${e.localizedMessage}")
-            return@removeIf false
         }
-    }
-    return removableList.toMap().toMutableMap()
+        .toMap()
 }
 
 

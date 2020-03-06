@@ -97,7 +97,7 @@ class MatchTests {
     @MethodSource("bodyData")
     fun `should match body`(a: Request, b: Request, isMatch: Boolean) {
         // Act
-        val result = Match.Requests(a, b)
+        val result = Match.requests(a, b)
 
         // Assert
         result.isSuccess().shouldBeEqualTo(isMatch)
@@ -108,7 +108,7 @@ class MatchTests {
     @MethodSource("methodData")
     fun `should match method`(a: Request, b: Request, isMatch: Boolean) {
         // Act
-        val result = Match.Requests(a, b)
+        val result = Match.requests(a, b)
 
         // Assert
         result.isSuccess().shouldBeEqualTo(isMatch)
@@ -121,7 +121,7 @@ class MatchTests {
     @MethodSource("pathData")
     fun `should match path`(a: Request, b: Request, isMatch: Boolean) {
         // Act
-        val result = Match.Requests(a, b)
+        val result = Match.requests(a, b)
 
         // Assert
         result.isSuccess().shouldBeEqualTo(isMatch)
@@ -132,7 +132,7 @@ class MatchTests {
     @MethodSource("cookiesData")
     fun `should match cookies`(a: Request, b: Request, isMatch: Boolean) {
         // Act
-        val result = Match.Requests(a, b)
+        val result = Match.requests(a, b)
 
         // Assert
         result.isSuccess().shouldBeEqualTo(isMatch)
@@ -143,7 +143,7 @@ class MatchTests {
     @MethodSource("headersData")
     fun `should match headers`(a: Request, b: Request, isMatch: Boolean) {
         // Act
-        val result = Match.Requests(a, b)
+        val result = Match.requests(a, b)
 
         // Assert
         result.isSuccess().shouldBeEqualTo(isMatch)

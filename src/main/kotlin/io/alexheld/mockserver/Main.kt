@@ -1,31 +1,26 @@
 package io.alexheld.mockserver
 
 import io.alexheld.mockserver.config.*
-import io.alexheld.mockserver.domain.repositories.*
-import io.alexheld.mockserver.domain.services.*
-import io.alexheld.mockserver.web.*
-import io.alexheld.mockserver.web.ErrorResponse
-import io.alexheld.mockserver.web.controllers.*
+import io.alexheld.mockserver.features.*
 import io.ktor.application.*
 import io.ktor.features.*
-import io.ktor.http.*
 import io.ktor.jackson.*
-import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import org.koin.ktor.ext.*
 
 /**
  * Entry point of the application: main method that starts an embedded server using Netty,
- * processes the applweeication.conf file, interprets the command line args if available
+ * processes the application.conf file, interprets the command line args if available
  * and loads the application modules.
  */
-fun main(args: Array<String>) : Unit {
+fun main(args: Array<String>): Unit {
 
     val env = applicationEngineEnvironment {
 
         module {
-           module()
+            module()
         }
 
         connector {
@@ -45,30 +40,19 @@ fun main(args: Array<String>) : Unit {
 
 fun Application.module() {
 
-//    val injector = Guice.createInjector(Core(this))
-//    val ctrl = injector.getInstance(LoggingController::class.java)
-//    val setupController = injector.getInstance(SetupController::class.java)
-install(ContentNegotiation){
-    jackson()
-}
-    install(CallLogging)
-    install(StatusPages) {
-//        exception(Exception::class.java) {
-//            val errorResponse = ErrorResponse(mapOf("error" to listOf("detail", this.toString())))
-//            context.respond(HttpStatusCode.InternalServerError, errorResponse)
-//        }
+    install(Koin) {
+        modules(ModulesConfig.setupModule, ModulesConfig.logModule)
+    }
+    install(ContentNegotiation) {
+        jackson()
     }
 
+    install(CallLogging)
+    install(StatusPages)
+
     install(Routing) {
-        setupAPI(Instances.setupController)
+        api()
     }
     install(Mock)
 
-}
-
-
-object Instances {
-    val setupRepo = SetupRepositoryImpl()
-    val setupService = SetupServiceImpl(setupRepo)
-    val setupController = SetupController(setupService)
 }

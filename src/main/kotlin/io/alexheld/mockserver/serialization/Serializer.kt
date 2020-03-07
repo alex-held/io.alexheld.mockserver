@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.*
 import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.logging.*
 
+
+public interface MockSerializable {
+
+}
+
 object Serializer {
 
     private val logReader = jacksonObjectMapper()
@@ -20,6 +25,3 @@ object Serializer {
     fun<TSerializable: MockSerializable> deserialize(json: String): TSerializable = logReader.readValue(json)
 }
 
-public interface MockSerializable {
-
-}

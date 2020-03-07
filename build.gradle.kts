@@ -70,6 +70,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-host-common:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("org.koin:koin-ktor:$koin_version")
 
 //    implementation("joda-time:joda-time:2.10.5")
 //    implementation("com.google.inject:guice:$guice_version")

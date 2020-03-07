@@ -41,7 +41,7 @@ fun main(args: Array<String>): Unit {
 fun Application.module() {
 
     install(Koin) {
-        modules(ModulesConfig.setupModule, ModulesConfig.logModule)
+        modules(ModulesConfig.setupModule)
     }
     install(ContentNegotiation) {
         jackson()

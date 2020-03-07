@@ -1,7 +1,6 @@
 package io.alexheld.mockserver.logging
 
-import io.alexheld.mockserver.logging.*
-import io.kotlintest.*
+import org.amshove.kluent.*
 import org.junit.jupiter.api.*
 
 class MockServerLoggerTests {

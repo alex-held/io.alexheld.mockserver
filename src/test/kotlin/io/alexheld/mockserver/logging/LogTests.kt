@@ -2,10 +2,9 @@ package io.alexheld.mockserver.logging
 
 import io.alexheld.mockserver.logging.Log.*
 import io.alexheld.mockserver.serialization.*
-import io.kotlintest.*
-import io.kotlintest.matchers.types.*
+import org.amshove.kluent.*
+import org.apache.logging.log4j.*
 import org.junit.jupiter.api.*
-import org.slf4j.event.*
 import java.time.*
 import java.util.*
 
@@ -20,7 +19,7 @@ class LogTests {
             id = UUID.fromString("2a956c9d-da4b-4c0a-bcf2-d37d026ba9a").asLogId(),
             timestamp = Date.from(Instant.EPOCH),
             level = Level.WARN,
-            type = LogMessageType.EXPECTATION_MATCHED
+            type = LogMessageType.Match
         )
 
         // Act

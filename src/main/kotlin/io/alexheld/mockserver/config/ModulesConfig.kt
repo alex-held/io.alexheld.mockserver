@@ -18,13 +18,8 @@ object ModulesConfig {
     val setupModule = module {
         singleBy<SetupRepository, SetupRepositoryImpl>()
         singleBy<SetupService, SetupServiceImpl>()
-    }
-
-    val logModule = module {
         singleBy<LogRepository, LogRepositoryImpl>()
         singleBy<LogService, LogServiceImpl>()
         single<MockLogger>()
     }
-
-    val modules = listOf(setupModule, logModule)
 }

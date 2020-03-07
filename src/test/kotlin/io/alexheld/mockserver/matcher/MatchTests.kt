@@ -6,15 +6,13 @@ import io.alexheld.mockserver.testUtil.*
 import org.amshove.kluent.*
 import org.junit.jupiter.params.*
 import org.junit.jupiter.params.provider.*
-import io.alexheld.mockserver.testUtil.*
 import java.util.stream.*
 
 class MatchTests {
 
     companion object {
         @JvmStatic
-        fun bodyData(): Stream<Arguments> =
-            Stream.of(
+        fun bodyData(): Stream<Arguments> = Stream.of(
                 // isMatch
                 Arguments.of(Request(body = RequestBody("abc", true)), Request(body = RequestBody("abc", false)), true),
                 Arguments.of(Request(body = RequestBody("abc", true)), Request(body = RequestBody("abc", true)), true),

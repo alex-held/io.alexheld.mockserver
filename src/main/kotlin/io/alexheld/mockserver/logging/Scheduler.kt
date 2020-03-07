@@ -1,6 +1,6 @@
 package io.alexheld.mockserver.logging
 
-import org.slf4j.event.*
+import org.apache.logging.log4j.*
 import java.util.concurrent.*
 import java.util.function.*
 

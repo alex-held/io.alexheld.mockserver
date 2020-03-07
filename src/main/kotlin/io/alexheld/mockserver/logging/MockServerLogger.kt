@@ -2,11 +2,10 @@ package io.alexheld.mockserver.logging
 
 import org.slf4j.*
 import org.slf4j.Logger
-import org.slf4j.event.*
 import org.slf4j.helpers.*
 import java.lang.System.*
 import java.util.logging.*
-import org.slf4j.event.Level as LogLevel
+import org.apache.logging.log4j.Level as LogLevel
 
 
 fun MockServerLogger.LevelHelper.isEnabled(): Boolean = getProperty("io.alexheld.loglevel") != null
@@ -76,7 +75,7 @@ class MockServerLogger {
 
     fun logEvent(logEntry: Log) {
         if (logEntry.type === Log.LogMessageType.RECEIVED_REQUEST
-            || logEntry.type === Log.LogMessageType.FORWARDED_REQUEST
+        //    || logEntry.type === Log.LogMessageType.FORWARDED_REQUEST
             || isEnabled(logEntry.level)
         ) {
             if (httpStateHandler != null) {

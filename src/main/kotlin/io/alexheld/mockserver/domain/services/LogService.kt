@@ -7,4 +7,5 @@ interface LogService {
     fun list(): List<Log>
     fun delete(id: String): Log?
     fun add(log: Log): Log
+    fun add(factory: () -> Log) = add(factory())
 }

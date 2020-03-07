@@ -21,7 +21,9 @@ object Serializer {
         .writerWithDefaultPrettyPrinter()
 
 
-    fun<TSerializable: MockSerializable> serialize(log: TSerializable): String = logWriter.writeValueAsString(log)
+    fun<TSerializable: MockSerializable> serialize(log: TSerializable): String = logWriter.writeValueAsString(log) {
+
+    }
     fun<TSerializable: MockSerializable> deserialize(json: String): TSerializable = logReader.readValue(json)
 }
 

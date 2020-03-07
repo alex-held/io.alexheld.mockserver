@@ -2,7 +2,7 @@ package io.alexheld.mockserver.domain.repositories
 
 import io.alexheld.mockserver.logging.*
 
-class LogRepositoryImpl() : LogRepository {
+class LogRepositoryImpl : LogRepository {
 
     private val logs: MutableMap<LogId, Log> = mutableMapOf()
     override fun list(): List<Log> = logs.values.toList()

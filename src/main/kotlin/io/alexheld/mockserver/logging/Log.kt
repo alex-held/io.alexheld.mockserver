@@ -7,9 +7,10 @@ import io.alexheld.mockserver.serialization.*
 import org.apache.logging.log4j.*
 import org.apache.logging.log4j.kotlin.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-data class Log (
+data class Log(
 
     @JsonSerialize(contentAs = String::class)
     val id: LogId,
@@ -35,12 +36,14 @@ data class Log (
 
 
     @JsonCreator
-    constructor(type: LogMessageType? = null,
-                level: Level = Level.INFO,
-                requests: MutableList<Request> = mutableListOf(),
-                arguments: MutableList<Any?> = mutableListOf(),
-                message: String? = null,
-                setup: Setup? = null) : this(UUID.randomUUID().asLogId(), Date(), level, type, requests, arguments ,message,setup)
+    constructor(
+        type: LogMessageType? = null,
+        level: Level = Level.INFO,
+        requests: MutableList<Request> = mutableListOf(),
+        arguments: MutableList<Any?> = mutableListOf(),
+        message: String? = null,
+        setup: Setup? = null
+    ) : this(UUID.randomUUID().asLogId(), Date(), level, type, requests, arguments, message, setup)
 
     enum class LogMessageType {
         RUNNABLE,
@@ -82,7 +85,7 @@ data class Log (
         }
 
         public fun matched(request: Request, setup: Setup): Log = Log(type = LogMessageType.Match, requests = mutableListOf(request), level = Level.INFO, setup = setup)
-        public fun matchFailed(request: Request, setup: Setup): Log = Log(type = LogMessageType.Match_Failed, requests = mutableListOf(request) ,level = Level.INFO, setup = setup)
+        public fun matchFailed(request: Request, setup: Setup): Log = Log(type = LogMessageType.Match_Failed, requests = mutableListOf(request), level = Level.INFO, setup = setup)
 
     }
 }
@@ -95,10 +98,15 @@ object Character {
 fun Log.format(): String {
 
     fun indentAndToString(vararg objects: Any?): List<StringBuilder> {
-        val builders: MutableList<StringBuilder> = mutableListOf()
 
-        for ((i, obj) in objects.withIndex()){
-            builders[i]= StringBuilder(Character.NEW_LINE)
+        val builders: ArrayList<StringBuilder> = ArrayList(objects.size)
+
+        var list = builders.mapIndexed { idx: Int, b: StringBuilder  ->
+
+        }
+
+        for (i in objects.indices) {
+            builders[i] = StringBuilder(Character.NEW_LINE)
                 .append(Character.NEW_LINE)
                 .append(objects[i]?.toString()?.replace("(?m)^", "\t"))
                 .append(Character.NEW_LINE)

@@ -8,6 +8,7 @@ val kluent_version: String by project
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -17,16 +18,24 @@ buildscript {
 }
 
 //apply(plugin = "org.sonarqube")
-//apply(plugin = "kotlin")
-
 plugins {
-    kotlin("jvm") version "1.3.61"
-    id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
+    idea
+    id("org.jetbrains.kotlin.jvm") version "1.3.70"
+    id("org.gradle.kotlin.kotlin-dsl") version "1.3.4"
+    id("org.jetbrains.intellij") version "0.4.16"
    // id("org.jetbrains.dokka") version "0.10.1"
     application
     java
     //jacoco
 
+}
+
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
 
 java {
@@ -37,14 +46,6 @@ java {
 application {
     group = "io.alexheld.mockserver"
     mainClassName = "io.ktor.server.netty.EngineMain"
-}
-
-
-repositories {
-    jcenter()
-   // mavenCentral()
-    mavenLocal()
-    maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
 }
 
 dependencies {
@@ -75,3 +76,12 @@ tasks.withType<Test>() {
 }
 
 
+
+
+repositories {
+    jcenter()
+    mavenCentral()
+    // mavenCentral()
+    maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
+
+}

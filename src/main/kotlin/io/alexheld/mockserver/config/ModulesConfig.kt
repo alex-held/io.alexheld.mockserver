@@ -4,8 +4,6 @@ import io.alexheld.mockserver.domain.repositories.*
 import io.alexheld.mockserver.domain.services.*
 import org.koin.dsl.*
 import org.koin.experimental.builder.*
-import org.slf4j.*
-import java.io.*
 
 class MockLogger {
 

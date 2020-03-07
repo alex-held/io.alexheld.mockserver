@@ -6,7 +6,6 @@ import io.ktor.application.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import org.koin.core.*
-import org.koin.experimental.property.*
 
 class Mock(val pipeline: Application) : ApplicationCallPipeline(), KoinComponent {
 

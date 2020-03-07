@@ -1,8 +1,9 @@
 package io.alexheld.mockserver.domain.models
 
 import com.fasterxml.jackson.annotation.*
+import io.alexheld.mockserver.serialization.*
 
-public data class Request (
+public data class Request(
     @JsonProperty(required = false)
     val method: String? = null,
 
@@ -17,6 +18,6 @@ public data class Request (
 
     @JsonProperty(required = false)
     val body: RequestBody? = null
-) {
+) : MockSerializable  {
     constructor() : this(null, null, null, null, null)
 }

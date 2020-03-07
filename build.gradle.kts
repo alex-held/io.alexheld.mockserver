@@ -12,18 +12,22 @@ buildscript {
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.61"))
-   //     classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8")
+        val kotlinVersion = "1.3.61"
+        classpath(kotlin("gradle-plugin", version = kotlinVersion))
+        classpath(kotlin("serialization", version = kotlinVersion))
+        //     classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8")
     }
 }
 
 //apply(plugin = "org.sonarqube")
 plugins {
     idea
-    id("org.jetbrains.kotlin.jvm") version "1.3.70"
-    id("org.gradle.kotlin.kotlin-dsl") version "1.3.4"
+    id("org.jetbrains.kotlin.jvm") version "1.3.61"
+    id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
     id("org.jetbrains.intellij") version "0.4.16"
-   // id("org.jetbrains.dokka") version "0.10.1"
+    kotlin("plugin.serialization") version "1.3.61"
+
+    // id("org.jetbrains.dokka") version "0.10.1"
     application
     java
     //jacoco
@@ -58,12 +62,20 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.koin:koin-ktor:$koin_version")
     implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
-  //  implementation("org.apache.logging.log4j:log4j-api:2.11.0")
     implementation("org.apache.logging.log4j:log4j-core:2.11.0")
+  //  implementation("org.apache.logging.log4j:log4j-api:2.11.0")
+
+    implementation("io.ktor:ktor-freemarker:$ktor_version")
+    implementation("com.charleskorn.kaml:kaml:0.16.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("io.ktor:ktor-mustache:$ktor_version")
+
 
     // TEST
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.3.61")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.3.70")
+
+
    // testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testImplementation("org.amshove.kluent:kluent:$kluent_version")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")

@@ -6,8 +6,8 @@ import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.serialization.*
 import org.apache.logging.log4j.*
 import org.apache.logging.log4j.kotlin.*
+import java.text.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 data class Log(
@@ -57,11 +57,8 @@ data class Log(
         Setup_Created,
         Setup_Deleted,
         Setup_Deletion_Failed,
-        Setup_Matched_Response,
-        Setup_Unmatched_Response,
         RECEIVED_REQUEST,
         Match,
-        Match_Failed,
         VERIFICATION,
         VERIFICATION_FAILED,
         SERVER_CONFIGURATION,
@@ -77,6 +74,8 @@ data class Log(
 
     companion object {
 
+        public val dateFormat = SimpleDateFormat( "HH:mm:ss MM-dd")
+
         public fun setupCreated(setup: Setup): Log = Log(type = LogMessageType.Setup_Created, level = Level.INFO, setup = setup)
         public fun setupDeleted(setup: Setup?): Log {
             if (setup is Setup)
@@ -84,56 +83,30 @@ data class Log(
             return Log(type = LogMessageType.Setup_Deletion_Failed, level = Level.INFO, message = "No Setup matched for deletion")
         }
 
+        public fun requestReceived(request: Request): Log = Log(type = LogMessageType.RECEIVED_REQUEST, requests = mutableListOf(request), level = Level.INFO)
         public fun matched(request: Request, setup: Setup): Log = Log(type = LogMessageType.Match, requests = mutableListOf(request), level = Level.INFO, setup = setup)
-        public fun matchFailed(request: Request, setup: Setup): Log = Log(type = LogMessageType.Match_Failed, requests = mutableListOf(request), level = Level.INFO, setup = setup)
 
     }
 }
 
 
-object Character {
-    val NEW_LINE = System.getProperty("line.separator")
-}
 
 fun Log.format(): String {
-
-    fun indentAndToString(vararg objects: Any?): List<StringBuilder> {
-
-        val builders: ArrayList<StringBuilder> = ArrayList(objects.size)
-
-        var list = builders.mapIndexed { idx: Int, b: StringBuilder  ->
-
-        }
-
-        for (i in objects.indices) {
-            builders[i] = StringBuilder(Character.NEW_LINE)
-                .append(Character.NEW_LINE)
-                .append(objects[i]?.toString()?.replace("(?m)^", "\t"))
-                .append(Character.NEW_LINE)
-        }
-
-        return builders
+    return when (type) {
+        Log.LogMessageType.Match -> LogFormatter.formatLogMessage("returning response:{}for request:{}", arrayOf(setup!!.action, setup.request!!))
+        Log.LogMessageType.Setup_Created -> LogFormatter.formatLogMessage("created setup:{}", arrayOf(setup!!))
+        Log.LogMessageType.Setup_Deleted -> LogFormatter.formatLogMessage("deleted setup:{}", arrayOf(setup!!))
+        Log.LogMessageType.Setup_Deletion_Failed -> LogFormatter.formatLogMessage("no matching setup to delete found for:{}", arrayOf(setup!!))
+        Log.LogMessageType.RECEIVED_REQUEST -> LogFormatter.formatLogMessage("received request:{}", arrayOf(requests.first()))
+        Log.LogMessageType.CLEARED -> message!!
+        else -> ""
     }
-
-
-    val sb = StringBuilder()
-    val formattedArguments = indentAndToString(arguments)
-    val messageParts = message?.split("\\{}") ?: emptyList()
-    for (messagePartIndex in messageParts.indices) {
-
-        sb.append(messageParts[messagePartIndex])
-
-        if (formattedArguments.isNotEmpty() && formattedArguments.size > messagePartIndex) sb.append(formattedArguments[messagePartIndex])
-
-        if (messagePartIndex < messageParts.size - 1) {
-            sb.append(Character.NEW_LINE)
-            if (!messageParts[messagePartIndex + 1].startsWith(" ")) sb.append(" ")
-        }
-    }
-
-    val logMessage = sb.toString()
-    return logMessage
 }
+
+
+
+
+
 
 fun Log.hasMessage(): Boolean = this.message.isNullOrBlank()
 

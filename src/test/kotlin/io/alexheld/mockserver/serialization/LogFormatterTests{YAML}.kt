@@ -28,7 +28,7 @@ public class LogFormatterTests {
 
 
         // Act
-        val log = YAMLFormatter.mapper.readValue(expectedYaml, Log::class.java)
+        val log = YAMLFormatter.getMapper().readValue(expectedYaml, Log::class.java)
         val yaml = YAMLFormatter.serialize(log)
 
         // Assert
@@ -76,7 +76,7 @@ setup:
 
         // 1. Request
         val requestReceivedNode = ContainerNode(LogMessageType.Request_Received.type,
-            "00000000-0000-0000-0000-000000000000","1970-01-01T00:00:00Z"
+            "00,000000-0000-0000-0000-000000000000","1970-01-01T00:00:00Z"
         )
 
         document.addChild(requestReceivedNode)

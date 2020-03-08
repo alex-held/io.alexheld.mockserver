@@ -19,25 +19,33 @@ public abstract class Node(
     public val nodeType: NodeType,
 
     @JsonIgnore
-    private val properties:  MutableMap<String, Any> = mutableMapOf()) {
+    public val properties:  MutableMap<String, Any> = mutableMapOf()) {
 
 
     public fun addChild(child: Node)  {
-        properties[child.id] = child
+        children.add(child)
     }
+
+
+    @JsonUnwrapped()
+    public val children: MutableList<Node> = mutableListOf()
+
 
     @JsonAnyGetter
     open fun any(): Map<String, Any> =  properties
 }
 
+
+
+
 @JsonSerialize
-@JsonPropertyOrder(value = ["event", "id", "timestamp"])
+@JsonPropertyOrder(value = ["type", "id", "timestamp"])
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public open class ContainerNode(val type: String, id: String, val timestamp: String) : Node(id, NodeType.Container) { }
 
 
 @JsonSerialize
-@JsonPropertyOrder(value = ["event", "id", "timestamp"])
+@JsonPropertyOrder(value = ["type", "id", "timestamp"])
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public open class LogNode(type: String, id: String, timestamp: String) : ContainerNode(type, id, timestamp) { }
 

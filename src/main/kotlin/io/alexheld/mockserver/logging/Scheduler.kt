@@ -1,10 +1,9 @@
 package io.alexheld.mockserver.logging
 
-import org.apache.logging.log4j.*
+import io.alexheld.mockserver.domain.services.*
 import java.util.concurrent.*
-import java.util.function.*
 
-class Scheduler(private val logger: MockServerLogger) {
+class Scheduler(private val logger: LogService) {
 
     private val scheduler: ScheduledExecutorService = ScheduledThreadPoolExecutor(
         ConfigurationProperties.Options.MOCKSERVER_ACTION_HANDLER_THREAD_COUNT.Value(),
@@ -25,32 +24,28 @@ class Scheduler(private val logger: MockServerLogger) {
         }
     }
 
-
-    private fun run(command: Runnable) {
-        try {
-            command.run()
-        } catch (throwable: Throwable) {
-            logger.logEvent(
-                Log()
-                    .withType(Log.LogMessageType.WARN)
-                    .withLogLevel(Level.INFO)
-                    .withMessageFormat(throwable.localizedMessage)
-                    .withThrowable(throwable)
-            )
-        }
-    }
-
-    private fun <T> run(input: T, command: Consumer<T>) {
-        try {
-            command.accept(input)
-        } catch (throwable: Throwable) {
-            logger.logEvent(
-                Log()
-                    .withType(Log.LogMessageType.WARN)
-                    .withLogLevel(Level.INFO)
-                    .withMessageFormat(throwable.localizedMessage)
-                    .withThrowable(throwable)
-            )
-        }
-    }
+//
+//    private fun run(command: Runnable) {
+//        try {
+//            command.run()
+//        } catch (throwable: Throwable) {
+//            logger.logEvent(
+//                Log(throwable.localizedMessage, LogMessageType.WARN)
+//                    .withLogLevel(Level.INFO)
+//                    .withThrowable(throwable)
+//            )
+//        }
+//    }
+//
+//    private fun <T> run(input: T, command: Consumer<T>) {
+//        try {
+//            command.accept(input)
+//        } catch (throwable: Throwable) {
+//            logger.logEvent(
+//                Log(throwable.localizedMessage, LogMessageType.WARN)
+//                    .withLogLevel(Level.INFO)
+//                    .withThrowable(throwable)
+//            )
+//        }
+//    }
 }

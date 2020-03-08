@@ -11,7 +11,7 @@ import org.apache.logging.log4j.kotlin.*
 class SetupServiceImpl(private val repository: SetupRepository, private val logService: LogService) : SetupService, Logging {
 
     override fun list(): List<Setup> {
-        logService.add(Log.Operations.listSetups())
+        logService.add(Log.listSetups())
         return repository.list()
     }
 

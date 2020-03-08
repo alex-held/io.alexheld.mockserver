@@ -8,7 +8,7 @@ import org.apache.logging.log4j.kotlin.*
 class LogServiceImpl(private val logRepository: LogRepository) : LogService {
 
     override fun list(): List<Log> = logRepository.list()
-    override fun delete(id: String): Log? = logRepository.delete(LogId.From(id))
+    override fun delete(id: String): Log? = logRepository.delete(id)
     override fun add(log: Log) = logRepository.add(log)
 
     fun tryLog(log: Log): String? {

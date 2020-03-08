@@ -59,16 +59,16 @@ dependencies {
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-host-common:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
+    //implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.koin:koin-ktor:$koin_version")
     implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
     implementation("org.apache.logging.log4j:log4j-core:2.11.0")
   //  implementation("org.apache.logging.log4j:log4j-api:2.11.0")
 
-    implementation("io.ktor:ktor-freemarker:$ktor_version")
-    implementation("com.charleskorn.kaml:kaml:0.16.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
-    implementation("io.ktor:ktor-mustache:$ktor_version")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.9")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.10.3")
 
 
     // TEST

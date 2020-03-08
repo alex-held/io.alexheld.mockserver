@@ -4,6 +4,6 @@ import io.alexheld.mockserver.logging.*
 
 interface LogRepository {
     fun list(): List<Log>
-    fun delete(id: LogId): Log?
+    fun delete(id: String): Log?
     fun add(log: Log): Log
 }

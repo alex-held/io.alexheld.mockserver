@@ -1,0 +1,12 @@
+apiVersion: 1
+kind: Log
+type: Setup_Created
+id: 12345678-1234-1234-1234-012345678910
+timestamp: "2020-03-08T09:22:15Z"
+setup:
+  request:
+    method: "PUT"
+    path: "/api/cars"
+  action:
+    message: "response message"
+    statusCode: 404

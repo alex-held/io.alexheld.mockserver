@@ -13,3 +13,10 @@ fun <I : Iterable<*>> I.shouldHaveSizeWhen(condition: Boolean, expectedSizeTrue:
         actualSize == expectedSize
     }
 }
+
+fun String.shouldBeEqualWhenTrimmed(expected: String) {
+    val formatted = this
+    println("Expected:\n----------------------------\n\n$expected\n")
+    println("Formatted:\n----------------------------\n\n$formatted\n")
+    formatted.trim(' ').trim('\n').shouldBeEqualTo(expected)
+}

@@ -2,9 +2,10 @@ package io.alexheld.mockserver.domain.models
 
 import com.fasterxml.jackson.annotation.*
 import io.alexheld.mockserver.serialization.*
-import io.ktor.http.*
 
-data class Setup(
+
+
+data class Setup (
     @JsonProperty(required = false)
     var id: Int? = null,
 
@@ -24,10 +25,10 @@ public data class Action(
     val message: String? = null,
 
     @JsonProperty(required = false    )
-    val statusCode: HttpStatusCode = HttpStatusCode.NotFound
+    val statusCode: Int = 404
 ) : MockSerializable  {
 
     companion object {
-        public val Default get() = Action("DEFAULT RESPONSE MESSAGE", statusCode = HttpStatusCode.MultiStatus)
+        public val Default get() = Action("DEFAULT RESPONSE MESSAGE", statusCode = 404)
     }
 }

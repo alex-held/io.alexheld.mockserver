@@ -3,89 +3,75 @@ package io.alexheld.mockserver.logging
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.*
 import io.alexheld.mockserver.domain.models.*
-import io.alexheld.mockserver.serialization.*
 import org.apache.logging.log4j.*
-import org.apache.logging.log4j.kotlin.*
-import java.text.*
+import org.gradle.internal.impldep.org.joda.time.*
 import java.util.*
 
 
-data class Log(
+public enum class LogMessageType(public val type: String) {
+    //RUNNABLE, TRACE, DEBUG, INFO, WARN, EXCEPTION, CLEARED, RETRIEVED,
+    Setup_Created("Setup created"),
+    Setup_Deleted("Setup deleted"),
+    Setup_Deletion_Failed("Setup deletion failed"),
+    Request_Received("Request received"),
+    Request_Matched("Request matched"),
+    Operation("SERVER_CONFIGURATION")
+   /// VERIFICATION, VERIFICATION_FAILED, SERVER_CONFIGURATION,
+}
 
-    @JsonSerialize(contentAs = String::class)
-    val id: LogId,
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties("id", "level",  "requests",  "arguments", "throwable")
+public data class Log(
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    val timestamp: Date,
+    val id: String,
 
-    @JsonIgnore
+    @JsonProperty(required = true)
+    var message: String,
+
+    @JsonProperty(required = true)
+    var type: LogMessageType,
+
+    var timestamp: Date,
+
     var level: Level = Level.ALL,
 
-    var type: Log.LogMessageType? = null,
+    var requests: MutableList<Request> = mutableListOf(),
 
-    val requests: MutableList<Request> = mutableListOf(),
     val arguments: MutableList<Any?> = mutableListOf(),
 
-    var message: String? = null,
+    @JsonProperty(required = false)
+    var setup: Setup? = null,
 
-    val setup: Setup? = null,
-
-    @JsonIgnore
     var throwable: Throwable? = null
-) : MockSerializable, Logging {
 
+)  {
 
     @JsonCreator
-    constructor(
-        type: LogMessageType? = null,
-        level: Level = Level.INFO,
-        requests: MutableList<Request> = mutableListOf(),
-        arguments: MutableList<Any?> = mutableListOf(),
-        message: String? = null,
-        setup: Setup? = null
-    ) : this(UUID.randomUUID().asLogId(), Date(), level, type, requests, arguments, message, setup)
-
-    enum class LogMessageType {
-        RUNNABLE,
-        TRACE,
-        DEBUG,
-        INFO,
-        WARN,
-        EXCEPTION,
-        CLEARED,
-        RETRIEVED,
-        Setup_Created,
-        Setup_Deleted,
-        Setup_Deletion_Failed,
-        RECEIVED_REQUEST,
-        Match,
-        VERIFICATION,
-        VERIFICATION_FAILED,
-        SERVER_CONFIGURATION,
-        Operation
-    }
-
-    public class Operations {
-        companion object {
-            public fun listSetups(): Log = Log(type = LogMessageType.Operation, message = "Listing Setups")
-            public fun listLogs(): Log = Log(type = LogMessageType.Operation, message = "Listing Logs")
-        }
-    }
+    constructor(message: String, type: LogMessageType) : this(UUID.randomUUID().toString(), message, type, DateTime.now(DateTimeZone.UTC).toDate(), Level.INFO,  mutableListOf(),
+        mutableListOf())
 
     companion object {
 
-        public val dateFormat = SimpleDateFormat( "HH:mm:ss MM-dd")
+        public fun setupCreated(setup: Setup): Log = Log("successfully created setup", LogMessageType.Setup_Created)
+            .withSetup(setup)
 
-        public fun setupCreated(setup: Setup): Log = Log(type = LogMessageType.Setup_Created, level = Level.INFO, setup = setup)
         public fun setupDeleted(setup: Setup?): Log {
             if (setup is Setup)
-                return Log(type = LogMessageType.Setup_Deleted, level = Level.INFO, setup = setup)
-            return Log(type = LogMessageType.Setup_Deletion_Failed, level = Level.INFO, message = "No Setup matched for deletion")
+                return Log("successfully deleted setup",type = LogMessageType.Setup_Deleted).withSetup(setup)
+            return Log( "no Setup matched for deletion", type = LogMessageType.Setup_Deletion_Failed)
         }
 
-        public fun requestReceived(request: Request): Log = Log(type = LogMessageType.RECEIVED_REQUEST, requests = mutableListOf(request), level = Level.INFO)
-        public fun matched(request: Request, setup: Setup): Log = Log(type = LogMessageType.Match, requests = mutableListOf(request), level = Level.INFO, setup = setup)
+        public fun requestReceived(request: Request): Log = Log("received incoming request", LogMessageType.Request_Received)
+            .withRequests(mutableListOf(request))
 
+        public fun matched(request: Request, setup: Setup): Log = Log("setup matched", LogMessageType.Request_Matched)
+            .withRequests(mutableListOf(request))
+            .withSetup(setup)
+
+
+        public fun listSetups(): Log = Log("Listing Setups", LogMessageType.Operation)
+        public fun listLogs(): Log = Log("Listing Logs", LogMessageType.Operation)
     }
 }
 
@@ -93,13 +79,14 @@ data class Log(
 
 fun Log.format(): String {
     return when (type) {
-        Log.LogMessageType.Match -> LogFormatter.formatLogMessage("returning response:{}for request:{}", arrayOf(setup!!.action, setup.request!!))
-        Log.LogMessageType.Setup_Created -> LogFormatter.formatLogMessage("created setup:{}", arrayOf(setup!!))
-        Log.LogMessageType.Setup_Deleted -> LogFormatter.formatLogMessage("deleted setup:{}", arrayOf(setup!!))
-        Log.LogMessageType.Setup_Deletion_Failed -> LogFormatter.formatLogMessage("no matching setup to delete found for:{}", arrayOf(setup!!))
-        Log.LogMessageType.RECEIVED_REQUEST -> LogFormatter.formatLogMessage("received request:{}", arrayOf(requests.first()))
-        Log.LogMessageType.CLEARED -> message!!
-        else -> ""
+        LogMessageType.Request_Matched -> LogFormatter.formatLogMessage("returning response:{}for request:{}", arrayOf(setup!!.action, requests.first()))
+        LogMessageType.Setup_Created -> LogFormatter.formatLogMessage("created setup:{}", arrayOf(setup!!))
+        LogMessageType.Setup_Deleted -> LogFormatter.formatLogMessage("deleted setup:{}", arrayOf(setup!!))
+        LogMessageType.Setup_Deletion_Failed -> LogFormatter.formatLogMessage("no matching setup to delete found for:{}", arrayOf(setup!!))
+        LogMessageType.Request_Received -> LogFormatter.formatLogMessage("received request:{}", arrayOf(requests.first()))
+        LogMessageType.Operation -> LogFormatter.formatLogMessage("operation", arrayOf())
+      //  LogMessageType.CLEARED -> message!!
+        //else -> ""
     }
 }
 
@@ -108,10 +95,16 @@ fun Log.format(): String {
 
 
 
-fun Log.hasMessage(): Boolean = this.message.isNullOrBlank()
+fun Log.hasMessage(): Boolean = this.message.isBlank()
 
-fun Log.withType(logType: Log.LogMessageType): Log {
-    this.type = logType
+
+fun Log.withRequests(requests: MutableList<Request>): Log {
+    this.requests = requests
+    return this
+}
+
+fun Log.withSetup(setup: Setup): Log {
+    this.setup = setup
     return this
 }
 
@@ -120,12 +113,13 @@ fun Log.withLogLevel(logLevel: Level): Log {
     return this
 }
 
-fun Log.withMessageFormat(msg: String): Log {
-    this.message = msg
-    return this
-}
 
 fun Log.withThrowable(throwable: Throwable?): Log {
     this.throwable = throwable
+    return this
+}
+
+fun Log.withDateTime(dateTime: DateTime): Any {
+    this.timestamp = dateTime.toDate()
     return this
 }

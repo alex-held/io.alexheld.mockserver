@@ -8,6 +8,7 @@ import org.gradle.internal.impldep.org.joda.time.*
 import java.util.*
 
 
+//@JsonSerialize(using = LogMessageTypeSerializer::class)
 public enum class LogMessageType(public val type: String) {
     //RUNNABLE, TRACE, DEBUG, INFO, WARN, EXCEPTION, CLEARED, RETRIEVED,
     Setup_Created("Setup created"),
@@ -15,6 +16,7 @@ public enum class LogMessageType(public val type: String) {
     Setup_Deletion_Failed("Setup deletion failed"),
     Request_Received("Request received"),
     Request_Matched("Request matched"),
+    Action_Response("Respond with HttpResponse"),
     Operation("SERVER_CONFIGURATION")
    /// VERIFICATION, VERIFICATION_FAILED, SERVER_CONFIGURATION,
 }
@@ -85,6 +87,7 @@ fun Log.format(): String {
         LogMessageType.Setup_Deletion_Failed -> LogFormatter.formatLogMessage("no matching setup to delete found for:{}", arrayOf(setup!!))
         LogMessageType.Request_Received -> LogFormatter.formatLogMessage("received request:{}", arrayOf(requests.first()))
         LogMessageType.Operation -> LogFormatter.formatLogMessage("operation", arrayOf())
+        LogMessageType.Action_Response -> TODO()
       //  LogMessageType.CLEARED -> message!!
         //else -> ""
     }

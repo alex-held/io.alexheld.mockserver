@@ -21,10 +21,10 @@ buildscript {
 
 //apply(plugin = "org.sonarqube")
 plugins {
-    idea
+  //  idea
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
     id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
-    id("org.jetbrains.intellij") version "0.4.16"
+  //  id("org.jetbrains.intellij") version "0.4.16"
     kotlin("plugin.serialization") version "1.3.61"
 
     // id("org.jetbrains.dokka") version "0.10.1"
@@ -34,13 +34,13 @@ plugins {
 
 }
 
-
+/*
 idea {
     module {
         isDownloadJavadoc = true
         isDownloadSources = true
     }
-}
+}*/
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -65,7 +65,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.11.0")
   //  implementation("org.apache.logging.log4j:log4j-api:2.11.0")
 
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.9")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.0.pr3")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.10.3")

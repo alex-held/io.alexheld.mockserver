@@ -1,6 +1,9 @@
 package io.alexheld.mockserver.serialization
 
 import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.core.*
+import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.annotation.*
 import io.alexheld.mockserver.domain.models.*
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -12,15 +15,25 @@ open class YamlDocument(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap
 }
 
 
-class ApiVersion {
-
-    @JsonValue
-    var version: String = "1.0.0"
-
-    @JsonCreator
-    constructor(version: String) {
-        this.version = version
+class ApiVersionSerializer : JsonSerializer<ApiVersion>() {
+    /**
+     * Method that can be called to ask implementation to serialize
+     * values of type this serializer handles.
+     *
+     * @param value Value to serialize; can **not** be null.
+     * @param gen Generator used to output resulting Json content
+     * @param serializers Provider that can be used to get serializers for
+     * serializing Objects value contains, if any.
+     */
+    override fun serialize(value: ApiVersion?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+        gen?.writeString(value?.version)
     }
+
+}
+
+
+@JsonSerialize(using = ApiVersionSerializer::class)
+class ApiVersion(@JsonValue var version: String) {
 
     companion object {
         val latest: ApiVersion = ApiVersion("1.0")
@@ -45,11 +58,12 @@ class ApiVersion {
 
 }
 
+
 class YamlLogDocument(map: Map<String, Any> = mapOf()) : YamlDocument(map) {
 
     var id: String by properties
     var timestamp: String by properties
-    var events: MutableList<Log> by properties
+
 
     @JsonCreator
     constructor(
@@ -85,5 +99,4 @@ class YamlLogDocument(map: Map<String, Any> = mapOf()) : YamlDocument(map) {
         }
 
     }
-
 }

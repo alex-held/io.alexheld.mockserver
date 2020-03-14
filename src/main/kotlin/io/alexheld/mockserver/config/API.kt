@@ -5,7 +5,7 @@ import io.alexheld.mockserver.domain.services.*
 import io.ktor.routing.*
 import org.koin.ktor.ext.*
 
-fun Route.api(){
+fun Route.api() {
 
     val setupService: SetupService by inject()
     val logService: LogService by inject()

@@ -6,9 +6,9 @@ import java.time.*
 import java.util.*
 
 
-class YamlLog(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()){
+class YamlLog(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()) {
 
-    constructor(type: LogMessageType, properties: Map<String, Any> = mapOf()): this(properties) {
+    constructor(type: LogMessageType, properties: Map<String, Any> = mapOf()) : this(properties) {
         id = UUID.randomUUID().toString()
         event = type
         timestamp = Instant.now().toString()
@@ -22,62 +22,62 @@ class YamlLog(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()){
 
     companion object {
 
-            public fun setupCreated(setup: Setup): YamlLog = YamlLog(
-                LogMessageType.Setup_Created, mapOf(
-                    "setup" to setup
-                )
+        fun setupCreated(setup: Setup): YamlLog = YamlLog(
+            LogMessageType.Setup_Created, mapOf(
+                "setup" to setup
             )
+        )
 
-            public fun setupDeleted(setup: Setup): YamlLog = YamlLog(
-                LogMessageType.Setup_Deleted, mapOf(
-                    "setup" to setup
-                )
+        fun setupDeleted(setup: Setup): YamlLog = YamlLog(
+            LogMessageType.Setup_Deleted, mapOf(
+                "setup" to setup
             )
+        )
 
-            public fun setupDeletionFailed(): YamlLog = YamlLog(LogMessageType.Setup_Deletion_Failed)
+        fun setupDeletionFailed(): YamlLog = YamlLog(LogMessageType.Setup_Deletion_Failed)
 
-            public fun requestReceived(request: Request): YamlLog = YamlLog(
-                LogMessageType.Request_Received, mapOf(
-                    "request" to request
-                )
+        fun requestReceived(request: Request): YamlLog = YamlLog(
+            LogMessageType.Request_Received, mapOf(
+                "request" to request
             )
+        )
 
-            public fun matched(request: Request, setup: Setup): YamlLog = YamlLog(
-                LogMessageType.Request_Matched, mapOf(
-                    "events" to listOf(
-                        YamlLog(
-                            LogMessageType.Request_Received, mapOf(
-                                "request" to request
-                            )
-                        ),
-                        YamlLog(
-                            LogMessageType.Request_Matched, mapOf(
-                                "setup" to setup
-                            )
+        fun matched(request: Request, setup: Setup): YamlLog = YamlLog(
+            LogMessageType.Request_Matched, mapOf(
+                "events" to listOf(
+                    YamlLog(
+                        LogMessageType.Request_Received, mapOf(
+                            "request" to request
+                        )
+                    ),
+                    YamlLog(
+                        LogMessageType.Request_Matched, mapOf(
+                            "setup" to setup
                         )
                     )
                 )
             )
+        )
 
 
-            public fun listSetups(): YamlLog = YamlLog(
-                LogMessageType.Operation, mapOf(
-                    "operation" to "list",
-                    "kind" to "Setup"
-                )
+        fun listSetups(): YamlLog = YamlLog(
+            LogMessageType.Operation, mapOf(
+                "operation" to "list",
+                "kind" to "Setup"
             )
+        )
 
-            public fun listLogs(): YamlLog = YamlLog(
-                LogMessageType.Operation, mapOf(
-                    "operation" to "list",
-                    "kind" to "Log"
-                )
+        fun listLogs(): YamlLog = YamlLog(
+            LogMessageType.Operation, mapOf(
+                "operation" to "list",
+                "kind" to "Log"
             )
-        }
+        )
+    }
 
 
-    fun withEvent(yamlLog: YamlLog): YamlLog  = withEvent(yamlLog.properties)
-    fun withEvent(properties: Map<String, Any>): YamlLog{
+    fun withEvent(yamlLog: YamlLog): YamlLog = withEvent(yamlLog.properties)
+    fun withEvent(properties: Map<String, Any>): YamlLog {
         val log = YamlLog(properties)
         events.add(log)
         return this

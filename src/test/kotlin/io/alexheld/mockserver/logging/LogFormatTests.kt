@@ -29,7 +29,7 @@ class LogFormatTests {
         val formatted = YAMLFormatter.serialize(log)
 
         println(formatted)
-        formatted.shouldContainAll("PUT", "/api/cars", "Request_Received" ,"request")
+        formatted.shouldContainAll("PUT", "/api/cars", "Request_Received", "request")
     }
 
 

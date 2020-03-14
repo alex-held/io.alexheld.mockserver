@@ -3,7 +3,7 @@ package io.alexheld.mockserver.serialization
 import com.fasterxml.jackson.core.*
 import com.fasterxml.jackson.databind.*
 
-public class NodeSerializer: JsonSerializer<Node>() {
+class NodeSerializer : JsonSerializer<Node>() {
 
     /**
      * Method that can be called to ask implementation to serialize
@@ -20,8 +20,7 @@ public class NodeSerializer: JsonSerializer<Node>() {
         if (value.isAtomic()) {
             val atomicValue = value.getAtomicValue<Any>()
             serializers?.defaultSerializeValue(atomicValue, gen)
-        }
-        else {
+        } else {
             val anyValues = value.properties
             val sorted = LinkedHashMap<String, Any>(anyValues.size)
             if (anyValues.containsKey("apiVersion"))
@@ -34,7 +33,7 @@ public class NodeSerializer: JsonSerializer<Node>() {
                 sorted["id"] = anyValues.remove("id")!!
             if (anyValues.containsKey("timestamp"))
                 sorted["timestamp"] = anyValues.remove("timestamp")!!
-            anyValues.forEach{
+            anyValues.forEach {
                 sorted[it.key] = it.value
             }
             serializers?.defaultSerializeValue(sorted, gen)

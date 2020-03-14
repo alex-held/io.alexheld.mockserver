@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.annotation.*
 @JsonSerialize(using = NodeSerializer::class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("kind", "event", "timestamp", "id")
-public open class Node(@JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf()) {
+open class Node(@JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf()) {
 
     companion object {
-        public const val ScalarValueKey: String = "<<SCALAR_VALUE>>"
+        const val ScalarValueKey: String = "<<SCALAR_VALUE>>"
     }
 
     @JsonAnyGetter
@@ -19,7 +19,7 @@ public open class Node(@JsonIgnore val properties: MutableMap<String, Any> = mut
     fun isAtomic(): Boolean = properties.containsKey(ScalarValueKey)
 
     @JsonIgnore
-    fun<T: Any> getAtomicValue(): T = properties.getValue(ScalarValueKey) as T
+    fun <T : Any> getAtomicValue(): T = properties.getValue(ScalarValueKey) as T
 
     @JsonAnySetter
     open fun anySetter(key: String, value: Any) {

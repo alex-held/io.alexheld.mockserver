@@ -41,7 +41,7 @@ class Match {
 
 
 fun RequestBody.matches(other: RequestBody?): Boolean {
-    if (body == null    ) return true
+    if (body == null) return true
     if (other?.body == null) return false
     if (exact) return body == other.body
     return body.contains(other.body)

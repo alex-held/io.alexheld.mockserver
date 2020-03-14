@@ -8,12 +8,12 @@ import org.junit.jupiter.api.*
 import java.io.*
 import java.time.*
 
-public class LogFormatterTests {
+class LogFormatterTests {
 
     private val root = "/serialization/yaml"
-    private fun streamYamlFile(fileName: String) : InputStream = this::class.java.getResourceAsStream("$root/$fileName.yaml")
+    private fun streamYamlFile(fileName: String): InputStream = this::class.java.getResourceAsStream("$root/$fileName.yaml")
 
-    private fun readYaml(file: String) : String {
+    private fun readYaml(file: String): String {
         val stream = streamYamlFile(file)
         val reader = InputStreamReader(stream)
         return reader.readText()
@@ -35,7 +35,7 @@ public class LogFormatterTests {
 
 
     @Test
-    fun `should format Setup_Created`(){
+    fun `should format Setup_Created`() {
 
         // Arrange
         val expectedYaml = readYaml("Setup_Created")
@@ -51,18 +51,24 @@ public class LogFormatterTests {
     @Test
     fun `should format logtemplate`() {
 
-        val document = YamlLog(mapOf(
-            "apiVersion" to "1.0",
-            "kind" to "Log",
-            "type" to LogMessageType.Setup_Created.type,
-            "id" to "134",
-            "timestamp" to Instant.EPOCH.toString(),
-            "events" to listOf(LogNode(mapOf(
-                "type" to LogMessageType.Request_Received.type,
-                "id" to "00000000-0000-0000-0000-000000000000",
-                "timestamp" to Instant.EPOCH.toString()
-            )))
-        ))
+        val document = YamlLog(
+            mapOf(
+                "apiVersion" to "1.0",
+                "kind" to "Log",
+                "type" to LogMessageType.Setup_Created.type,
+                "id" to "134",
+                "timestamp" to Instant.EPOCH.toString(),
+                "events" to listOf(
+                    LogNode(
+                        mapOf(
+                            "type" to LogMessageType.Request_Received.type,
+                            "id" to "00000000-0000-0000-0000-000000000000",
+                            "timestamp" to Instant.EPOCH.toString()
+                        )
+                    )
+                )
+            )
+        )
 
         // 1. Request
         document.dump()
@@ -72,17 +78,17 @@ public class LogFormatterTests {
 
 
     @Test
-    fun `should add child`(){
+    fun `should add child`() {
 
         val matched = LogNode()
-        matched.timestamp =  Instant.EPOCH.toString()
+        matched.timestamp = Instant.EPOCH.toString()
         matched.event = LogMessageType.Request_Matched.type
-        matched.id ="00000000-0000-0000-0000-000000000000"
+        matched.id = "00000000-0000-0000-0000-000000000000"
 
         val test = YamlDocument()
         test.apiVersion = "1.0"
         //test.kind ="Log"
-        test.id ="00000000-0000-0000-0000-000000000000"
+        test.id = "00000000-0000-0000-0000-000000000000"
         test.timestamp = Instant.EPOCH.toString()
         test.properties["events"] = mutableListOf(matched)
 
@@ -98,21 +104,16 @@ public class LogFormatterTests {
     }
 
 
-
-
-
-    fun Node.dump(){
+    fun Node.dump() {
         val yaml = YAMLFormatter.serialize(this)
         println(yaml)
     }
 
 
-
 }
 
 
-
-public class Node2Tests {
+class Node2Tests {
 
     companion object {
         val MAPPER: YAMLMapper = YAMLMapper
@@ -122,17 +123,18 @@ public class Node2Tests {
             .build()
     }
 
-    public class YamlDoc : Node() {
+    class YamlDoc : Node() {
 
         var apiVersion: String by properties
         var kind: String by properties
 
-       // var events: NodeMap by properties
+        // var events: NodeMap by properties
         var events: MutableList<Node> by properties
     }
 
 
-    @Test fun should_serialize() {
+    @Test
+    fun should_serialize() {
         val document = YamlDoc()
         document.apiVersion = "1.0"
         document.kind = "Log"
@@ -143,8 +145,8 @@ public class Node2Tests {
     }
 
 
-    fun String.dump(name: String){
-        val size = name.toList().map {c -> "" }.joinToString("-")
+    fun String.dump(name: String) {
+        val size = name.toList().map { c -> "" }.joinToString("-")
 
         println("--- $name ---")
         println(this)

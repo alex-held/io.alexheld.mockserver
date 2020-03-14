@@ -3,8 +3,7 @@ package io.alexheld.mockserver.domain.models
 import com.fasterxml.jackson.annotation.*
 
 
-
-data class Setup (
+data class Setup(
     @JsonProperty(required = false)
     var id: Int? = null,
 
@@ -18,16 +17,16 @@ data class Setup (
 }
 
 
-public data class Action(
+data class Action(
 
     @JsonProperty(required = false)
     val message: String? = null,
 
-    @JsonProperty(required = false    )
+    @JsonProperty(required = false)
     val statusCode: Int = 404
-)   {
+) {
 
     companion object {
-        public val Default get() = Action("DEFAULT RESPONSE MESSAGE", statusCode = 404)
+        val Default get() = Action("DEFAULT RESPONSE MESSAGE", statusCode = 404)
     }
 }

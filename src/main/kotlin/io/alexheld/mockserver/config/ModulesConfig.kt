@@ -7,7 +7,7 @@ import org.koin.experimental.builder.*
 
 class MockLogger {
 
-    fun log(message: String){
+    fun log(message: String) {
         println("[MOCK]\t\t$message")
     }
 }

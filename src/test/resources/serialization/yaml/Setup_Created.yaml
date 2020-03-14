@@ -1,6 +1,6 @@
 apiVersion: 1
 kind: Log
-type: Setup_Created
+event: Setup_Created
 id: 00000000-0000-0000-0000-000000000000
 timestamp: 1970-01-01T00:00:00Z
 setup:

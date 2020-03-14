@@ -1,18 +1,16 @@
 apiVersion: 2.4
 kind: Log
-type: Match
+event: Match
 id: 00000000-0000-0000-0000-000000000000
 timestamp: 1970-01-01T00:00:00Z
 events:
 - event: Request_Received
   timestamp: 1970-01-01T00:00:00Z
   id: 00000000-0000-0000-0000-000000000000
-  setup:
+  request:
     request:
       method: POST
       path: /some/path
-    action:
-      statusCode: 200
 - event: Request_Matched
   timestamp: 1970-01-01T00:00:00Z
   id: 00000000-0000-0000-0000-000000000000

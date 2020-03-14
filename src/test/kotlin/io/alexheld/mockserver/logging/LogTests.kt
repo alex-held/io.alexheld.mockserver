@@ -1,10 +1,10 @@
 package io.alexheld.mockserver.logging
 
 import io.alexheld.mockserver.domain.models.*
+import io.alexheld.mockserver.serialization.*
 import org.amshove.kluent.*
-import org.apache.logging.log4j.*
 import org.junit.jupiter.api.*
-import java.util.*
+import java.time.*
 
 
 class LogTests {
@@ -13,17 +13,17 @@ class LogTests {
     fun should() {
 
         // Arrange
+       // val log = YamlLog.requestMatched(Log.matched(request = Request(method = "PUT"), setup = Setup(request = Request(method = "PUT"))))
         val log = Log.matched(request = Request(method = "PUT"), setup = Setup(request = Request(method = "PUT")))
 
         // Act
-        val json = log.format()
-        println(json)
+        val yaml = YAMLFormatter.serialize(log)
+        println(yaml)
 
-        val deserializedLog = Log("msadf", LogMessageType.Operation) // Serializer.deserialize<Log>(json)
+        val deserializedLog = YAMLFormatter.getMapper().readValue(yaml, YamlLog::class.java)
 
         // Assert
         deserializedLog.id.shouldNotBeNullOrBlank().length.shouldBeEqualTo(36)
-        deserializedLog.timestamp.before(Date()).shouldBeTrue()
-        deserializedLog.level.shouldBeEqualTo(Level.INFO)
+        Instant.parse(deserializedLog.timestamp).isBefore(Instant.now()).shouldBeTrue()
     }
 }

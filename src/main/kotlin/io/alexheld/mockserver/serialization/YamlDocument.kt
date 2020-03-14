@@ -3,7 +3,6 @@ package io.alexheld.mockserver.serialization
 import com.fasterxml.jackson.annotation.*
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder(value = ["apiVersion", "kind", "type", "id", "timestamp"])
 @JsonRootName("YAML")
 open class YamlDocument(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()) {
 

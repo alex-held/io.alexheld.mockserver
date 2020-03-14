@@ -3,8 +3,10 @@ package io.alexheld.mockserver.logging
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.*
 import io.alexheld.mockserver.domain.models.*
+import io.alexheld.mockserver.serialization.*
 import org.apache.logging.log4j.*
-import org.gradle.internal.impldep.org.joda.time.*
+import org.gradle.internal.impldep.org.eclipse.jgit.errors.*
+import java.time.*
 import java.util.*
 
 
@@ -18,91 +20,110 @@ public enum class LogMessageType(public val type: String) {
     Request_Matched("Request matched"),
     Action_Response("Respond with HttpResponse"),
     Operation("SERVER_CONFIGURATION")
-   /// VERIFICATION, VERIFICATION_FAILED, SERVER_CONFIGURATION,
+    /// VERIFICATION, VERIFICATION_FAILED, SERVER_CONFIGURATION,
 }
 
 @JsonSerialize
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonIgnoreProperties("id", "level",  "requests",  "arguments", "throwable")
-public data class Log(
+@JsonIgnoreProperties("id", "level", "requests", "arguments", "throwable")
+public class Log(val properties: MutableMap<String, Any> = mutableMapOf()) {
 
-    val id: String,
+    constructor(type: LogMessageType) : this(UUID.randomUUID().toString(), type, Instant.now())
 
-    @JsonProperty(required = true)
-    var message: String,
 
-    @JsonProperty(required = true)
-    var type: LogMessageType,
+    constructor(
+        id: String, type: LogMessageType, timestamp: Instant = Instant.now(), loglevel: Level = Level.INFO, request: Request? = null, setup: Setup? = null, throwable:
+        Throwable? = null
+    ) : this(mutableMapOf()) {
+        this.id = id
+        this.event = type
+        this.timestamp = timestamp
+        this.level = loglevel
+        if (request != null) this.request = request
+        if (setup != null) this.setup = setup
+        if (throwable != null) this.throwable = throwable
+    }
 
-    var timestamp: Date,
 
-    var level: Level = Level.ALL,
+    var level: Level = Level.ALL
+    var event: LogMessageType by properties
+    var timestamp: Instant by properties
+    var request: Request by properties
+    var setup: Setup by properties
+    var throwable: Throwable by properties
+    var id: String by properties
 
-    var requests: MutableList<Request> = mutableListOf(),
-
-    val arguments: MutableList<Any?> = mutableListOf(),
-
-    @JsonProperty(required = false)
-    var setup: Setup? = null,
-
-    var throwable: Throwable? = null
-
-)  {
-
-    @JsonCreator
-    constructor(message: String, type: LogMessageType) : this(UUID.randomUUID().toString(), message, type, DateTime.now(DateTimeZone.UTC).toDate(), Level.INFO,  mutableListOf(),
-        mutableListOf())
 
     companion object {
 
-        public fun setupCreated(setup: Setup): Log = Log("successfully created setup", LogMessageType.Setup_Created)
-            .withSetup(setup)
+        public fun setupCreated(setup: Setup): YamlLog = YamlLog(
+            LogMessageType.Setup_Created, mapOf(
+                "setup" to setup
+            )
+        )
 
-        public fun setupDeleted(setup: Setup?): Log {
-            if (setup is Setup)
-                return Log("successfully deleted setup",type = LogMessageType.Setup_Deleted).withSetup(setup)
-            return Log( "no Setup matched for deletion", type = LogMessageType.Setup_Deletion_Failed)
-        }
+        public fun setupDeleted(setup: Setup): YamlLog = YamlLog(
+            LogMessageType.Setup_Deleted, mapOf(
+                "setup" to setup
+            )
+        )
 
-        public fun requestReceived(request: Request): Log = Log("received incoming request", LogMessageType.Request_Received)
-            .withRequests(mutableListOf(request))
+        public fun setupDeletionFailed(): YamlLog = YamlLog(LogMessageType.Setup_Deletion_Failed)
 
-        public fun matched(request: Request, setup: Setup): Log = Log("setup matched", LogMessageType.Request_Matched)
-            .withRequests(mutableListOf(request))
-            .withSetup(setup)
+        public fun requestReceived(request: Request): YamlLog = YamlLog(
+            LogMessageType.Request_Received, mapOf(
+                "request" to request
+            )
+        )
+
+        public fun matched(request: Request, setup: Setup): YamlLog = YamlLog(
+            LogMessageType.Request_Matched, mapOf(
+                "events" to listOf(
+                    YamlLog(
+                        LogMessageType.Request_Received, mapOf(
+                            "request" to request
+                        )
+                    ),
+                    YamlLog(
+                        LogMessageType.Request_Matched, mapOf(
+                            "setup" to setup
+                        )
+                    )
+                )
+            )
+        )
 
 
-        public fun listSetups(): Log = Log("Listing Setups", LogMessageType.Operation)
-        public fun listLogs(): Log = Log("Listing Logs", LogMessageType.Operation)
+        public fun listSetups(): YamlLog = YamlLog(
+            LogMessageType.Operation, mapOf(
+                "operation" to "list",
+                "kind" to "Setup"
+            )
+        )
+
+        public fun listLogs(): YamlLog = YamlLog(
+            LogMessageType.Operation, mapOf(
+                "operation" to "list",
+                "kind" to "Log"
+            )
+        )
+    }
+}
+
+fun Log.toYaml(): YamlLog {
+    return when (event) {
+        LogMessageType.Setup_Created -> YamlLog.setupCreated(this)
+        LogMessageType.Setup_Deleted -> YamlLog.setupDeleted(this)
+        LogMessageType.Request_Matched -> YamlLog.requestMatched(this)
+        LogMessageType.Request_Received -> YamlLog.requestReceived(this)
+        LogMessageType.Action_Response -> YamlLog.actionResponse(this)
+        else -> throw NotSupportedException("LogType $event is not yet supported")
     }
 }
 
 
-
-fun Log.format(): String {
-    return when (type) {
-        LogMessageType.Request_Matched -> LogFormatter.formatLogMessage("returning response:{}for request:{}", arrayOf(setup!!.action, requests.first()))
-        LogMessageType.Setup_Created -> LogFormatter.formatLogMessage("created setup:{}", arrayOf(setup!!))
-        LogMessageType.Setup_Deleted -> LogFormatter.formatLogMessage("deleted setup:{}", arrayOf(setup!!))
-        LogMessageType.Setup_Deletion_Failed -> LogFormatter.formatLogMessage("no matching setup to delete found for:{}", arrayOf(setup!!))
-        LogMessageType.Request_Received -> LogFormatter.formatLogMessage("received request:{}", arrayOf(requests.first()))
-        LogMessageType.Operation -> LogFormatter.formatLogMessage("operation", arrayOf())
-        LogMessageType.Action_Response -> TODO()
-      //  LogMessageType.CLEARED -> message!!
-        //else -> ""
-    }
-}
-
-
-
-
-
-
-fun Log.hasMessage(): Boolean = this.message.isBlank()
-
-
-fun Log.withRequests(requests: MutableList<Request>): Log {
-    this.requests = requests
+fun Log.withRequest(request: Request): Log {
+    this.request = request
     return this
 }
 
@@ -116,13 +137,7 @@ fun Log.withLogLevel(logLevel: Level): Log {
     return this
 }
 
-
-fun Log.withThrowable(throwable: Throwable?): Log {
+fun Log.withThrowable(throwable: Throwable): Log {
     this.throwable = throwable
-    return this
-}
-
-fun Log.withDateTime(dateTime: DateTime): Any {
-    this.timestamp = dateTime.toDate()
     return this
 }

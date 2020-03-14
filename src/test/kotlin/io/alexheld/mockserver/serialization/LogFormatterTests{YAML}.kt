@@ -41,7 +41,7 @@ public class LogFormatterTests {
         val expectedYaml = readYaml("Setup_Created")
 
         // Act
-        val log = YAMLFormatter.getMapper().readValue(expectedYaml, YamlLog::class.java)
+        val log = YAMLFormatter.getMapper().readValue(expectedYaml, YamlDocument::class.java)
         val yaml = YAMLFormatter.serialize(log)
 
         // Assert
@@ -76,15 +76,15 @@ public class LogFormatterTests {
 
         val matched = LogNode()
         matched.timestamp =  Instant.EPOCH.toString()
-        matched.type = LogMessageType.Request_Matched.type
+        matched.event = LogMessageType.Request_Matched.type
         matched.id ="00000000-0000-0000-0000-000000000000"
 
-        val test = YamlLog()
+        val test = YamlDocument()
         test.apiVersion = "1.0"
         //test.kind ="Log"
         test.id ="00000000-0000-0000-0000-000000000000"
         test.timestamp = Instant.EPOCH.toString()
-        test.events = mutableListOf(matched)
+        test.properties["events"] = mutableListOf(matched)
 
         val mapper = YAMLMapper
             .builder()
@@ -101,7 +101,7 @@ public class LogFormatterTests {
 
 
 
-    fun YamlDocument.dump(){
+    fun Node.dump(){
         val yaml = YAMLFormatter.serialize(this)
         println(yaml)
     }

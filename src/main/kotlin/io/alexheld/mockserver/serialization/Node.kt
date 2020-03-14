@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.*
 
 @JsonSerialize(using = NodeSerializer::class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonPropertyOrder("kind", "event", "timestamp", "id")
 public open class Node(@JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf()) {
 
     companion object {

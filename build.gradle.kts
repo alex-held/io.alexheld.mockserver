@@ -66,10 +66,10 @@ dependencies {
     //  implementation("org.apache.logging.log4j:log4j-api:2.11.0")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.0.pr3")
+    implementation("org.snakeyaml:snakeyaml-engine:2.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.10.3")
-
 
     // TEST
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")

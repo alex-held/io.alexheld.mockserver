@@ -1,7 +1,7 @@
 package io.alexheld.mockserver.testUtil
 
 fun String.dump(name: String) {
-    val size = name.toList().map { c -> "" }.joinToString("-")
+    val size = name.toList().joinToString("-") { _ -> "" }
 
     println("--- $name ---")
     println(this)

@@ -10,7 +10,10 @@ import io.alexheld.mockserver.domain.models.*
 @JsonRootName("YAML")
 open class YamlDocument(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()) {
 
-    var apiVersion: ApiVersion by properties
+    // @YamlTagAnnotation("apiVersion")
+    var apiVersion: String by properties
+
+    // @YamlTagAnnotation("kind")
     var kind: String by properties
 }
 
@@ -61,20 +64,15 @@ class ApiVersion(@JsonValue var version: String) {
 
 class YamlLogDocument(map: Map<String, Any> = mapOf()) : YamlDocument(map) {
 
+    //@YamlTagAnnotation("id")
     var id: String by properties
-    var timestamp: String by properties
 
+    // @YamlTagAnnotation("timestamp")
+    var timestamp: String by properties
 
     @JsonCreator
     constructor(
         apiVersion: String,
-        id: String,
-        timestamp: String,
-        map: Map<String, Any> = mapOf()
-    ) : this(ApiVersion(apiVersion), id, timestamp, map)
-
-    constructor(
-        apiVersion: ApiVersion,
         id: String,
         timestamp: String,
         map: Map<String, Any> = mapOf()
@@ -85,9 +83,7 @@ class YamlLogDocument(map: Map<String, Any> = mapOf()) : YamlDocument(map) {
         this.kind = "Log"
     }
 
-    constructor() : this(ApiVersion.latest, Generator.getId(), Generator.getTimestampString())
-    constructor(apiVersion: ApiVersion) : this(apiVersion.version, Generator.getId(), Generator.getTimestampString())
-
+    constructor() : this("1.0", Generator.getId(), Generator.getTimestampString())
 
     companion object {
 

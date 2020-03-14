@@ -13,8 +13,7 @@ class LogTests {
     fun should() {
 
         // Arrange
-       // val log = YamlLog.requestMatched(Log.matched(request = Request(method = "PUT"), setup = Setup(request = Request(method = "PUT"))))
-        val log = Log.matched(request = Request(method = "PUT"), setup = Setup(request = Request(method = "PUT")))
+        val log = YamlLog.matched(request = Request(method = "PUT"), setup = Setup(request = Request(method = "PUT")))
 
         // Act
         val yaml = YAMLFormatter.serialize(log)

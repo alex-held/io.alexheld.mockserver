@@ -32,7 +32,7 @@ object Serializer {
 
 
 
-    fun<TSerializable: MockSerializable> serialize(log: TSerializable): String = logWriter.writeValueAsString(log)
-    fun<TSerializable: MockSerializable> deserialize(json: String): TSerializable = logReader.readValue<TSerializable>(json)!!
+    fun<TSerializable> serialize(log: TSerializable): String = logWriter.writeValueAsString(log)
+    fun<TSerializable> deserialize(json: String): TSerializable = logReader.readValue<TSerializable>(json)!!
 }
 

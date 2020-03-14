@@ -1,7 +1,6 @@
 package io.alexheld.mockserver.domain.models
 
 import com.fasterxml.jackson.annotation.*
-import io.alexheld.mockserver.serialization.*
 
 
 
@@ -14,7 +13,7 @@ data class Setup (
 
     @JsonProperty()
     val action: Action = Action.Default
-) : MockSerializable{
+) {
     constructor() : this(null, null)
 }
 
@@ -26,7 +25,7 @@ public data class Action(
 
     @JsonProperty(required = false    )
     val statusCode: Int = 404
-) : MockSerializable  {
+)   {
 
     companion object {
         public val Default get() = Action("DEFAULT RESPONSE MESSAGE", statusCode = 404)

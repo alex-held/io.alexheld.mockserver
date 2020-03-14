@@ -1,9 +1,9 @@
 package io.alexheld.mockserver.serialization
 
-import com.fasterxml.jackson.dataformat.yaml.*
-import com.fasterxml.jackson.module.kotlin.*
+import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.testUtil.*
+import org.amshove.kluent.*
 import org.junit.jupiter.api.*
 import java.io.*
 import java.time.*
@@ -26,7 +26,7 @@ class LogFormatterTests {
         val expectedYaml = readYaml("Request_Matched")
 
         // Act
-        val log = YAMLFormatter.getMapper().readValue(expectedYaml, YamlLog::class.java)
+        val log = YAMLFormatter.getMapper().readValue(expectedYaml, Log::class.java)
         val yaml = YAMLFormatter.serialize(log)
 
         // Assert
@@ -51,28 +51,21 @@ class LogFormatterTests {
     @Test
     fun `should format logtemplate`() {
 
-        val document = YamlLog(
+        val expectedLog = YamlLogDocument(
             mapOf(
                 "apiVersion" to "1.0",
                 "kind" to "Log",
                 "type" to LogMessageType.Setup_Created.type,
                 "id" to "134",
-                "timestamp" to Instant.EPOCH.toString(),
-                "events" to listOf(
-                    LogNode(
-                        mapOf(
-                            "type" to LogMessageType.Request_Received.type,
-                            "id" to "00000000-0000-0000-0000-000000000000",
-                            "timestamp" to Instant.EPOCH.toString()
-                        )
-                    )
-                )
+                "timestamp" to Instant.EPOCH.toString()
             )
-        )
+        ).withNamed("events", Log.requestReceived(Request(method = "GET", path = "/api/some/path")))
 
-        // 1. Request
-        document.dump()
+        val yaml = YAMLFormatter.serialize(expectedLog)
+        yaml.dump("yaml")
 
+        val log = YAMLFormatter.deserialize<YamlLogDocument>(yaml)
+        log.apiVersion.version.shouldBeEqualTo("1.0")
 
     }
 
@@ -80,80 +73,27 @@ class LogFormatterTests {
     @Test
     fun `should add child`() {
 
-        val matched = LogNode()
-        matched.timestamp = Instant.EPOCH.toString()
-        matched.event = LogMessageType.Request_Matched.type
-        matched.id = "00000000-0000-0000-0000-000000000000"
-
-        val test = YamlDocument()
-        test.apiVersion = "1.0"
-        //test.kind ="Log"
-        test.id = "00000000-0000-0000-0000-000000000000"
-        test.timestamp = Instant.EPOCH.toString()
-        test.properties["events"] = mutableListOf(matched)
-
-        val mapper = YAMLMapper
-            .builder()
-            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
-            .build()
-            .registerKotlinModule()
-
-        val yaml = mapper.writeValueAsString(test)
-
-        println(yaml)
-    }
+        // Arrange
+        Generator.enableDebugGeneration = true
+        val expectedLog = YamlLogDocument()
+            .withNamed("events", Log.requestReceived(Request(path = "/api/a/b")))
+            .withNamed(
+                "events", Log.requestMatched(
+                    Setup(
+                        request = Request(path = "/api/a/b", method = "OPTIONS"),
+                        action = Action("hello world")
+                    )
+                )
+            )
+            .withNamed("events", Log.action(Action("hello world")))
 
 
-    fun Node.dump() {
-        val yaml = YAMLFormatter.serialize(this)
-        println(yaml)
-    }
-
-
-}
-
-
-class Node2Tests {
-
-    companion object {
-        val MAPPER: YAMLMapper = YAMLMapper
-            .builder()
-            .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
-            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
-            .build()
-    }
-
-    class YamlDoc : Node() {
-
-        var apiVersion: String by properties
-        var kind: String by properties
-
-        // var events: NodeMap by properties
-        var events: MutableList<Node> by properties
-    }
-
-
-    @Test
-    fun should_serialize() {
-        val document = YamlDoc()
-        document.apiVersion = "1.0"
-        document.kind = "Log"
-        document.events = mutableListOf(Node(mutableMapOf(Pair("id", "1234"))))
-        val yaml = MAPPER.writeValueAsString(document)
-
+        // Act
+        val yaml = YAMLFormatter.serialize(expectedLog)
         yaml.dump("yaml")
+        val log = YAMLFormatter.deserialize<YamlLogDocument>(yaml)
+
+        // Assert
+        log.id.shouldBeEqualTo(Generator.getId())
     }
-
-
-    fun String.dump(name: String) {
-        val size = name.toList().map { c -> "" }.joinToString("-")
-
-        println("--- $name ---")
-        println(this)
-        println("----$size----")
-    }
-
 }
-
-
-

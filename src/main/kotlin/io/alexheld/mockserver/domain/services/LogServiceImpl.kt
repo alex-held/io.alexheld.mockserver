@@ -8,11 +8,11 @@ import org.apache.logging.log4j.kotlin.*
 
 class LogServiceImpl(private val logRepository: LogRepository) : LogService {
 
-    override fun list(): List<YamlLog> = logRepository.list()
-    override fun delete(id: String): YamlLog? = logRepository.delete(id)
-    override fun add(log: YamlLog) = logRepository.add(log)
+    override fun list(): List<Log> = logRepository.list()
+    override fun delete(id: String): Log? = logRepository.delete(id)
+    override fun add(log: Log) = logRepository.add(log)
 
-    fun tryLog(log: YamlLog, level: Level = Level.INFO): String? {
+    fun tryLog(log: Log, level: Level = Level.INFO): String? {
         if (MockConfig.LOG_LEVEL <= level)
             return null
         return log.writeLogMessage(level)
@@ -20,7 +20,7 @@ class LogServiceImpl(private val logRepository: LogRepository) : LogService {
 }
 
 
-fun YamlLog.writeLogMessage(level: Level = Level.INFO): String {
+fun Log.writeLogMessage(level: Level = Level.INFO): String {
     val formatted = YAMLFormatter.serialize(this)
     logger().log(level, formatted)
     return formatted

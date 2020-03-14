@@ -22,7 +22,7 @@ fun Route.logs(logService: LogService) {
 
             if (id is String) {
                 val deleted = logService.delete(id)
-                if (deleted is YamlLog)
+                if (deleted is Log)
                     call.respond(HttpStatusCode.OK, deleted)
             } else call.respond(HttpStatusCode.NoContent)
         }

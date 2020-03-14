@@ -11,7 +11,7 @@ class LogFormatTests {
     @Test
     fun `should format setup created`() {
         // Arrange
-        val log = YamlLog.setupCreated(setup = Setup(request = Request(method = "PUT", path = "/api/cars"), action = Action(message = "response message")))
+        val log = Log.setupCreated(setup = Setup(request = Request(method = "PUT", path = "/api/cars"), action = Action(message = "response message")))
 
         // Act
         val formatted = YAMLFormatter.serialize(log)
@@ -23,7 +23,7 @@ class LogFormatTests {
     @Test
     fun `should format received request`() {
         // Arrange
-        val log = YamlLog.requestReceived(Request(method = "PUT", path = "/api/cars"))
+        val log = Log.requestReceived(Request(method = "PUT", path = "/api/cars"))
 
         // Act
         val formatted = YAMLFormatter.serialize(log)

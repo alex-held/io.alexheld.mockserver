@@ -13,13 +13,16 @@ class LogTests {
     fun should() {
 
         // Arrange
-        val log = YamlLog.matched(request = Request(method = "PUT"), setup = Setup(request = Request(method = "PUT")))
+        val log = YamlLogDocument.match(
+            Request(method = "PUT"),
+            Setup(request = Request(method = "PUT"))
+        )
 
         // Act
         val yaml = YAMLFormatter.serialize(log)
         println(yaml)
 
-        val deserializedLog = YAMLFormatter.getMapper().readValue(yaml, YamlLog::class.java)
+        val deserializedLog = YAMLFormatter.getMapper().readValue(yaml, Log::class.java)
 
         // Assert
         deserializedLog.id.shouldNotBeNullOrBlank().length.shouldBeEqualTo(36)

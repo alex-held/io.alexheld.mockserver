@@ -4,7 +4,6 @@ import io.alexheld.mockserver.config.*
 import io.alexheld.mockserver.domain.repositories.*
 import io.alexheld.mockserver.serialization.*
 import org.apache.logging.log4j.*
-import org.apache.logging.log4j.kotlin.*
 
 class LogServiceImpl(private val logRepository: LogRepository) : LogService {
 
@@ -20,8 +19,10 @@ class LogServiceImpl(private val logRepository: LogRepository) : LogService {
 }
 
 
+
 fun Log.writeLogMessage(level: Level = Level.INFO): String {
-    val formatted = YAMLFormatter.serialize(this)
+    throw NotImplementedError()
+    /*val formatted = YAMLFormatter.serialize(this)
     logger().log(level, formatted)
-    return formatted
+    return formatted*/
 }

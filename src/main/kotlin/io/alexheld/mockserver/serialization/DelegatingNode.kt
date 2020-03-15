@@ -3,6 +3,8 @@ package io.alexheld.mockserver.serialization
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.annotation.*
 import org.gradle.internal.impldep.org.eclipse.jgit.errors.*
+import kotlin.collections.set
+
 
 @Suppress("UNCHECKED_CAST")
 @JsonSerialize(using = NodeSerializer::class)

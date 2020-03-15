@@ -1,4 +1,5 @@
 package io.alexheld.mockserver.serialization
+/*
 
 import io.alexheld.mockserver.documents.*
 import io.alexheld.mockserver.domain.models.*
@@ -44,7 +45,7 @@ class LogFormatterTests {
     }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `should format Setup_Created`() {
 
         // Arrange
@@ -58,7 +59,7 @@ class LogFormatterTests {
         yaml.shouldBeEqualWhenTrimmed(expectedYaml)
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `should format logtemplate`() {
 
         val expectedLog = YamlLogDocument(
@@ -80,7 +81,7 @@ class LogFormatterTests {
     }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `should add child`() {
 
         // Arrange
@@ -108,7 +109,7 @@ class LogFormatterTests {
     }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `should serialize YamlFile`() {
 
         // Arrange
@@ -148,7 +149,8 @@ class LogFormatterTests {
 
 
         // Act
-   /*     val sb = StringWriter()
+   */
+/*     val sb = StringWriter()
         val writer = YAMLMapper.builder()
             .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
             .enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS)
@@ -165,7 +167,8 @@ class LogFormatterTests {
 
         val yaml = sb.toString()
         yaml.dump("YamlSetupDocument")
-*/
+*//*
+
         //val log = YAMLFormatter.deserialize<YamlLogDocument>(yaml)
 
         // Assert
@@ -173,13 +176,12 @@ class LogFormatterTests {
     }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun `should serialize Document`() {
 
         // Arrange
         Generator.enableDebugGeneration = true
-        val yamlLogDocument = YamlLogDocument
-            .match(
+        val yamlLogDocument = YamlLogDocument.match(
                 Request(path = "/api/some/path"), Setup(
                     request = Request(path = "/api/some/path", method = "OPTIONS"),
                     action = Action("hello world")
@@ -200,8 +202,8 @@ class LogFormatterTests {
         options.indicatorIndent = 2
         options.indent = 4
         options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        options.isExplicitEnd = true
         options.defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN
+
 
         val y = Yaml(NullRepresenter(), options)
         val yaml = y.dumpAll(data.iterator())
@@ -234,13 +236,15 @@ class LogFormatterTests {
 
         writer.writer.close()
 
-        /**
-        val yaml= Dump(settings).dumpAllToString( iterator {
-        for (m in maps)
-        yield(m)
-        }
-        )
-         */
+        */
+/**
+val yaml= Dump(settings).dumpAllToString( iterator {
+for (m in maps)
+yield(m)
+}
+)
+ *//*
+
 
         val yaml = writer.writer.toString()
         yaml.dump("Document<YamlLogDocument>")
@@ -252,11 +256,13 @@ class LogFormatterTests {
         .setIndent(indicatorIndent + 2)
         .setIndicatorIndent(indicatorIndent)
         .setDefaultFlowStyle(FlowStyle.BLOCK)
-        /* .setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED)
+        */
+/* .setDefaultScalarStyle(ScalarStyle.SINGLE_QUOTED)
          .setUseUnicodeEncoding(true)
          .setBestLineBreak("\n")
          .setNonPrintableStyle(NonPrintableStyle.ESCAPE)
-         .setExplicitEnd(true)*/
+         .setExplicitEnd(true)*//*
+
 
         .build()
 
@@ -279,3 +285,4 @@ inline fun <reified TNode : DelegatingNode> getDelegatedValues(target: TNode): M
 }
 
 
+*/

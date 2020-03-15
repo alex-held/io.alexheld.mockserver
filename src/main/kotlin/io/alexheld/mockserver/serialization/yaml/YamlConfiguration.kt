@@ -1,4 +1,5 @@
 package io.alexheld.mockserver.serialization.yaml
+/*
 
 import io.alexheld.mockserver.serialization.*
 import org.snakeyaml.engine.v2.api.*
@@ -9,7 +10,6 @@ import org.snakeyaml.engine.v2.representer.*
 import java.util.*
 
 object YamlConfiguration {
-
 
     private fun initModelMap() {
         val classLoader = YamlConfiguration::class.java.classLoader
@@ -48,9 +48,9 @@ object YamlConfiguration {
     }
 
 
-    fun buildDump(): Dump = Dump(dumpSettings, buildRepresenter())
+    fun buildDump(): Dump = Dump(dumpSettings)
 
-    val dumpSettings: DumpSettings = DumpSettings.builder()
+    private val dumpSettings: DumpSettings = DumpSettings.builder()
         .setCanonical(false)
         .setExplicitEnd(true)
         .setIndent(indent + 2)
@@ -61,8 +61,8 @@ object YamlConfiguration {
 
     val loadSettings: LoadSettings = LoadSettings.builder()
         .setAllowRecursiveKeys(true)
-        .setMaxAliasesForCollections(1)
-        .setUseMarks(false)
+        //.setMaxAliasesForCollections(1)
+        //.setUseMarks(false)
         .build()
 
 
@@ -70,3 +70,4 @@ object YamlConfiguration {
         return StandardRepresenter(dumpSettings)
     }
 }
+*/

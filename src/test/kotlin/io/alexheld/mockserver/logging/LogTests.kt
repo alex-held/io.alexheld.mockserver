@@ -1,4 +1,5 @@
 package io.alexheld.mockserver.logging
+/*
 
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.serialization.*
@@ -29,3 +30,4 @@ class LogTests {
         Instant.parse(deserializedLog.timestamp).isBefore(Instant.now()).shouldBeTrue()
     }
 }
+*/

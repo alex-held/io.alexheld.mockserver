@@ -1,25 +1,20 @@
 package io.alexheld.mockserver.serialization
 
-import com.fasterxml.jackson.annotation.*
-import com.fasterxml.jackson.dataformat.yaml.*
-import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
-import org.apache.logging.log4j.kotlin.*
-import org.yaml.snakeyaml.*
-import org.yaml.snakeyaml.introspector.*
-import org.yaml.snakeyaml.nodes.*
-import org.yaml.snakeyaml.representer.*
-import java.text.*
+import org.gradle.internal.impldep.org.yaml.snakeyaml.*
+import org.gradle.internal.impldep.org.yaml.snakeyaml.introspector.*
+import org.gradle.internal.impldep.org.yaml.snakeyaml.nodes.*
+import org.gradle.internal.impldep.org.yaml.snakeyaml.representer.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.jvm.java
 import kotlin.reflect.full.*
 
-
+/*
 inline fun <reified T> YAMLFormatter.deserialize(yaml: String): T {
     return getMapper().readValue(yaml, T::class.java) as T
-}
+}*/
 
 @kotlin.annotation.Target(AnnotationTarget.TYPE, AnnotationTarget.TYPEALIAS, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
@@ -29,8 +24,8 @@ fun YamlTagAnnotation.getTag(): Tag {
     return Tag(defaultTag)
 }
 
-fun YamlTagAnnotation.getTagV2(): org.snakeyaml.engine.v2.nodes.Tag {
-    return org.snakeyaml.engine.v2.nodes.Tag(Node::class.java)
+fun YamlTagAnnotation.getTagV2(): Tag {
+    return Tag(Node::class.java)
 }
 
 
@@ -50,7 +45,6 @@ class LogRepresenter : Representer {
     constructor(dumperOptions: DumperOptions = DumperOptions()) : super() {
 
         this.defaultFlowStyle = dumperOptions.defaultFlowStyle
-        this.defaultScalarStyle = dumperOptions.defaultScalarStyle
 
         addClassTag(LinkedList::class.java, Tag.MAP)
         addClassTag(HashMap::class.java, Tag.MAP)
@@ -81,8 +75,8 @@ class LogRepresenter : Representer {
             val customPropertyTag = if (memberValue == null) null else classTags[memberValue.javaClass]
             val tuple = representJavaBeanProperty(javaBean, property, memberValue, customPropertyTag)
             value.add(tuple)
-
         }
+
         return super.representJavaBean(properties, javaBean)
     }
 
@@ -139,12 +133,10 @@ class LogRepresenter : Representer {
     }
 
     override fun setPropertyUtils(propertyUtils: PropertyUtils?) {
-        propertyUtils?.isSkipMissingProperties = true
         propertyUtils?.setBeanAccess(BeanAccess.FIELD)
-        propertyUtils?.isAllowReadOnlyProperties = true
     }
 
-    override fun checkGlobalTag(property: Property?, node: org.yaml.snakeyaml.nodes.Node?, `object`: Any?) {
+    override fun checkGlobalTag(property: Property?, node: Node?, `object`: Any?) {
         super.checkGlobalTag(property, node, `object`)
     }
 
@@ -207,6 +199,7 @@ class LogRepresenter : Representer {
 */
 }
 
+/*
 
 object YAMLFormatter : Logging {
 
@@ -229,3 +222,4 @@ object YAMLFormatter : Logging {
 
     fun <T> serialize(serializable: T): String = getMapper().writeValueAsString(serializable)
 }
+*/

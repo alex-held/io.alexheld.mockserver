@@ -1,14 +1,11 @@
 package io.alexheld.mockserver.serialization
 
 import com.fasterxml.jackson.annotation.*
-import com.fasterxml.jackson.core.*
-import com.fasterxml.jackson.databind.*
-import com.fasterxml.jackson.databind.annotation.*
 import io.alexheld.mockserver.domain.models.*
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonRootName("YAML")
-open class YamlDocument(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()) {
+open class YamlDocument(map: Map<String, Any> = mapOf()) : DelegatingNode(map.toMutableMap()) {
 
     // @YamlTagAnnotation("apiVersion")
     var apiVersion: String by properties
@@ -17,17 +14,20 @@ open class YamlDocument(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap
     var kind: String by properties
 }
 
+/*
 
 class ApiVersionSerializer : JsonSerializer<ApiVersion>() {
-    /**
-     * Method that can be called to ask implementation to serialize
-     * values of type this serializer handles.
-     *
-     * @param value Value to serialize; can **not** be null.
-     * @param gen Generator used to output resulting Json content
-     * @param serializers Provider that can be used to get serializers for
-     * serializing Objects value contains, if any.
-     */
+    */
+/**
+ * Method that can be called to ask implementation to serialize
+ * values of type this serializer handles.
+ *
+ * @param value Value to serialize; can **not** be null.
+ * @param gen Generator used to output resulting Json content
+ * @param serializers Provider that can be used to get serializers for
+ * serializing Objects value contains, if any.
+ *//*
+
     override fun serialize(value: ApiVersion?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         gen?.writeString(value?.version)
     }
@@ -60,6 +60,7 @@ class ApiVersion(@JsonValue var version: String) {
 
 
 }
+*/
 
 
 class YamlLogDocument(map: Map<String, Any> = mapOf()) : YamlDocument(map) {

@@ -3,7 +3,7 @@ package io.alexheld.mockserver.serialization
 import com.fasterxml.jackson.core.*
 import com.fasterxml.jackson.databind.*
 
-class NodeSerializer : JsonSerializer<Node>() {
+class NodeSerializer : JsonSerializer<DelegatingNode>() {
 
     /**
      * Method that can be called to ask implementation to serialize
@@ -14,7 +14,7 @@ class NodeSerializer : JsonSerializer<Node>() {
      * @param serializers Provider that can be used to get serializers for
      * serializing Objects value contains, if any.
      */
-    override fun serialize(value: Node?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+    override fun serialize(value: DelegatingNode?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         if (value == null) return
 
         if (value.isAtomic()) {

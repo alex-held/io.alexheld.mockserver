@@ -207,6 +207,7 @@ class LogRepresenter : Representer {
 */
 }
 
+
 object YAMLFormatter : Logging {
 
     fun getMapper(): YAMLMapper {

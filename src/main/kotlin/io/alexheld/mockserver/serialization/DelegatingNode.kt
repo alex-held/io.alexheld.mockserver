@@ -8,7 +8,7 @@ import org.gradle.internal.impldep.org.eclipse.jgit.errors.*
 @JsonSerialize(using = NodeSerializer::class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("kind", "event", "timestamp", "id")
-open class Node(@JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf()) {
+open class DelegatingNode(@JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf()) {
 
     companion object {
         const val ScalarValueKey: String = "<<SCALAR_VALUE>>"
@@ -30,16 +30,16 @@ open class Node(@JsonIgnore val properties: MutableMap<String, Any> = mutableMap
 }
 
 
-fun <TNode : Node> TNode.toMap(): MutableMap<String, Any> {
+fun <TNode : DelegatingNode> TNode.toMap(): MutableMap<String, Any> {
     val map = mutableMapOf<String, Any>()
 
     for (entry in properties) {
-        if (entry.value !is Node)
+        if (entry.value !is DelegatingNode)
             map[entry.key] = entry.value
-        else if (entry.value is Node && (entry.value as Node).isAtomic())
-            map[entry.key] = (entry.value as Node).getAtomicValue()
+        else if (entry.value is DelegatingNode && (entry.value as DelegatingNode).isAtomic())
+            map[entry.key] = (entry.value as DelegatingNode).getAtomicValue()
         else {
-            val innerProperties = (entry.value as Node).toMap()
+            val innerProperties = (entry.value as DelegatingNode).toMap()
             map[entry.key] = innerProperties
         }
     }
@@ -48,7 +48,7 @@ fun <TNode : Node> TNode.toMap(): MutableMap<String, Any> {
 
 
 @JsonIgnore
-fun <TNode : Node> TNode.withNamed(key: String, node: Node): TNode {
+fun <TNode : DelegatingNode> TNode.withNamed(key: String, node: DelegatingNode): TNode {
 
     if (properties[key] == null) {
         properties[key] = mutableListOf(node)

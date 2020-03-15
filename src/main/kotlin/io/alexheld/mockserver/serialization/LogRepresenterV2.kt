@@ -1,11 +1,5 @@
 package io.alexheld.mockserver.serialization
 
-import org.snakeyaml.engine.v2.api.*
-import org.snakeyaml.engine.v2.representer.*
-
-
-class CustomRepresenter(settings: DumpSettings) : StandardRepresenter(settings)
-
 
 /*
 

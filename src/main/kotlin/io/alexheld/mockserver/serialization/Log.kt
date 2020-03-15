@@ -30,7 +30,7 @@ object Generator {
 }
 
 
-class Log(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()) {
+class Log(map: Map<String, Any> = mapOf()) : DelegatingNode(map.toMutableMap()) {
 
     constructor(type: LogMessageType, properties: Map<String, Any> = mapOf()) : this(properties) {
         id = Generator.getId()
@@ -42,7 +42,7 @@ class Log(map: Map<String, Any> = mapOf()) : Node(map.toMutableMap()) {
     var id: String by properties
     var timestamp: String by properties
     var event: LogMessageType by properties
-    var events: MutableList<Node> by properties
+    var events: MutableList<DelegatingNode> by properties
 
     companion object {
 

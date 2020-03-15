@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.core.*
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.annotation.*
-import com.fasterxml.jackson.dataformat.yaml.*
 import io.alexheld.mockserver.serialization.*
 
 
@@ -29,7 +28,7 @@ class DocumentSerializer : JsonSerializer<Document>() {
     override fun serialize(document: Document?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         if (document == null) throw UnsupportedOperationException("Document cannot be <null>!")
 
-        val y = gen as YAMLGenerator
+        val y = gen as JsonGenerator
         val mapper = YAMLFormatter.getMapper()
 
 

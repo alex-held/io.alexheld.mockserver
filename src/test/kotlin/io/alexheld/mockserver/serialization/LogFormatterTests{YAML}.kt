@@ -1,32 +1,19 @@
 package io.alexheld.mockserver.serialization
 
-import com.fasterxml.jackson.dataformat.yaml.*
-import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.documents.*
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.testUtil.*
-import kotlinx.io.StringWriter
 import org.amshove.kluent.*
-import org.apache.tools.ant.util.*
 import org.gradle.internal.impldep.org.bouncycastle.util.Iterable
 import org.junit.jupiter.api.*
 import org.snakeyaml.engine.v2.api.*
 import org.snakeyaml.engine.v2.common.*
 import org.snakeyaml.engine.v2.representer.*
 import org.yaml.snakeyaml.*
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.introspector.*
-import org.yaml.snakeyaml.nodes.*
-import org.yaml.snakeyaml.nodes.Tag
-import org.yaml.snakeyaml.resolver.*
 import java.io.*
-import java.lang.reflect.Array
 import java.time.*
 import java.util.*
-import java.util.regex.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.reflect.full.*
 
@@ -161,7 +148,7 @@ class LogFormatterTests {
 
 
         // Act
-        val sb = StringWriter()
+   /*     val sb = StringWriter()
         val writer = YAMLMapper.builder()
             .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
             .enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS)
@@ -178,7 +165,7 @@ class LogFormatterTests {
 
         val yaml = sb.toString()
         yaml.dump("YamlSetupDocument")
-
+*/
         //val log = YAMLFormatter.deserialize<YamlLogDocument>(yaml)
 
         // Assert
@@ -200,130 +187,27 @@ class LogFormatterTests {
             )
 
         // Act
-        val map = yamlLogDocument.toMap()
-        val maps = mutableListOf(map, map, map)
+        val map = yamlLogDocument
+        val maps = listOf(map, map, map)
 
+        formatV1(maps)
+    }
+
+    fun formatV1(data: List<YamlLogDocument>) {
 
         val options = DumperOptions()
         options.isAllowUnicode = true
         options.indicatorIndent = 2
         options.indent = 4
-        options.isPrettyFlow = true
         options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        options.isExplicitStart = true
         options.isExplicitEnd = true
         options.defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN
 
-
-        val presenter = LogRepresenter()
-        presenter.addClassTag(Log::class.java, Tag.MAP)
-        presenter.addClassTag(Node::class.java, Tag.MAP)
-        presenter.addClassTag(Setup::class.java, Tag.MAP)
-        presenter.addClassTag(Request::class.java, Tag.MAP)
-        presenter.addClassTag(LinkedHashMap::class.java, Tag.MAP)
-        presenter.addClassTag(LinkedHashSet::class.java, Tag.MAP)
-        presenter.addClassTag(LinkedHashtable::class.java, Tag.MAP)
-        presenter.addClassTag(HashMap::class.java, Tag.MAP)
-        presenter.addClassTag(ArrayList::class.java, Tag.MAP)
-        presenter.addClassTag(Array::class.java, Tag.MAP)
-
-        val loader = LoaderOptions()
-        loader.isAllowDuplicateKeys = false
-        loader.isWrappedToRootException = true
-
-        val y = Yaml(Constructor(Node::class.java), presenter, options, loader, LogResolver())
-        y.setBeanAccess(BeanAccess.FIELD)
-        y.addImplicitResolver(Tag.MAP, Pattern.compile("XXXXXXXX"), null)
-
-        val yaml = y.dumpAll(iterator {
-            for (m in maps)
-                yield(m)
-        })
+        val y = Yaml(NullRepresenter(), options)
+        val yaml = y.dumpAll(data.iterator())
 
         yaml.dump("YamlSetupDocument")
-
-
-        // writer.close()
-
-
-/*
-
-        val composer = Composer(ParserImpl(ScannerImpl(StreamReader(Reader.nullReader(), loadSettings)),loadSettings), loadSettings)
-        composer.forEachRemaining{ node -> node.anchor.map { a -> println("anchor= ${a.value}") } }
-*/
-
-        /*
-
-
-        val represent = LogRepresenter()
-        represent.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-
-        val loaded = ParserImpl(Scanner(readYaml("Request_Matched")), LoadSettingsBuilder()
-            .setAllowDuplicateKeys(false)
-            .setAllowRecursiveKeys(true)
-            .setCustomProperty(SettingKey()) )
-            .setScalarResolver{ tag, implicit -> if(tag == "log")
-            .build())
-
-
-            val yaml= Dump(settings).dumpAllToString( iterator {
-            for (m in maps)
-                yield(m)
-        })
-
-        -----
-
-
-        val y = Yaml(CustomClassLoaderConstructor(Log::class.java, ClassLoader.getSystemClassLoader()),represent, options, resolver)
-        y.setBeanAccess(BeanAccess.FIELD)
-
-        val options = DumperOptions()
-        options.isAllowUnicode = true
-        options.indicatorIndent = 2
-        options.indent = 4
-        options.isCanonical = false
-        options.defaultScalarStyle = DumperOptions.ScalarStyle.SINGLE_QUOTED
-
-
-
-        val yaml= y.dumpAll( iterator {
-            for (m in maps)
-                yield(m)
-        })
-        */
-
-        // writer.close()
-
-
-        /*
-         val sb = StringWriter()
-            val writer = YAMLFormatter.getMapper()
-                .writer()
-            writeMap(map, writer, sb)
-           */
-
-
-        //val yaml = YAMLFormatter.serialize(map)
-
-
-        //val log = YAMLFormatter.deserialize<YamlLogDocument>(yaml)
-
-        // Assert
-        //log.id.shouldBeEqualTo(Generator.getId())
-
-
-/*
-        val data: MutableMap<String, Any> = HashMap()
-        data["name"] = "Silenthand Olleander"
-        data["race"] = "Human"
-        data["traits"] = arrayOf("ONE_HAND", "ONE_EYE")
-
-        val representer = Representer()
-        val options = DumperOptions()
-
-        representer.addClassTag(Log::class.java, Tag("!io.alexheld.mockserver.documents.Document"))*/
     }
-
 
     fun formatV2(data: Iterable<*>) {
 
@@ -339,6 +223,9 @@ class LogFormatterTests {
             .build()
 
         val writer = StreamToStringWriter()
+
+
+
         Dump(buildDumpSettings(2), StandardRepresenter(buildDumpSettings(2)))
             .dumpAll(iterator {
                 for (m in data)
@@ -347,24 +234,18 @@ class LogFormatterTests {
 
         writer.writer.close()
 
+        /**
+        val yaml= Dump(settings).dumpAllToString( iterator {
+        for (m in maps)
+        yield(m)
+        }
+        )
+         */
+
         val yaml = writer.writer.toString()
         yaml.dump("Document<YamlLogDocument>")
     }
 
-
-    class LogResolver : Resolver() {
-
-        init {
-            addImplicitResolver(Tag("log"), VALUE, "setup")
-        }
-
-        override fun resolve(kind: NodeId?, value: String?, implicit: Boolean): Tag {
-            if (kind != null && kind == NodeId.scalar)
-                return Tag.MAP
-
-            return super.resolve(kind, value, implicit)
-        }
-    }
 
 
     private fun buildDumpSettings(indicatorIndent: Int): DumpSettings = DumpSettings.builder()
@@ -382,7 +263,7 @@ class LogFormatterTests {
     private fun buildDump(indicatorIndent: Int): Dump = Dump(buildDumpSettings(indicatorIndent))
 }
 
-inline fun <reified TNode : Node> getDelegatedValues(target: TNode): Map<String, Any> {
+inline fun <reified TNode : DelegatingNode> getDelegatedValues(target: TNode): Map<String, Any> {
 
     val type = TNode::class
     val values = mutableMapOf<String, Any>()

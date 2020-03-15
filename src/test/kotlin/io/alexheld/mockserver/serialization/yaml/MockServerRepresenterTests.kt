@@ -17,6 +17,7 @@ import org.yaml.snakeyaml.nodes.Tag
 import org.yaml.snakeyaml.representer.*
 import java.time.*
 import java.util.*
+import java.util.regex.*
 
 
 class MockServerRepresenterTests {
@@ -82,7 +83,7 @@ class MockServerRepresenterTests {
 
         // Arrange
         val subject = RequestMatched(
-            mutableMapOf(
+            linkedMapOf(
                 "event" to LogMessageType.Request_Matched,
                 "id" to "00000000-0000-0000-0000-000000000000",
                 "timestamp" to Instant.EPOCH.toString(),
@@ -94,7 +95,7 @@ class MockServerRepresenterTests {
             )
         )
 
-        subject.events.add(RequestReceived())
+        //subject.events.add(RequestReceived())
         val opt = DumperOptions()
         opt.indent = 4
         opt.indicatorIndent = 2
@@ -110,6 +111,8 @@ class MockServerRepresenterTests {
         //y.addImplicitResolver(Tag.MAP, Pattern.compile("LogMessageType"), "Request_Matched")
 
         val yaml = y.dumpAsMap(subject)
+        val constructor = Constructor(DelegatingNode::class.java)
+        y.addImplicitResolver(Tag.STR, Pattern.compile("\\*id001"), null)
 
         // Assert
         yaml.dump("RequestMatched")
@@ -144,20 +147,97 @@ class MockServerRepresentation : Representer() {
         this.addClassTag(Request::class.java, Tag.MAP)
         this.addClassTag(Setup::class.java, Tag.MAP)
         this.addClassTag(Action::class.java, Tag.MAP)
+
+        this.representers[LogMessageType::class.java] = PresentLogMessageType()
+        this.representers[DelegatingNode::class.java] = RepresentDelegatingNode()
     }
 
+
+    private fun getPropertyPosition(property: String): Int {
+        return when (property) {
+            "apiVersion" -> 0
+            "kind" -> 1
+            "metadata" -> 2
+            "spec" -> 3
+            "type" -> 4
+            else -> Int.MAX_VALUE
+        }
+    }
+
+
+    inner class RepresentDelegatingNode : Represent {
+
+        @Suppress("SENSELESS_COMPARISON")
+        override fun representData(data: Any?): Node? {
+            if (data !is DelegatingNode)
+                return null
+
+            val sortedProperties = data.properties
+                .filter { it.key != null && it.value != null }
+                .toSortedMap { a, b ->
+                    val comparasionResult = getPropertyPosition(a).compareTo(getPropertyPosition(b))
+                    return@toSortedMap comparasionResult
+                }
+            return representMapping(Tag.MAP, sortedProperties, FlowStyle.BLOCK)
+        }
+    }
+
+    inner class PresentLogMessageType : Represent {
+        override fun representData(data: Any?): Node? {
+            if (data !is LogMessageType)
+                return null
+            return representScalar(Tag.STR, data.type, ScalarStyle.PLAIN)
+        }
+    }
 
     override fun representJavaBeanProperty(javaBean: Any?, property: Property?, propertyValue: Any?, customTag: Tag?): NodeTuple? {
         val clearName = property!!.name.takeWhile { c -> c != '$' }
 
-        // ignore null values
+        /** ignore all properties with {@see null} values. to ignore it, we need to return null from this function  */
         if (propertyValue == null)
             return null
 
         /** substitute delegate property names {@sample name$delegate}  with  with {@sample name}  */
         val substitute = PropertySubstitute(clearName, property.type)
 
-        val nodeTuple = super.representJavaBeanProperty(javaBean, substitute, propertyValue, customTag)
+
+        val node = represent(propertyValue)
+
+        if (property.type == String::class.java)
+            representScalar(Tag.STR, propertyValue as String, ScalarStyle.PLAIN)
+
+        val nodeTuple = super.representJavaBeanProperty(javaBean, substitute, propertyValue, Tag.MAP)
         return nodeTuple
     }
+}
+
+
+class DelegatingNodeDescription : TypeDescription(DelegatingNode::class.java, DelegatingNode::class.java) {
+
+    companion object {
+        const val tagIdentifier = "io.alexheld.mockserver.nodes.delegating"
+    }
+
+    init {
+        setTag(tagIdentifier)
+    }
+
+    /*private fun handleMappingNode(node: MappingNode) {
+
+        val nonEmptyMembers= node.value.filter {
+            val keyNode = it.keyNode as ScalarNode
+            val valueNode = it.valueNode
+            keyNode.value != null && valueNode != null
+        }.toMutableList()
+
+        val linkedHashMa: LinkedHashMap<String, Any> = linkedMapOf()
+        for (member in nonEmptyMembers)
+        {
+
+        }
+            linkedHashMa.put()
+        val delegatingNode = DelegatingNode()
+    }*/
+
+
 }

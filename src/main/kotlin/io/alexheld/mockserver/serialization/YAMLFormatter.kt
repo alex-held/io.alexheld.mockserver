@@ -95,7 +95,6 @@ class LogRepresenter : Representer {
             val nodeKey = representData(property!!.name) as ScalarNode
 
             if (propertyValue != null) {
-                val simpleName = property.type.simpleName
                 val yamTagAnnotation = propertyValue::class.findAnnotation<YamlTagAnnotation>()
                 val tag = yamTagAnnotation?.getTag()
                 if (tag is Tag)
@@ -119,7 +118,6 @@ class LogRepresenter : Representer {
                 checkGlobalTag(property, nodeValue, propertyValue)
             }
             if (propertyValue != null) {
-                val simpleName = property.type.simpleName
                 val yamTagAnnotation = propertyValue::class.findAnnotation<YamlTagAnnotation>()
                 val tag = yamTagAnnotation?.getTag()
                 if (tag is Tag)

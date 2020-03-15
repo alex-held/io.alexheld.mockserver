@@ -30,9 +30,9 @@ object Generator {
 }
 
 
-class Log(map: Map<String, Any> = mapOf()) : DelegatingNode(map.toMutableMap()) {
+class Log(map: LinkedHashMap<String, Any> = linkedMapOf()) : DelegatingNode(map) {
 
-    constructor(type: LogMessageType, properties: Map<String, Any> = mapOf()) : this(properties) {
+    constructor(type: LogMessageType, properties: LinkedHashMap<String, Any> = linkedMapOf()) : this(properties) {
         id = Generator.getId()
         timestamp = Generator.getTimestampString()
         event = type
@@ -42,18 +42,18 @@ class Log(map: Map<String, Any> = mapOf()) : DelegatingNode(map.toMutableMap()) 
     var id: String by properties
     var timestamp: String by properties
     var event: LogMessageType by properties
-    var events: MutableList<DelegatingNode> by properties
+    var events: LinkedList<DelegatingNode> by properties
 
     companion object {
 
         fun setupCreated(setup: Setup): Log = Log(
-            LogMessageType.Setup_Created, mapOf(
+            LogMessageType.Setup_Created, linkedMapOf(
                 "setup" to setup
             )
         )
 
         fun setupDeleted(setup: Setup): Log = Log(
-            LogMessageType.Setup_Deleted, mapOf(
+            LogMessageType.Setup_Deleted, linkedMapOf(
                 "setup" to setup
             )
         )
@@ -61,34 +61,34 @@ class Log(map: Map<String, Any> = mapOf()) : DelegatingNode(map.toMutableMap()) 
         fun setupDeletionFailed(): Log = Log(LogMessageType.Setup_Deletion_Failed)
 
         fun requestReceived(request: Request): Log = Log(
-            LogMessageType.Request_Received, mapOf(
+            LogMessageType.Request_Received, linkedMapOf(
                 "request" to request
             )
         )
 
         fun requestMatched(setup: Setup): Log = Log(
-            LogMessageType.Request_Matched, mapOf(
+            LogMessageType.Request_Matched, linkedMapOf(
                 "setup" to setup
             )
         )
 
 
         fun listSetups(): Log = Log(
-            LogMessageType.Operation, mapOf(
+            LogMessageType.Operation, linkedMapOf(
                 "operation" to "list",
                 "kind" to "Setup"
             )
         )
 
         fun listLogs(): Log = Log(
-            LogMessageType.Operation, mapOf(
+            LogMessageType.Operation, linkedMapOf(
                 "operation" to "list",
                 "kind" to "Log"
             )
         )
 
         fun action(action: Action): Log = Log(
-            LogMessageType.Action_Response, mapOf(
+            LogMessageType.Action_Response, linkedMapOf(
                 "action" to action
             )
         )
@@ -96,7 +96,7 @@ class Log(map: Map<String, Any> = mapOf()) : DelegatingNode(map.toMutableMap()) 
 
 
     fun withEvent(yamlLog: Log): Log = withEvent(yamlLog.properties)
-    fun withEvent(properties: Map<String, Any>): Log {
+    fun withEvent(properties: LinkedHashMap<String, Any>): Log {
         val log = Log(properties)
         events.add(log)
         return this

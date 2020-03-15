@@ -10,7 +10,7 @@ import kotlin.collections.set
 @JsonSerialize(using = NodeSerializer::class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("kind", "event", "timestamp", "id")
-open class DelegatingNode(@JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf()) {
+open class DelegatingNode(@JsonIgnore val properties: LinkedHashMap<String, Any> = linkedMapOf()) {
 
     companion object {
         const val ScalarValueKey: String = "<<SCALAR_VALUE>>"

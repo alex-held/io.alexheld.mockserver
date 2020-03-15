@@ -18,6 +18,7 @@ import org.yaml.snakeyaml.representer.*
 import java.time.*
 import java.util.*
 import java.util.regex.*
+import org.yaml.snakeyaml.Yaml as SnakeYaml
 
 
 class MockServerRepresenterTests {
@@ -35,8 +36,29 @@ class MockServerRepresenterTests {
                     )
             )
         }
+
     }
 
+
+    fun generateRequestMatched(count: Int = 1): Iterator<RequestMatched> = iterator {
+        Generator.enableDebugGeneration = true
+        for (i in 0..1) {
+            val subject = RequestMatched(
+                linkedMapOf(
+                    "event" to LogMessageType.Request_Matched,
+                    "id" to "00000000-0000-0000-0000-000000000000",
+                    "timestamp" to Instant.EPOCH.toString(),
+                    "events" to mutableListOf(
+                        Request(method = "GET", path = "/some/path"),
+                        Setup(request = Request(method = "GET"), action = Action("Hello World")),
+                        Action("Hello World")
+                    )
+                )
+            )
+            Generator.enableDebugGeneration = false
+            yield(subject)
+        }
+    }
 
     @Test
     fun canSerializeKotlinx() {
@@ -48,7 +70,7 @@ class MockServerRepresenterTests {
         subject.kind = "Log"
 
         // Act
-        val yaml = Yaml(DumperOptions())
+        val yaml = Yaml.dump(subject)
 
         // Assert
         yaml.dump("YamlFile")
@@ -70,7 +92,7 @@ class MockServerRepresenterTests {
         ))*/
 
         // Act
-        val yaml = Yaml(DumperOptions()).dump(subject)
+        val yaml = Yaml.dump(subject)
 
         // Assert
         yaml.dump("YamlFile")
@@ -82,37 +104,11 @@ class MockServerRepresenterTests {
     fun canSerializeKotlinx3() {
 
         // Arrange
-        val subject = RequestMatched(
-            linkedMapOf(
-                "event" to LogMessageType.Request_Matched,
-                "id" to "00000000-0000-0000-0000-000000000000",
-                "timestamp" to Instant.EPOCH.toString(),
-                "events" to mutableListOf(
-                    Request(method = "GET", path = "/some/path"),
-                    Setup(request = Request(method = "GET"), action = Action("Hello World", 200)),
-                    Action("Hello World", 200)
-                )
-            )
-        )
-
-        //subject.events.add(RequestReceived())
-        val opt = DumperOptions()
-        opt.indent = 4
-        opt.indicatorIndent = 2
-        opt.defaultFlowStyle = FlowStyle.BLOCK
-
+        val subject = generateRequestMatched().next()
 
         // Act
-        val y = Yaml(Constructor(RequestMatched::class.java), MockServerRepresentation(), opt)
-        y.setBeanAccess(BeanAccess.FIELD)
-        val td = TypeDescription(LogMessageType::class.java, Tag.STR)
-        y.addTypeDescription(td)
-        y.addTypeDescription(TypeDescription(RequestReceived::class.java, Tag.MAP))
-        //y.addImplicitResolver(Tag.MAP, Pattern.compile("LogMessageType"), "Request_Matched")
+        val yaml = Yaml.dump(subject)
 
-        val yaml = y.dumpAsMap(subject)
-        val constructor = Constructor(DelegatingNode::class.java)
-        y.addImplicitResolver(Tag.STR, Pattern.compile("\\*id001"), null)
 
         // Assert
         yaml.dump("RequestMatched")
@@ -121,6 +117,46 @@ class MockServerRepresenterTests {
 
     fun take(count: Int = 1): YamlLogDocument = generateSubject().asSequence().first()
 }
+
+
+object Yaml {
+
+    fun dump(type: Class<*>, any: Any): String = getMapper(type).dumpAsMap(any)
+    fun dump(any: Any): String = getMapper(any::class.java).dumpAsMap(any)
+
+    fun getMapper(type: Class<*>): SnakeYaml {
+
+        val y = SnakeYaml(
+            buildConstructor(type),
+            MockServerRepresentation(),
+            buildDumpOptions()
+        )
+
+        y.addTypeDescription(TypeDescription(LogMessageType::class.java, Tag.STR))
+        y.addTypeDescription(TypeDescription(RequestReceived::class.java, Tag.MAP))
+
+        y.addImplicitResolver(Tag.STR, Pattern.compile("\\*id001"), null)
+
+        y.setBeanAccess(BeanAccess.FIELD)
+
+        return y
+    }
+
+    fun buildConstructor(type: Class<*>): Constructor = Constructor(type)
+
+    fun buildDumpOptions(indent: Int = 2): DumperOptions {
+        val opt = DumperOptions()
+        opt.defaultFlowStyle = FlowStyle.BLOCK
+        opt.indicatorIndent = indent
+        opt.indent = indent + 2
+        return opt
+    }
+}
+
+
+inline fun <reified T> Yaml.buildConstructor(): Constructor = buildConstructor(T::class.java)
+inline fun <reified T> Yaml.dumpAs(any: Any): String = dump(T::class.java, any)
+inline fun <reified T> Yaml.getMapper(): org.yaml.snakeyaml.Yaml = getMapper(T::class.java)
 
 
 class MockServerConstructor(val rootType: Class<*>, val classloader: Classloader) : Constructor(rootType) {

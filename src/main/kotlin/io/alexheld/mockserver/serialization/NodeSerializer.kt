@@ -22,7 +22,7 @@ class NodeSerializer : JsonSerializer<DelegatingNode>() {
             serializers?.defaultSerializeValue(atomicValue, gen)
         } else {
             val anyValues = value.properties
-            val sorted = LinkedHashMap<String, Any>(anyValues.size)
+            val sorted = mutableMapOf<String, Any>()
             if (anyValues.containsKey("apiVersion"))
                 sorted["apiVersion"] = anyValues.remove("apiVersion")!!
             if (anyValues.containsKey("kind"))

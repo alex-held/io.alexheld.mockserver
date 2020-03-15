@@ -56,7 +56,7 @@ this.representers[Action::class.java] = RepresentDelegatingNode()
 
 this.parentClassRepresenters[DelegatingNode::class.java] = RepresentDelegatingNode()
 this.parentClassRepresenters[HashMap::class.java] = RepresentDelegatedProperties()
-this.parentClassRepresenters[LinkedHashMap::class.java] = RepresentDelegatedProperties()
+this.parentClassRepresenters[MutableMap::class.java] = RepresentDelegatedProperties()
 this.parentClassRepresenters[AbstractMap::class.java] = RepresentDelegatedProperties()
 
 }

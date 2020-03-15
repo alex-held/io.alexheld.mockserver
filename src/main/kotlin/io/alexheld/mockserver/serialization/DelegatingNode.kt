@@ -6,11 +6,14 @@ import org.gradle.internal.impldep.org.eclipse.jgit.errors.*
 import kotlin.collections.set
 
 
-@Suppress("UNCHECKED_CAST")
 @JsonSerialize(using = NodeSerializer::class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties("properties", "children")
 @JsonPropertyOrder("kind", "event", "timestamp", "id")
-open class DelegatingNode(@JsonIgnore val properties: LinkedHashMap<String, Any> = linkedMapOf()) {
+open class DelegatingNode(
+    @JsonIgnore val properties: MutableMap<String, Any> = mutableMapOf(),
+    @JsonIgnore val children: MutableMap<String, MutableList<DelegatingNode>> = mutableMapOf()
+) {
 
     companion object {
         const val ScalarValueKey: String = "<<SCALAR_VALUE>>"
@@ -21,6 +24,9 @@ open class DelegatingNode(@JsonIgnore val properties: LinkedHashMap<String, Any>
 
     @JsonIgnore
     fun isAtomic(): Boolean = properties.containsKey(ScalarValueKey)
+
+    @JsonIgnore
+    fun hasChildren(): Boolean = children.isEmpty()
 
     @JsonIgnore
     fun <T : Any> getAtomicValue(): T = properties.getValue(ScalarValueKey) as T

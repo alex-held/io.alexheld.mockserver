@@ -5,7 +5,7 @@ import io.alexheld.mockserver.domain.models.*
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonRootName("YAML")
-open class YamlDocument(map: LinkedHashMap<String, Any> = linkedMapOf()) : DelegatingNode() {
+open class YamlDocument(map: MutableMap<String, Any> = mutableMapOf()) : DelegatingNode() {
 
     // @YamlTagAnnotation("apiVersion")
     var apiVersion: String by properties
@@ -63,7 +63,7 @@ class ApiVersion(@JsonValue var version: String) {
 */
 
 
-class YamlLogDocument(map: LinkedHashMap<String, Any> = linkedMapOf()) : YamlDocument(map) {
+class YamlLogDocument(map: MutableMap<String, Any> = mutableMapOf()) : YamlDocument(map) {
 
     //@YamlTagAnnotation("id")
     var id: String by properties
@@ -76,7 +76,7 @@ class YamlLogDocument(map: LinkedHashMap<String, Any> = linkedMapOf()) : YamlDoc
         apiVersion: String,
         id: String,
         timestamp: String,
-        map: LinkedHashMap<String, Any> = linkedMapOf()
+        map: MutableMap<String, Any> = mutableMapOf()
     ) : this(map) {
         this.apiVersion = apiVersion
         this.id = id

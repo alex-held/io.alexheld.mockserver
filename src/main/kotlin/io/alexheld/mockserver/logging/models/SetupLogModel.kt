@@ -7,28 +7,28 @@ import io.alexheld.mockserver.serialization.*
 import org.gradle.kotlin.dsl.*
 import java.time.*
 
-class SetupCreated(@JsonIgnore override var map: LinkedHashMap<String, Any> = linkedMapOf()) : ILog {
+class SetupCreated(@JsonIgnore override var map: MutableMap<String, Any> = mutableMapOf()) : ILog {
     override var event: LogMessageType by map
     override var id: String by map
     override var timestamp: String by map
     val setup: Setup by map
 }
 
-class SetupDeleted(@JsonIgnore override var map: LinkedHashMap<String, Any> = linkedMapOf()) : ILog {
+class SetupDeleted(@JsonIgnore override var map: MutableMap<String, Any> = mutableMapOf()) : ILog {
     override var event: LogMessageType by map
     override var id: String by map
     override var timestamp: String by map
     val setup: Setup by map
 }
 
-class SetupDeletionFailed(@JsonIgnore override var map: LinkedHashMap<String, Any> = linkedMapOf()) : ILog {
+class SetupDeletionFailed(@JsonIgnore override var map: MutableMap<String, Any> = mutableMapOf()) : ILog {
     override var event: LogMessageType by map
     override var id: kotlin.String by map
     override var timestamp: String by map
 }
 
 
-class RequestMatched(@JsonIgnore override var map: LinkedHashMap<String, Any> = linkedMapOf()) : DelegatingNode(map), ILog {
+class RequestMatched(@JsonIgnore override var map: MutableMap<String, Any> = mutableMapOf()) : DelegatingNode(map), ILog {
     override var event: LogMessageType by map
     override var id: String by map
     override var timestamp: String by map
@@ -36,9 +36,9 @@ class RequestMatched(@JsonIgnore override var map: LinkedHashMap<String, Any> = 
 }
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-class RequestReceived(@JsonIgnore override var map: LinkedHashMap<String, Any> = linkedMapOf()) : ILog {
+class RequestReceived(@JsonIgnore override var map: MutableMap<String, Any> = mutableMapOf()) : ILog {
 
-    constructor(requestReceived: Request) : this(linkedMapOf()) {
+    constructor(requestReceived: Request) : this(mutableMapOf()) {
         this.request = requestReceived
         this.id = "1334"
         this.timestamp = Instant.EPOCH.toString()
@@ -51,7 +51,7 @@ class RequestReceived(@JsonIgnore override var map: LinkedHashMap<String, Any> =
 }
 
 
-data class Operation(@JsonIgnore override var map: LinkedHashMap<String, Any> = linkedMapOf()) : ILog {
+data class Operation(@JsonIgnore override var map: MutableMap<String, Any> = mutableMapOf()) : ILog {
     override var event: LogMessageType by map
     override var id: String by map
     override var timestamp: String by map
@@ -59,14 +59,18 @@ data class Operation(@JsonIgnore override var map: LinkedHashMap<String, Any> = 
 
 
 interface Identifyable {
-
+    @get:JsonIgnore
     var id: String
+
+    @get:JsonIgnore
     var timestamp: String
 }
 
 interface ILog : Identifyable {
 
     @get:JsonIgnore
-    var map: LinkedHashMap<String, Any>
+    var map: MutableMap<String, Any>
+
+    @get:JsonIgnore
     var event: LogMessageType
 }

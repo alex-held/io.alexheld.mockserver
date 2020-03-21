@@ -10,7 +10,7 @@ class ActionLog : LogDTO {
     constructor(content: MutableMap<String, Any?> = mutableMapOf()) : super(content)
     constructor(id: String, timestamp: Instant, content: MutableMap<String, Any?> = mutableMapOf()) : super(id, timestamp, LogMessageType.Action_Response, content)
     constructor(id: String, timestamp: Instant, action: Action) : this(id, timestamp, mutableMapOf(
-            "action" to action
-        )
+        "action" to action
+    )
     )
 }

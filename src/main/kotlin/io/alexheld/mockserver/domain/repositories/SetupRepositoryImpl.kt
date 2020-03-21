@@ -20,7 +20,7 @@ class SetupRepositoryImpl : SetupRepository {
     }
 
     override fun delete(id: Int): Setup? {
-        return setups.remove(id)
+        return setups.remove(id.toString())
     }
 
     override fun find(predicate: (Setup) -> Boolean): Setup? {

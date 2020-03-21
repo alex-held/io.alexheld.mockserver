@@ -1,32 +1,32 @@
 package io.alexheld.mockserver.domain.models
 
-import com.fasterxml.jackson.annotation.*
+import io.alexheld.mockserver.logging.*
+import java.time.*
 
 
-data class Setup(
-    @JsonProperty(required = false)
-    var id: Int? = null,
+class Setup(content: MutableMap<String, Any?> = mutableMapOf()) : ContentMapBase(content) {
 
-    @JsonProperty(required = false)
-    val request: Request? = null,
+    var id: String by content
+    var timestamp: Instant by content
+    val request: Request by content
+    val action: Action by content
 
-    @JsonProperty()
-    val action: Action = Action.Default
-) {
-    constructor() : this(null, null)
+    constructor(id: Int, time: Instant, request: Request, action: Action) : this(mutableMapOf(
+        "id" to id.toString(),
+        "timestamp" to time,
+        "request" to request,
+        "action" to action
+    ))
 }
 
 
-data class Action(
+class Action(content: MutableMap<String, Any?> = mutableMapOf()) : ContentMapBase(content) {
 
-    @JsonProperty(required = false)
-    val message: String? = null,
+    var message: String? by content
+    var statusCode: Int by content
 
-    @JsonProperty(required = false)
-    val statusCode: Int = 404
-) {
-
-    companion object {
-        val Default get() = Action("DEFAULT RESPONSE MESSAGE", statusCode = 404)
-    }
+    constructor(message: String?, statusCode: Int = 404) : this(mutableMapOf<String, Any?>(
+        "message" to message,
+        "statusCode" to statusCode
+    ))
 }

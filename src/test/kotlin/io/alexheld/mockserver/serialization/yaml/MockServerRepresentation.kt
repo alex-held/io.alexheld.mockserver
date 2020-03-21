@@ -13,9 +13,10 @@ class MockServerRepresentation : Representer() {
 
     init {
         this.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        this.addClassTag(RequestMatched::class.java, Tag.MAP)
+        this.addClassTag(RequestMatchedLog::class.java, Tag.MAP)
         this.addClassTag(Request::class.java, Tag.MAP)
         this.addClassTag(Setup::class.java, Tag.MAP)
+        this.addClassTag(DelegatingNode::class.java, Tag.MAP)
         this.addClassTag(Action::class.java, Tag.MAP)
 
         this.representers[LogMessageType::class.java] = PresentLogMessageType()
@@ -35,13 +36,82 @@ class MockServerRepresentation : Representer() {
         }
     }
 
+    private fun representChildren(data: DelegatingNode, children: MutableMap<String, MutableList<DelegatingNode>>): List<NodeTuple> {
+        try {
+            val nodeMembers: MutableList<NodeTuple> = mutableListOf()
+
+            for (group in children) {
+                val propertyName = group.key
+                val values = group.value
+
+                if (values.size == 1) {
+                    val childGroup = representChildNode(data, propertyName, values.first())
+                    if (childGroup is NodeTuple) nodeMembers.add(childGroup)
+
+                    continue
+                }
+
+                val childGroup = representChildGroup(data, propertyName, values)
+                if (childGroup is NodeTuple) nodeMembers.add(childGroup)
+            }
+
+            return nodeMembers
+
+        } catch (e: Exception) {
+            println(e.localizedMessage)
+            return listOf()
+        }
+    }
+
+    private fun representChildGroup(data: DelegatingNode, propertyName: String, children: MutableList<DelegatingNode>): NodeTuple? {
+        return try {
+            val keyNode = representScalar(Tag.STR, propertyName, DumperOptions.ScalarStyle.PLAIN)
+            val valueNode = representSequence(Tag.OMAP, children, DumperOptions.FlowStyle.BLOCK)
+            NodeTuple(keyNode, valueNode)
+        } catch (e: Exception) {
+            println(e.localizedMessage)
+            null
+        }
+    }
+
+    private fun representChildNode(data: DelegatingNode, propertyName: String, child: DelegatingNode): NodeTuple? {
+        return try {
+            val childNode = representData(child) ?: return null
+            NodeTuple(
+                representScalar(Tag.STR, propertyName, DumperOptions.ScalarStyle.PLAIN),
+                representSequence(Tag.SEQ, mutableListOf(childNode), DumperOptions.FlowStyle.BLOCK)
+            )
+        } catch (e: Exception) {
+            println(e.localizedMessage)
+            null
+        }
+
+    }
+
 
     inner class RepresentDelegatingNode : Represent {
 
+        fun handleMembers(delegatingNode: DelegatingNode, members: Map<String, Any>) : MappingNode? {
+            return try {
+                return representMapping(Tag.MAP, members.mapKeys { k -> k.key.takeWhile { c -> c != '$' } }, DumperOptions.FlowStyle.BLOCK) as MappingNode
+            } catch (e: Exception) {
+                println(e.localizedMessage)
+                null
+            }
+        }
+/*
 
         fun handleMembers(delegatingNode: DelegatingNode, members: Map<String, Any>): MappingNode? {
             return try {
-                return representMapping(Tag.MAP, members, DumperOptions.FlowStyle.BLOCK) as MappingNode
+
+                val value : MutableList<NodeTuple> = arrayListOf()
+                for (m in members){
+                    val propertyNode = handleProperty(delegatingNode, Pair(m.key, m.value))
+
+                    if (propertyNode is NodeTuple)
+                        value.add(propertyNode)
+                }
+                return representMapping(Tag.SEQ, , DumperOptions.FlowStyle.BLOCK) as MappingNode
             } catch (e: Exception) {
                 println(e.localizedMessage)
                 null
@@ -50,8 +120,23 @@ class MockServerRepresentation : Representer() {
 
         fun handleProperty(delegatingNode: DelegatingNode, pair: Pair<String, Any>): NodeTuple? {
             return try {
+
+                */
+/** substitute delegate property names {@sample name$delegate}  with  with {@sample name}  *//*
+
+                val clearName = pair.first.takeWhile { c -> c != '$'}
+
+                */
+/** ignore all properties with {@see null} values. to ignore it, we need to return null from this function  *//*
+
+        */
+/*        val propertyValue = pair.second ?: return null
+                val substitute = PropertySubstitute(clearName, propertyValue::class.java)
+*//*
+
+
                 NodeTuple(
-                    representScalar(Tag.STR, pair.first, DumperOptions.ScalarStyle.PLAIN),
+                    representScalar(Tag.STR, clearName, DumperOptions.ScalarStyle.PLAIN),
                     representData(pair.second)
                 )
             } catch (e: Exception) {
@@ -60,105 +145,66 @@ class MockServerRepresentation : Representer() {
             }
 
         }
+*/
 
-        override fun representData(data: Any?): MappingNode? {
-            if (data !is DelegatingNode)
-                return null
+        override fun representData(data: Any?): Node? {
+            if (data !is DelegatingNode) return null
+
 
             val members = data.properties.toSortedMap { a, b ->
                 getPropertyPosition(a).compareTo(getPropertyPosition(b))
             }
 
+            members.map {
+                val cleanName = it.key.takeWhile { c -> c != '$' }
+                println("PropertyName ${it.key} -> $cleanName")
+            }
+
+
+        //    val mainNode = representMapping(Tag.MAP, members, DumperOptions.FlowStyle.BLOCK) as MappingNode
             val mainNode = handleMembers(data, members)
+
 
             val children = representChildren(data, data.children)
             if (!children.any())
                 return mainNode
 
-            mainNode?.value?.addAll(children)
+            for (child in children) {
+                mainNode!!.setTypes(child.keyNode.type, child.valueNode.type)
+            }
+
             return mainNode
-
         }
 
-        private fun representChildren(data: DelegatingNode, children: MutableMap<String, MutableList<DelegatingNode>>): List<NodeTuple> {
-            try {
-                val nodeMembers: MutableList<NodeTuple> = mutableListOf()
-
-                for (group in children) {
-                    val propertyName = group.key
-                    val values = group.value
-
-                    if (values.size == 1) {
-                        val childGroup = representChildNode(data, propertyName, values.first())
-                        if (childGroup is NodeTuple) nodeMembers.add(childGroup)
-
-                        continue
-                    }
-
-                    val childGroup = representChildGroup(data, propertyName, values)
-                    if (childGroup is NodeTuple) nodeMembers.add(childGroup)
-                }
-
-                return nodeMembers
-
-            } catch (e: Exception) {
-                println(e.localizedMessage)
-                return listOf()
-            }
-        }
-
-        private fun representChildGroup(data: DelegatingNode, propertyName: String, children: MutableList<DelegatingNode>): NodeTuple? {
-            return try {
-                val keyNode = representScalar(Tag.STR, propertyName, DumperOptions.ScalarStyle.PLAIN)
-                val valueNode = representSequence(Tag.OMAP, children, DumperOptions.FlowStyle.BLOCK)
-                NodeTuple(keyNode, valueNode)
-            } catch (e: Exception) {
-                println(e.localizedMessage)
-                null
-            }
-        }
-
-
-        private fun representChildNode(data: DelegatingNode, propertyName: String, child: DelegatingNode): NodeTuple? {
-            return try {
-                val childNode = representData(child) ?: return null
-                NodeTuple(
-                    representScalar(Tag.STR, propertyName, DumperOptions.ScalarStyle.PLAIN),
-                    representSequence(Tag.OMAP, mutableListOf(childNode), DumperOptions.FlowStyle.BLOCK)
-                )
-            } catch (e: Exception) {
-                println(e.localizedMessage)
-                null
-            }
-
-        }
     }
 
     inner class PresentLogMessageType : Represent {
         override fun representData(data: Any?): Node? {
             if (data !is LogMessageType)
                 return null
-            return representScalar(Tag.STR, data.type, DumperOptions.ScalarStyle.PLAIN)
+            return representScalar(Tag.STR, data.name, DumperOptions.ScalarStyle.PLAIN)
         }
     }
 
     override fun representJavaBeanProperty(javaBean: Any?, property: Property?, propertyValue: Any?, customTag: Tag?): NodeTuple? {
         val clearName = property!!.name.takeWhile { c -> c != '$' }
 
-        /** ignore all properties with {@see null} values. to ignore it, we need to return null from this function  */
+        /** ignore all properties with {@see null} values. to ignore it, we need to return null from this function */
         if (propertyValue == null)
             return null
 
-        /** substitute delegate property names {@sample name$delegate}  with  with {@sample name}  */
+        /** substitute delegate property names {@sample name$delegate}  with  with {@sample name} */
         val substitute = PropertySubstitute(clearName, property.type)
 
+        println(javaBean!!::class.java.name)
 
-        val node = represent(propertyValue)
-
+        // TODO: This makes the touble
+        //val node = representScalar(Tag.MAP, propertyValue as String)
+        val node = representMapping(Tag.MAP, propertyValue as Map<*,*>, DumperOptions.FlowStyle.BLOCK)
         if (property.type == String::class.java)
             representScalar(Tag.STR, propertyValue as String, DumperOptions.ScalarStyle.PLAIN)
 
-        val nodeTuple = super.representJavaBeanProperty(javaBean, substitute, propertyValue, Tag.MAP)
-        return nodeTuple
+        return super.representJavaBeanProperty(javaBean, substitute, propertyValue, Tag.STR)
     }
+
 }

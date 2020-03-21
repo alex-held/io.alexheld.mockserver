@@ -31,7 +31,7 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
 
     override fun getMatchingSetup(call: ApplicationCall): Setup? {
         return repository.find { setup ->
-            setup.request?.method == call.request.httpMethod.value
+            setup.request.method == call.request.httpMethod.value
                     && setup.request.path == call.request.path()
         }
     }

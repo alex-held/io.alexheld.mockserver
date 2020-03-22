@@ -8,6 +8,7 @@ val kluent_version: String by project
 
 extra["arrow_version"] = "0.10.4"
 extra["kotlin_version"] = "1.3.70"
+extra["jackson_version"] = "2.10.2"
 extra["snippetsDir"] = file("build/generated-snippets")
 extra["azureVersion"] = "2.1.7"
 extra["springCloudVersion"] = "Greenwich.SR5"
@@ -116,9 +117,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.3")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${property("jackson_version")}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.10.3")
+    implementation("com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:${property("jackson_version")}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${property("jackson_version")}")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:${property("jackson_version")}")
+    implementation("com.fasterxml.jackson.core:jackson-core:${property("jackson_version")}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${property("jackson_version")}")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${property("kotlin_version")}")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
@@ -192,7 +197,7 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "13"
+        jvmTarget = "1.8"
     }
 }
 

@@ -5,7 +5,7 @@ import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 
 
-data class SetupCreatedData(var setup: Setup) : DataContainerData
+@JsonAutoDetect data class SetupCreatedData @JsonCreator constructor(@JsonProperty var setup: Setup) : DataContainerData
 data class SetupDeletedData(val setup: Setup) : DataContainerData
 data class SetupDeletionFailedData(@JsonIgnore val exception: Exception, val message: String? = null) : DataContainerData
 

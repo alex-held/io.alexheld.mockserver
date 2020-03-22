@@ -3,10 +3,6 @@ package io.alexheld.mockserver.logging
 import java.time.*
 
 
-interface WithCategory {
-    val apiCategory: ApiCategory
-}
-
 /**
  * As unique identifiable Log.
  */

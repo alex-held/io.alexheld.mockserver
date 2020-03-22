@@ -1,12 +1,13 @@
 package io.alexheld.mockserver.logging.models
 
+import com.fasterxml.jackson.annotation.*
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 
 
 data class SetupCreatedData(var setup: Setup) : DataContainerData
 data class SetupDeletedData(val setup: Setup) : DataContainerData
-data class SetupDeletionFailedData(val exception: Exception, val message: String? = null) : DataContainerData
+data class SetupDeletionFailedData(@JsonIgnore val exception: Exception, val message: String? = null) : DataContainerData
 
 
 data class RequestReceivedData(val requestReceived: Request): DataContainerData

@@ -6,4 +6,3 @@ interface DataContainer<TData: DataContainerData> {
     var data: TData?
 }
 
-interface DataContainerData

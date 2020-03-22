@@ -19,33 +19,28 @@ class LogDataContainerTests {
 
         @JvmStatic
         fun logDataContainerData(): Stream<Arguments> = Stream.of(
-            Arguments.of(createSubject(SetupCreatedData(Setup("1", Instant.EPOCH,Request(method = "POST", path = "/some/api"), Action(message = "Hello World!", statusCode = 202))))),
-            Arguments.of(createSubject(SetupDeletedData(Setup("1", Instant.EPOCH, Request(method = "POST", path = "/some/api"), Action(message = "Hello World!", statusCode = 202))))),
+            Arguments.of(createSubject(SetupCreatedData(Setup("1", Instant.EPOCH, Request(method = "POST"), Action("Placedholder...", 1))))),
+            Arguments.of(createSubject(RequestMatchedData(Request(method = "POST"), Setup("1", Instant.EPOCH, Request(method = "POST"), Action("Placedholder...", 1)), Action("Placedholder...", 1)))),
+            Arguments.of(createSubject(SetupDeletedData(Setup("1", Instant.EPOCH, Request(path = "/some/api"), Action("Hello World!", 1))))),
             Arguments.of(createSubject(SetupDeletionFailedData(Exception("test-123"), "an error message"))),
-            Arguments.of(createSubject(LogDeletedData(mutableListOf(createSubject(SetupCreatedData(Setup("1", Instant.EPOCH, Request(method = "POST", path = "/some/api"), Action(message = "Hello World!", statusCode = 202))))))))
+            Arguments.of(createSubject(LogDeletedData(mutableListOf(createSubject(SetupCreatedData(Setup("1", Instant.EPOCH, Request(method = "POST", path = "/some/api"), Action(message = "Hello World!", statusCode = 202)))))))),
+            Arguments.of(createSubject(RequestReceivedData(Request(method="POST")))),
+            Arguments.of(createSubject(ActionData(Action(message = "Hello World!", statusCode = 202))))
         )
     }
 
 
     @ParameterizedTest
     @MethodSource("logDataContainerData")
-    fun  `should plug different data containers into same log template`(container: DataContainer<*>) {
+    fun  `should plug different data containers into same log template`(container: IdentifiableLog<*>) {
 
         // Arrange
-        val expected = SetupCreatedData(
-            Setup(
-                "1", Instant.EPOCH,
-                Request(method = "POST", path = "/some/api"),
-                Action(message = "Hello World!", statusCode = 202)
-            )
-        )
-
-        val subject = createSubject(expected)
+        val subject = container
+        println(Serializer.serialize(subject))
 
         // Act & Assert
-        subject.apiCategory.shouldBeEqualTo(ApiCategory.Log)
+        subject.apiCategory.shouldNotBeNull()
         subject.operation.shouldBeNull()
-        subject.data.shouldBeEqualTo(expected)
     }
 
 

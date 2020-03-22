@@ -9,17 +9,17 @@ data class SetupDeletedData(val setup: Setup) : DataContainerData
 data class SetupDeletionFailedData(val exception: Exception, val message: String? = null) : DataContainerData
 
 
-data class RequestReceivedData(val requestReceived: Request)
+data class RequestReceivedData(val requestReceived: Request): DataContainerData
 
 class LogDeletedData(deleted: MutableList<IdentifiableLog<*>> = mutableListOf()) : DataContainerData
 
 data class RequestMatchedData(
-    var setup: Setup,
     var requestReceived: Request,
+    var setup: Setup,
     var action: Action
-)
+): DataContainerData
 
-data class ActionData(val action: Setup)
+data class ActionData(val action: Action): DataContainerData
 
 
 

@@ -2,7 +2,7 @@ package io.alexheld.mockserver.domain.models
 
 import com.fasterxml.jackson.annotation.*
 
-public data class Request(
+data class Request(
     @JsonProperty(required = false)
     val method: String? = null,
 

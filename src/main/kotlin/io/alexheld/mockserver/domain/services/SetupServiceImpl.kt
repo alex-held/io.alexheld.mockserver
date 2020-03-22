@@ -2,7 +2,8 @@ package io.alexheld.mockserver.domain.services
 
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.domain.repositories.*
-import io.alexheld.mockserver.serialization.*
+import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.logging.models.*
 import io.ktor.application.*
 import io.ktor.request.*
 import org.apache.logging.log4j.kotlin.*
@@ -12,27 +13,49 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
 
 
     override fun list(): List<Setup> {
-        logService.add(Log.listSetups())
-        return repository.list()
+        val setups = repository.list()
+        val log = IdentifiableLog.generateNew(
+            ApiCategory.Setup,
+            LogMessageType.Setup_Created,
+            OperationData(ApiOperation.List, ApiCategory.Setup, Operations.OperationMessages.List, setups.toMutableList()))
+
+        logService.add(log)
+        return setups
     }
 
     override fun add(setup: Setup): Setup {
+
         val created = repository.add(setup)
-        logService.add(Log.setupCreated(created))
+        val log = IdentifiableLog.generateNew(
+            ApiCategory.Setup,
+            LogMessageType.Setup_Created,
+            SetupCreatedData(created))
+
+        logService.add(log)
         return created
     }
 
     override fun delete(id: Int): Setup? {
         val deleted = repository.delete(id)
-        if (deleted == null) logService.add(Log.setupDeletionFailed())
-        else logService.add(Log.setupDeleted(deleted))
+
+        val log = try {
+             IdentifiableLog.generateNew(
+                ApiCategory.Setup,
+                LogMessageType.Setup_Deleted, SetupDeletedData(deleted!!))
+        } catch (e: Exception) {
+            IdentifiableLog.generateNew(
+                ApiCategory.Setup,
+                LogMessageType.Setup_Deleted, SetupDeletionFailedData(e, e.localizedMessage))
+        }
+        logService.add(log)
         return deleted
     }
 
     override fun getMatchingSetup(call: ApplicationCall): Setup? {
         return repository.find { setup ->
-            setup.request.method == call.request.httpMethod.value
-                    && setup.request.path == call.request.path()
+            return@find setup.request != null
+                    && setup.request?.method == call.request.httpMethod.value
+                    && setup.request?.path == call.request.path()
         }
     }
 }

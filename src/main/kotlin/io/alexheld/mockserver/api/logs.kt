@@ -1,7 +1,8 @@
 package io.alexheld.mockserver.api
 
 import io.alexheld.mockserver.domain.services.*
-import io.alexheld.mockserver.serialization.*
+import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.logging.models.*
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
@@ -22,7 +23,7 @@ fun Route.logs(logService: LogService) {
 
             if (id is String) {
                 val deleted = logService.delete(id)
-                if (deleted is Log)
+                if (deleted is IdentifiableLog<LogDeletedData>)
                     call.respond(HttpStatusCode.OK, deleted)
             } else call.respond(HttpStatusCode.NoContent)
         }

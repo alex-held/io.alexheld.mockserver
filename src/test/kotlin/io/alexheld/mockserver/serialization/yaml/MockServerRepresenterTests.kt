@@ -1,21 +1,20 @@
+/*
 package io.alexheld.mockserver.serialization.yaml
 
 import com.fasterxml.jackson.databind.json.*
 import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.logging.models.*
 import io.alexheld.mockserver.serialization.*
 import io.alexheld.mockserver.testUtil.*
-import org.amshove.kluent.*
 import org.junit.jupiter.api.*
 import org.yaml.snakeyaml.*
-import org.yaml.snakeyaml.DumperOptions.*
 import org.yaml.snakeyaml.constructor.*
 import org.yaml.snakeyaml.introspector.*
 import org.yaml.snakeyaml.nodes.*
 import org.yaml.snakeyaml.nodes.Tag
 import java.time.*
-import org.yaml.snakeyaml.Yaml as SnakeYaml
 
 
 class MockServerRepresenterTests {
@@ -37,10 +36,10 @@ class MockServerRepresenterTests {
     }
 
 
-    fun generateRequestMatched(count: Int = 1): Iterator<RequestMatchedLog> = iterator {
+    fun generateRequestMatched(count: Int = 1): Iterator<RequestMatchedData> = iterator {
         Generator.enableDebugGeneration = true
         for (i in 0..1) {
-            val subject = RequestMatchedLog(
+            val subject = RequestMatchedData(
                 "00000000-0000-0000-0000-000000000000", Instant.EPOCH,
                 Request(method = "GET", path = "/some/path"),
                 Setup(1, Instant.EPOCH, Request(method = "GET"), Action("Hello World"))
@@ -126,10 +125,14 @@ class MockServerRepresenterTests {
 
 
         // Arrange
-        val subject = RequestMatchedLog(
+        val subject = RequestMatchedData(
             "1234", Instant.EPOCH,
-            Request(method = "POST"), Setup(1234, Instant.EPOCH, Request(method = "POST", path = "/some/api"), Action(message = "Hello World!",
-                statusCode = 202))
+            Request(method = "POST"), Setup(
+                1234, Instant.EPOCH, Request(method = "POST", path = "/some/api"), Action(
+                    message = "Hello World!",
+                    statusCode = 202
+                )
+            )
         )
 
 
@@ -148,7 +151,7 @@ class MockServerRepresenterTests {
     fun canRequestSerializeSetupCreated() {
 
         // Arrange
-        val subject = SetupCreatedLog("1234", Instant.EPOCH,
+        val subject = SetupCreatedData("1234", Instant.EPOCH,
             Setup( 1234,Instant.EPOCH,  Request(method = "POST", path = "/some/api"), Action(message = "Hello World!", statusCode = 202))
         )
 
@@ -157,31 +160,31 @@ class MockServerRepresenterTests {
         val yaml = y.dumpAsMap(subject)
 
         // Assert
-        yaml.dump("SetupCreatedLogDTO")
+        yaml.dump("SetupCreatedDataDTO")
     }
 
     @Test
-    fun canRequestSerializeRequestMatchedLog() {
+    fun canRequestSerializeRequestMatchedData() {
 
         // Arrange
         val requestReceived = Request(method = "POST")
         val setup = Setup(1234, Instant.EPOCH, Request(method = "POST", path = "/some/api"), Action(message = "Hello World!", statusCode = 202))
 
-        val subject = RequestMatchedLog("1234", Instant.EPOCH, requestReceived, setup)
+        val subject = RequestMatchedData("1234", Instant.EPOCH, requestReceived, setup)
 
         // Act
         val y = org.yaml.snakeyaml.Yaml(SetupRepresentation())
         val yaml = y.dumpAsMap(subject)
 
         // Assert
-        yaml.dump("RequestMatchedLog")
+        yaml.dump("RequestMatchedData")
     }
 
     @Test
     fun canRequestDeserializeSetupCreated() {
 
         // Arrange
-        val expected = SetupCreatedLog("1", Instant.EPOCH, Setup(1,Instant.EPOCH,
+        val expected = SetupCreated("1", Instant.EPOCH, Setup(1,Instant.EPOCH,
                 Request(method = "POST", path = "/some/api"),
                 Action(message = "Hello World!", statusCode = 202))
         )
@@ -207,7 +210,7 @@ setup:
         ctor.addTypeDescription(td)
 
         val y = org.yaml.snakeyaml.Yaml(ctor, SetupRepresentation())
-        val actual = y.load<SetupCreatedLog>(yaml)
+        val actual = y.load<SetupCreatedData>(yaml)
 
         // Assert
         actual.id.shouldBeEqualTo(expected.id)
@@ -240,8 +243,7 @@ class MockServerConstruction : Constructor() {
         addTypeDescription(TypeDescription(Request::class.java, Tag.MAP))
         addTypeDescription(TypeDescription(RequestBody::class.java, Tag.MAP))
 
-        addTypeDescription(TypeDescription(RequestMatchedLog::class.java, Tag.MAP))
-        addTypeDescription(TypeDescription(SetupCreatedLog::class.java, SetupCreatedLog::class.java))
+        addTypeDescription(TypeDescription(RequestMatchedData::class.java, Tag.MAP))
 
         this.yamlConstructors[Tag("!setup")] = SetupConstruct()
         this.yamlConstructors[Tag(Setup::class.java)] = SetupConstruct()
@@ -328,28 +330,13 @@ inner class SetupConstruct : Construct {
         throw UnsupportedOperationException()
     }
 
-
-
-
-    @Test fun shouldSetSetupData(){
-
-        // Arrange
-        val setup = Setup(1, Instant.EPOCH, Request(method="GET"), Action("Hello World!"))
-        val subject = SetupCreatedLog("1234", Instant.EPOCH)
-
-        // Act
-        subject.setup = setup
-        subject.setup.shouldNotBeNull()
-        subject.timestamp.epochSecond.shouldBeEqualTo(Instant.EPOCH.epochSecond)
-        subject.setup.id.shouldBeEqualTo("1")
-        subject.id.shouldBeEqualTo("1234")
-    }
 }
 
 
+*/
 /*
 
-class RequestMatchedLog(val id: String, val timestamp: Instant, val request: Request, setup: Setup) : HashMap<String, Any>(
+class RequestMatchedData(val id: String, val timestamp: Instant, val request: Request, setup: Setup) : HashMap<String, Any>(
     mapOf(
         "id" to id,
         "timestamp" to timestamp.toString(),
@@ -360,51 +347,12 @@ class RequestMatchedLog(val id: String, val timestamp: Instant, val request: Req
         )
     )
 )
-*/
+*//*
 
-object Yaml {
-
-    fun dump(type: Class<*>, any: Any): String = dump(type)
-    fun dump(any: Any): String = getMapper(any::class.java).dumpAsMap(any)
-
-    fun getMapper(type: Class<*>): SnakeYaml {
-
-        val y = SnakeYaml(
-            buildConstructor(type),
-            MockServerRepresentation(),
-            buildDumpOptions()
-        )
-
-        val delegatingNodeDescription = TypeDescription(DelegatingNode::class.java, DelegatingNode::class.java)
-        delegatingNodeDescription.setExcludes("properties", "children")
-        y.addTypeDescription(delegatingNodeDescription)
-        y.setBeanAccess(BeanAccess.FIELD)
-
-        return y
-    }
-
-
-    fun buildConstructor(type: Class<*>): Constructor {
-        val c = Constructor(type)
-        c.isAllowDuplicateKeys = false
-        val propertyUtils = c.propertyUtils
-        propertyUtils.isSkipMissingProperties = true
-        return c
-    }
-
-
-    fun buildDumpOptions(indent: Int = 2): DumperOptions {
-        val opt = DumperOptions()
-        opt.defaultFlowStyle = FlowStyle.BLOCK
-        opt.indicatorIndent = 2
-        opt.indent = indent + 2
-
-        return opt
-    }
-}
 
 
 inline fun <reified T> Yaml.buildConstructor(): Constructor = buildConstructor(T::class.java)
 inline fun <reified T> Yaml.dumpAs(any: Any): String = dump(T::class.java, any)
 
 inline fun <reified T> Yaml.getMapper(): org.yaml.snakeyaml.Yaml = getMapper(T::class.java)
+*/

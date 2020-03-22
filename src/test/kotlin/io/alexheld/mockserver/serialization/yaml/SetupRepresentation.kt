@@ -1,7 +1,8 @@
+/*
 package io.alexheld.mockserver.serialization.yaml
 
 import io.alexheld.mockserver.domain.models.*
-import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.logging.models.*
 import org.yaml.snakeyaml.*
 import org.yaml.snakeyaml.introspector.*
 import org.yaml.snakeyaml.nodes.*
@@ -17,6 +18,7 @@ class SetupRepresentation : Representer() {
         propertyUtils.setBeanAccess(BeanAccess.FIELD)
         propertyUtils.isSkipMissingProperties = true
 
+*/
 /*
 
 
@@ -24,18 +26,18 @@ class SetupRepresentation : Representer() {
         addTypeDescription(TypeDescription(Action::class.java, Tag("act")))
         addTypeDescription(TypeDescription(Request::class.java, Tag.MAP))
         addTypeDescription(TypeDescription(RequestBody::class.java, Tag.MAP))
-        addTypeDescription(TypeDescription(RequestMatchedLog::class.java, Tag.MAP))
-*/
-        addTypeDescription(TypeDescription(Setup::class.java,  Tag("!setup")))
-        addClassTag(Setup::class.java,  Tag("!setup"))
-      //  addClassTag(Setup::class.java,  Tag.MAP)
-        addClassTag(Action::class.java,  Tag.MAP)
+        addTypeDescription(TypeDescription(RequestMatchedData::class.java, Tag.MAP))
+*//*
+
+        addTypeDescription(TypeDescription(Setup::class.java, Tag("!setup")))
+        addClassTag(Setup::class.java, Tag("!setup"))
+        //  addClassTag(Setup::class.java,  Tag.MAP)
+        addClassTag(Action::class.java, Tag.MAP)
         addClassTag(Request::class.java, Tag.MAP)
         addClassTag(RequestBody::class.java, Tag.MAP)
-        addClassTag(SetupCreatedLog::class.java, Tag.MAP)
-        addClassTag(RequestMatchedLog::class.java, Tag.MAP)
+        addClassTag(SetupCreatedData::class.java, Tag.MAP)
+        addClassTag(RequestMatchedData::class.java, Tag.MAP)
     }
-
 
 
     override fun representJavaBeanProperty(javaBean: Any?, property: Property?, propertyValue: Any?, customTag: Tag?): NodeTuple? {
@@ -76,7 +78,7 @@ class SetupRepresentation : Representer() {
             val propertyValue = property.get(javaBean) ?: continue
 
             val beanPropertyNode = representJavaBeanProperty(javaBean, property, propertyValue, Tag.MAP)
-            if(beanPropertyNode is NodeTuple) members.add(beanPropertyNode)
+            if (beanPropertyNode is NodeTuple) members.add(beanPropertyNode)
         }
 
         return node
@@ -101,3 +103,4 @@ class SetupRepresentation : Representer() {
         }
     }
 }
+*/

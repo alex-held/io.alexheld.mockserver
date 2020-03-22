@@ -1,9 +1,9 @@
+/*
 package io.alexheld.mockserver.serialization.yaml
 
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.logging.models.*
-import io.alexheld.mockserver.serialization.*
 import org.yaml.snakeyaml.*
 import org.yaml.snakeyaml.introspector.*
 import org.yaml.snakeyaml.nodes.*
@@ -13,10 +13,9 @@ class MockServerRepresentation : Representer() {
 
     init {
         this.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        this.addClassTag(RequestMatchedLog::class.java, Tag.MAP)
+        this.addClassTag(RequestMatchedData::class.java, Tag.MAP)
         this.addClassTag(Request::class.java, Tag.MAP)
         this.addClassTag(Setup::class.java, Tag.MAP)
-        this.addClassTag(DelegatingNode::class.java, Tag.MAP)
         this.addClassTag(Action::class.java, Tag.MAP)
 
         this.representers[LogMessageType::class.java] = PresentLogMessageType()
@@ -91,7 +90,7 @@ class MockServerRepresentation : Representer() {
 
     inner class RepresentDelegatingNode : Represent {
 
-        fun handleMembers(delegatingNode: DelegatingNode, members: Map<String, Any>) : MappingNode? {
+        fun handleMembers(delegatingNode: DelegatingNode, members: Map<String, Any>): MappingNode? {
             return try {
                 return representMapping(Tag.MAP, members.mapKeys { k -> k.key.takeWhile { c -> c != '$' } }, DumperOptions.FlowStyle.BLOCK) as MappingNode
             } catch (e: Exception) {
@@ -99,6 +98,7 @@ class MockServerRepresentation : Representer() {
                 null
             }
         }
+*/
 /*
 
         fun handleMembers(delegatingNode: DelegatingNode, members: Map<String, Any>): MappingNode? {
@@ -121,18 +121,30 @@ class MockServerRepresentation : Representer() {
         fun handleProperty(delegatingNode: DelegatingNode, pair: Pair<String, Any>): NodeTuple? {
             return try {
 
-                */
+                *//*
+
+        */
 /** substitute delegate property names {@sample name$delegate}  with  with {@sample name}  *//*
+*/
+/*
 
                 val clearName = pair.first.takeWhile { c -> c != '$'}
 
-                */
-/** ignore all properties with {@see null} values. to ignore it, we need to return null from this function  *//*
+                *//*
 
         */
+/** ignore all properties with {@see null} values. to ignore it, we need to return null from this function  *//*
+*/
+/*
+
+        *//*
+
+*/
 /*        val propertyValue = pair.second ?: return null
                 val substitute = PropertySubstitute(clearName, propertyValue::class.java)
 *//*
+*/
+/*
 
 
                 NodeTuple(
@@ -145,15 +157,17 @@ class MockServerRepresentation : Representer() {
             }
 
         }
-*/
+*//*
+
 
         override fun representData(data: Any?): Node? {
             if (data !is DelegatingNode) return null
 
-
-            val members = data.properties.toSortedMap { a, b ->
-                getPropertyPosition(a).compareTo(getPropertyPosition(b))
-            }
+            val members = data.properties
+                .filterValues { return@filterValues it != null }
+                .toSortedMap(Comparator.comparingInt { name ->
+                    getPropertyPosition(name)
+                })
 
             members.map {
                 val cleanName = it.key.takeWhile { c -> c != '$' }
@@ -161,7 +175,7 @@ class MockServerRepresentation : Representer() {
             }
 
 
-        //    val mainNode = representMapping(Tag.MAP, members, DumperOptions.FlowStyle.BLOCK) as MappingNode
+            //    val mainNode = representMapping(Tag.MAP, members, DumperOptions.FlowStyle.BLOCK) as MappingNode
             val mainNode = handleMembers(data, members)
 
 
@@ -189,18 +203,22 @@ class MockServerRepresentation : Representer() {
     override fun representJavaBeanProperty(javaBean: Any?, property: Property?, propertyValue: Any?, customTag: Tag?): NodeTuple? {
         val clearName = property!!.name.takeWhile { c -> c != '$' }
 
-        /** ignore all properties with {@see null} values. to ignore it, we need to return null from this function */
+        */
+/** ignore all properties with {@see null} values. to ignore it, we need to return null from this function *//*
+
         if (propertyValue == null)
             return null
 
-        /** substitute delegate property names {@sample name$delegate}  with  with {@sample name} */
+        */
+/** substitute delegate property names {@sample name$delegate}  with  with {@sample name} *//*
+
         val substitute = PropertySubstitute(clearName, property.type)
 
         println(javaBean!!::class.java.name)
 
         // TODO: This makes the touble
         //val node = representScalar(Tag.MAP, propertyValue as String)
-        val node = representMapping(Tag.MAP, propertyValue as Map<*,*>, DumperOptions.FlowStyle.BLOCK)
+        val node = representMapping(Tag.MAP, propertyValue as Map<*, *>, DumperOptions.FlowStyle.BLOCK)
         if (property.type == String::class.java)
             representScalar(Tag.STR, propertyValue as String, DumperOptions.ScalarStyle.PLAIN)
 
@@ -208,3 +226,4 @@ class MockServerRepresentation : Representer() {
     }
 
 }
+*/

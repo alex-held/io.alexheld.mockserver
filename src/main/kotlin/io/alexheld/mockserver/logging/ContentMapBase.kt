@@ -1,11 +1,6 @@
 package io.alexheld.mockserver.logging
 
-import WithContentMap
-
-@Target(AnnotationTarget.CONSTRUCTOR)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ContentBindingConstructor
-
+/*
 
 open class ContentMapBase  : Map<String, Any?>, WithContentMap {
 
@@ -36,3 +31,6 @@ open class ContentMapBase  : Map<String, Any?>, WithContentMap {
 
     override fun isEmpty(): Boolean = content.isEmpty()
 }
+*/
+
+

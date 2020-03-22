@@ -1,9 +1,10 @@
 package io.alexheld.mockserver.domain.repositories
 
-import io.alexheld.mockserver.serialization.*
+import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.logging.models.*
 
 interface LogRepository {
-    fun list(): List<Log>
-    fun delete(id: String): Log?
-    fun add(log: Log): Log
+    fun list(): IdentifiableLog<OperationData>
+    fun delete(id: String): IdentifiableLog<LogDeletedData>
+    fun<T: IdentifiableLog<*>> add(log: T) : T
 }

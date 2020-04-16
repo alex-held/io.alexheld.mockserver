@@ -7,9 +7,17 @@ import com.fasterxml.jackson.dataformat.yaml.*
 import com.fasterxml.jackson.datatype.jsr310.*
 import com.fasterxml.jackson.module.kotlin.*
 
+
+
+inline fun<reified T> Yaml.serialize(value: T) = Yaml.getWriterFor(T::class.java).writeValueAsString(value)
+
+inline fun<reified T> Yaml.deserialize(yaml: String): T = Yaml.getReader(T::class.java).readValue(yaml)
+
+
+
 object Yaml {
 
-    val mapper = YAMLMapper.builder().build()
+    private val mapper = YAMLMapper.builder().build()
         .registerKotlinModule()
         .registerModule(JavaTimeModule())
         .findAndRegisterModules()
@@ -44,16 +52,4 @@ object Yaml {
         )
         .without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .forType(type)
-
-
 }
-
-
-inline fun<reified T> Yaml.getMapperFor(): ObjectMapper = mapper
-inline fun<reified T> Yaml.getWriterFor()  = Yaml.getWriterFor(T::class.java)
-inline fun<reified T> Yaml.getReaderFor()  = Yaml.getReader(T::class.java)
-
-
-
-
-

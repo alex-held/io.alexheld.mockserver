@@ -12,7 +12,7 @@ class LogServiceImpl(private val logRepository: LogRepository) : LogService {
     override fun<T: IdentifiableLog<*>> add(log: T): T = logRepository.add(log)
 
     fun tryLog(log: IdentifiableLog<*>): String? {
-        println(Serializer.serialize(log))
+        println(Yaml.serialize(log))
         return log.toString()
     }
 }

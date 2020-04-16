@@ -30,8 +30,8 @@ class LogDataContainerTests : WithTestResources {
             Generator.enableDebugGeneration = false
         }
 
-        private fun <T : DataContainerData> createSubject(type: LogMessageType, container: T, operation: ApiOperation? = null): IdentifiableLog<T> =
-            IdentifiableLog.generateNew(ApiCategory.Log, LogMessageType.Operation, container, operation)
+        private fun <T : DataContainerData> createSubject(type: LogMessageType, container: T): IdentifiableLog<T> =
+            IdentifiableLog.generateNew(ApiCategory.Log, LogMessageType.Operation, container)
 
         @JvmStatic
         fun logDataContainerData(): Stream<Arguments> = Stream.of(
@@ -91,8 +91,7 @@ class LogDataContainerTests : WithTestResources {
 
         // Arrange
         val expected = readResource(fileName)
-        val subject = Yaml.getWriterFor(log::class.java)
-        val actual = subject.writeValueAsString(log)
+        val actual = Yaml.serialize(log)
 
         println(actual)
 

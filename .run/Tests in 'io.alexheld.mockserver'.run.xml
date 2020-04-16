@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Tests in 'io.alexheld.mockserver'" type="GradleRunConfiguration" factoryName="Gradle" singleton="true" show_console_on_std_err="true">
+  <configuration default="false" name="Tests in 'io.alexheld.mockserver'" type="GradleRunConfiguration" factoryName="Gradle" singleton="true">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -15,7 +15,7 @@
       </option>
       <option name="vmOptions" value="" />
     </ExternalSystemSettings>
-    <extension name="coverage">
+    <extension name="coverage" sample_coverage="false">
       <pattern>
         <option name="PATTERN" value="io.alexheld.mockserver.*" />
         <option name="ENABLED" value="true" />

@@ -13,3 +13,14 @@ enum class ApiOperation {
     Create,
     Inspect
 }
+
+enum class LogMessageType {
+    //RUNNABLE, TRACE, DEBUG, INFO, WARN, EXCEPTION, CLEARED, RETRIEVED, VERIFICATION, VERIFICATION_FAILED,
+    Setup_Created ,
+    Setup_Deleted ,
+    Exception,
+    Request_Received,
+    Request_Matched ,
+    Action_Response ,
+    Operation
+}

@@ -27,7 +27,6 @@ data class RequestReceivedData(val requestReceived: Request): DataContainerData 
 
 }
 
-
 data class RequestMatchedData(
     var requestReceived: Request,
     var setup: Setup,
@@ -43,7 +42,7 @@ data class ActionData(val action: Action): DataContainerData {
 }
 
 
-open class OperationData(
+data class OperationData(
     @JsonIgnore
     val apiOperation: ApiOperation,
     val dataset: List<*>

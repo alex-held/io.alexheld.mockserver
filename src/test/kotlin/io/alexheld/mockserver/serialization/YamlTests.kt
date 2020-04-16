@@ -1,29 +1,19 @@
-package serialization
+package io.alexheld.mockserver.serialization
 
-import com.fasterxml.jackson.databind.*
-import com.fasterxml.jackson.module.kotlin.*
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.logging.models.*
-import io.alexheld.mockserver.serialization.*
-import org.amshove.kluent.*
+import io.alexheld.mockserver.testUtil.*
 import org.junit.jupiter.api.*
-import org.junit.jupiter.params.*
 import org.junit.jupiter.params.provider.*
-import java.io.*
 import java.time.*
 import java.util.stream.*
 
-class YamlTests {
 
-    private val root = "/serialization/yaml"
-    private fun streamYamlFile(fileName: String): InputStream = this::class.java.getResourceAsStream("$root/$fileName.yaml")
+class YamlTests : WithTestResources {
 
-    private fun readYaml(file: String): String {
-        val stream = streamYamlFile(file)
-        val reader = InputStreamReader(stream)
-        return reader.readText()
-    }
+    override fun getRootPath(): String= "/logging/yaml"
+
 
     companion object {
 
@@ -67,7 +57,7 @@ class YamlTests {
             ),
             Arguments.of(
                 "log-deleted", createSubject(LogMessageType.Operation,
-                    OperationData(ApiOperation.Delete, Operations.OperationMessages.Delete, mutableListOf(
+                    OperationData(ApiOperation.Delete, mutableListOf(
                             createSubject(LogMessageType.Setup_Created,
                                 SetupCreatedData(
                                     Setup(
@@ -93,27 +83,11 @@ class YamlTests {
         )
     }
 
-
-    @ParameterizedTest
-    @MethodSource("logDataContainerData")
-    fun `should serialize IdentifableLog`(fileName: String, log: IdentifiableLog<*>) {
-
-        // Arrange
-        val expected = readYaml(fileName)
-        val subject = Yaml.getWriterFor(log::class.java)
-        val actual = subject.writeValueAsString(log)
-
-        println(actual)
-
-        // Act
-        actual.shouldNotBeBlank().shouldBeEqualTo(expected)
-    }
-
-    @Test
+/*    @Test
     fun `should deserialize yaml to setupCreatedL`() {
 
         // Arrange
-        val yaml = readYaml("setup-created")
+        val yaml = readResource("setup-created")
 
         val log = createSubject(LogMessageType.Setup_Created, SetupCreatedData(Setup("1", Instant.EPOCH, Request(method = "POST"), Action("Placedholder...", 1))))
         val subject = ObjectMapper(Yaml.mapper.factory)
@@ -123,5 +97,5 @@ class YamlTests {
 
         // Act
         actual.shouldNotBeNull()
-    }
+    }*/
 }

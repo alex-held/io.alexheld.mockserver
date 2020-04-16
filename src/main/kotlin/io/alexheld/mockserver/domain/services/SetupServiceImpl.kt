@@ -17,7 +17,7 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val log = IdentifiableLog.generateNew(
             ApiCategory.Setup,
             LogMessageType.Setup_Created,
-            OperationData(ApiOperation.List, ApiCategory.Setup, Operations.OperationMessages.List, setups.toMutableList()))
+            OperationData(ApiOperation.List, Operations.OperationMessages.List, setups.toMutableList()))
 
         logService.add(log)
         return setups
@@ -45,7 +45,7 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         } catch (e: Exception) {
             IdentifiableLog.generateNew(
                 ApiCategory.Setup,
-                LogMessageType.Setup_Deleted, SetupDeletionFailedData(e, e.localizedMessage))
+                LogMessageType.Setup_Deleted, ExceptionData.fromException(e))
         }
         logService.add(log)
         return deleted

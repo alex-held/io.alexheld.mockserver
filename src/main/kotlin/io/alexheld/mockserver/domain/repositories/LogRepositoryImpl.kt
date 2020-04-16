@@ -8,18 +8,21 @@ class LogRepositoryImpl : LogRepository {
 
     private val logs: MutableList<IdentifiableLog<*>> = mutableListOf()
 
-    override fun list(): IdentifiableLog<OperationData> = IdentifiableLog
-        .generateNew(ApiCategory.Log, LogMessageType.Operation,
-            OperationData(ApiOperation.List, ApiCategory.Log, Operations.OperationMessages.List,
-                logs.toMutableList()))
+    override fun list(): IdentifiableLog<OperationData> = IdentifiableLog.generateNew(
+            ApiCategory.Log,
+            LogMessageType.Operation,
+            OperationData(ApiOperation.List,
+                Operations.OperationMessages.List,
+                logs)
+    )
 
 
-    override fun delete(id: String): IdentifiableLog<LogDeletedData> {
+    override fun delete(id: String): IdentifiableLog<OperationData> {
         val results: MutableList<IdentifiableLog<*>> = mutableListOf()
         this.logs.filterTo(results, {log -> log.id == id})
 
         val result = IdentifiableLog
-            .generateNew(ApiCategory.Log, LogMessageType.Operation, LogDeletedData(results))
+            .generateNew(ApiCategory.Log, LogMessageType.Operation, OperationData(ApiOperation.Delete, Operations.OperationMessages.Delete, results))
 
         return result
     }

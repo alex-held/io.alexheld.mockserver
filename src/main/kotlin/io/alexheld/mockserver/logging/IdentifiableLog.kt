@@ -1,28 +1,20 @@
 package io.alexheld.mockserver.logging
 
-import com.fasterxml.jackson.annotation.*
+import io.alexheld.mockserver.logging.models.*
 import java.time.*
 
 
 /**
  * As unique identifiable Log.
  */
-data class IdentifiableLog<TData: DataContainerData>  @JsonCreator(mode = JsonCreator.Mode.DEFAULT) constructor(
-    @JacksonInject var id: String,
-    @JacksonInject var time: String,
-    @JacksonInject override var apiCategory: ApiCategory,
-    @JacksonInject var type: LogMessageType,
-    @JacksonInject  override var data: TData?,
-    @JacksonInject var operation: ApiOperation?
+data class IdentifiableLog<TData: DataContainerData> (
+    var id: String,
+    var instant: String,
+    override var apiCategory: ApiCategory,
+    var type: LogMessageType,
+    var operation: ApiOperation?,
+    override var data: TData
 ) : WithCategory, DataContainer<TData> {
-
-
-    val instant get() = Instant.parse(this.time)
-
-
-    fun either(onValue: (TData) -> Unit, onEmpty: () -> Unit) =
-        if (data is TData) onValue(data!!)
-        else onEmpty()
 
     companion object {
 
@@ -37,37 +29,29 @@ data class IdentifiableLog<TData: DataContainerData>  @JsonCreator(mode = JsonCr
                 instant.toString(),
                 apiCategory,
                 type,
-                m["data"] as DataContainerData?,
-                if(apiOperation != null) enumValueOf<ApiOperation>(apiOperation) else null)
+                if(apiOperation != null) enumValueOf<ApiOperation>(apiOperation) else null,
+                m["data"] as DataContainerData
+              )
         }
 
 
-/*
 
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-        @JvmStatic
-        fun create2(
-            @JacksonInject id: String,
-            @JacksonInject instant: Instant,
-            @JacksonInject apiCategory: ApiCategory,
-            @JacksonInject type: LogMessageType,
-            @JacksonInject data: DataContainerData?,
-            @JacksonInject operation: ApiOperation?
-        ): IdentifiableLog<*> {
-            return IdentifiableLog(id, instant, apiCategory, type, data, operation)
-        }
-*/
-
-             //   enumValueOf<ApiCategory>(apiCategory),
-
-        fun <T : DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T?, operation: ApiOperation? = null): IdentifiableLog<T>  {
+        fun <T : DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T, operation: ApiOperation? = null): IdentifiableLog<T>  {
             val id = Generator.getId()
             val time = Generator.getTimestampString()
-            val log = IdentifiableLog<T>(id, time.toString(), apiCategory, type, null, null)
+            val log = IdentifiableLog<T>(id, time.toString(), apiCategory, type, null, data)
 
-            log.operation = operation
             log.data = data
+            log.type = data.getType()
+
+            if (data is OperationData) {
+                log.operation = data.apiOperation
+            }
+
             return log
         }
+
+
+
     }
 }

@@ -15,8 +15,6 @@ object Yaml {
         .findAndRegisterModules()
         .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY) as YAMLMapper
 
-    fun getReader2(type: Class<*>) = ObjectMapper(getReader(type).factory)
-
     fun getReader(type: Class<*>) = mapper
         .reader()
         .without(

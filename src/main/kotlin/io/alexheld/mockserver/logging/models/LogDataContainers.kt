@@ -5,36 +5,51 @@ import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.logging.*
 
 
-@JsonAutoDetect data class SetupCreatedData @JsonCreator constructor(@JsonProperty var setup: Setup) : DataContainerData
-data class SetupDeletedData(val setup: Setup) : DataContainerData
-data class SetupDeletionFailedData(@JsonIgnore val exception: Exception, val message: String? = null) : DataContainerData
+data class SetupCreatedData(var setup: Setup) : DataContainerData {
+    override fun getType(): LogMessageType = LogMessageType.Setup_Created
+}
+
+data class SetupDeletedData(val setup: Setup) : DataContainerData {
+    override fun getType(): LogMessageType = LogMessageType.Setup_Deleted
+
+}
+data class ExceptionData(val message: String? = null) : DataContainerData {
+
+    companion object {
+        fun fromException(exception: Exception): ExceptionData = ExceptionData(exception.localizedMessage)
+    }
+    override fun getType(): LogMessageType = LogMessageType.Exception
+}
 
 
-data class RequestReceivedData(val requestReceived: Request): DataContainerData
+data class RequestReceivedData(val requestReceived: Request): DataContainerData {
+    override fun getType(): LogMessageType = LogMessageType.Request_Received
 
-class LogDeletedData(deleted: MutableList<IdentifiableLog<*>> = mutableListOf()) : DataContainerData
+}
+
 
 data class RequestMatchedData(
     var requestReceived: Request,
     var setup: Setup,
-    var action: Action
-): DataContainerData
+    var actionExecuted: Action
+): DataContainerData {
+    override fun getType(): LogMessageType = LogMessageType.Request_Matched
 
-data class ActionData(val action: Action): DataContainerData
+}
+
+data class ActionData(val action: Action): DataContainerData {
+    override fun getType(): LogMessageType = LogMessageType.Action_Response
+
+}
 
 
-
-data class OperationData1<T: Any>(
+open class OperationData(
+    @JsonIgnore
     val apiOperation: ApiOperation,
-    val apiCategory: ApiCategory,
-    val message: Operations.OperationMessages,
-    val dataset: MutableList<T?>? = null
-) : DataContainerData
 
-
-data class OperationData(
-    val apiOperation: ApiOperation,
-    val apiCategory: ApiCategory,
     val message: Operations.OperationMessages,
-    val dataset: MutableList<Any?>? = null
-) : DataContainerData
+    val dataset: List<*>?
+) : DataContainerData {
+
+    override fun getType(): LogMessageType = LogMessageType.Operation
+}

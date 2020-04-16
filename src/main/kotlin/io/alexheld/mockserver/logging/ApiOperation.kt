@@ -19,5 +19,6 @@ class Operations {
 enum class ApiOperation {
     List,
     Delete,
+    Create,
     Inspect
 }

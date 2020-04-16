@@ -5,7 +5,6 @@ import kotlin.reflect.*
 
 
 enum class LogMessageType {
-
     //RUNNABLE, TRACE, DEBUG, INFO, WARN, EXCEPTION, CLEARED, RETRIEVED, VERIFICATION, VERIFICATION_FAILED,
     Setup_Created {
         override val type: KClass<*> = SetupCreatedData::class
@@ -13,8 +12,8 @@ enum class LogMessageType {
     Setup_Deleted {
         override val type: KClass<*> = SetupDeletedData::class
     },
-    Setup_Deletion_Failed {
-        override val type: KClass<*> = SetupDeletionFailedData::class
+    Exception {
+        override val type: KClass<*> = ExceptionData::class
     },
     Request_Received {
         override val type: KClass<*> = RequestReceivedData::class

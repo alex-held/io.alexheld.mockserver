@@ -18,5 +18,5 @@ fun String.shouldBeEqualWhenTrimmed(expected: String) {
     val formatted = this
     println("Expected:\n----------------------------\n\n$expected\n")
     println("Formatted:\n----------------------------\n\n$formatted\n")
-    formatted.trim(' ').trim('\n').trim('\r').shouldBeEqualTo(expected)
+    formatted.trim(' ').trim('\n').trim().trim('\r').shouldBeEqualTo(expected)
 }

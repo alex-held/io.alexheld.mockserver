@@ -2,13 +2,13 @@
 id: 00000000-0000-0000-0000-000000000000
 instant: 1970-01-01T00:00:00Z
 apiCategory: Log
-type: Setup_Created
+type: Setup_Deleted
 data:
   setup:
     id: 1
     timestamp: 1970-01-01T00:00:00Z
     request:
-      method: POST
+      path: /some/api
     action:
-      message: Placedholder...
+      message: Hello World!
       statusCode: 1

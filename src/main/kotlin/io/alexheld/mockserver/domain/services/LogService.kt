@@ -6,6 +6,6 @@ import io.alexheld.mockserver.logging.models.*
 interface LogService {
 
     fun list(): IdentifiableLog<OperationData>
-    fun delete(id: String): IdentifiableLog<LogDeletedData>
+    fun delete(id: String): IdentifiableLog<OperationData>
     fun<T: IdentifiableLog<*>> add(log: T): T
 }

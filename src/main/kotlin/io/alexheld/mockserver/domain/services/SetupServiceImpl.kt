@@ -17,7 +17,7 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val log = IdentifiableLog.generateNew(
             ApiCategory.Setup,
             LogMessageType.Setup_Created,
-            OperationData(ApiOperation.List, Operations.OperationMessages.List, setups.toMutableList()))
+            OperationData(ApiOperation.List,  setups.toMutableList()))
 
         logService.add(log)
         return setups

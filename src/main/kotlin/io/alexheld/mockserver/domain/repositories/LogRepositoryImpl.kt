@@ -12,7 +12,6 @@ class LogRepositoryImpl : LogRepository {
             ApiCategory.Log,
             LogMessageType.Operation,
             OperationData(ApiOperation.List,
-                Operations.OperationMessages.List,
                 logs)
     )
 
@@ -22,7 +21,7 @@ class LogRepositoryImpl : LogRepository {
         this.logs.filterTo(results, {log -> log.id == id})
 
         val result = IdentifiableLog
-            .generateNew(ApiCategory.Log, LogMessageType.Operation, OperationData(ApiOperation.Delete, Operations.OperationMessages.Delete, results))
+            .generateNew(ApiCategory.Log, LogMessageType.Operation, OperationData(ApiOperation.Delete, results))
 
         return result
     }

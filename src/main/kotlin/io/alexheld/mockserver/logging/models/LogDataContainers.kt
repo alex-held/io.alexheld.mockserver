@@ -46,9 +46,7 @@ data class ActionData(val action: Action): DataContainerData {
 open class OperationData(
     @JsonIgnore
     val apiOperation: ApiOperation,
-
-    val message: Operations.OperationMessages,
-    val dataset: List<*>?
+    val dataset: List<*>
 ) : DataContainerData {
 
     override fun getType(): LogMessageType = LogMessageType.Operation

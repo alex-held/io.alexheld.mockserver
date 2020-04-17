@@ -11,7 +11,6 @@ import org.apache.logging.log4j.kotlin.*
 
 class SetupServiceImpl(private val repository: SetupRepository, private val logService: LogService, private val gen: GenerationService) : SetupService, Logging {
 
-
     override fun list(): List<Setup> {
         val setups = repository.list()
         val log = IdentifiableLog.generateNew(

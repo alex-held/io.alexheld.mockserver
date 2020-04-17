@@ -4,17 +4,19 @@ import java.time.*
 import java.util.*
 
 
-class GeneratorService : GenerationService {
+class GenerationServiceImpl() : GenerationService {
+
+    constructor(generationStrategy: GenerationStrategy) : this(){
+        this.generationStrategy = generationStrategy
+    }
 
     companion object {
 
-        var Constant_Debug_Id: String = "00000000-0000-0000-0000-000000000000"
-        var Constant_Debug_Timestamp: Instant = Instant.EPOCH
+        const val Constant_Debug_Id: String = "00000000-0000-0000-0000-000000000000"
+        val Constant_Debug_Timestamp: Instant = Instant.EPOCH
 
         fun createDebugGeneration(strategy: GenerationStrategy = GenerationStrategy.Debug_Constant): GenerationService {
-            val generationService = GeneratorService()
-            generationService.generationStrategy = strategy
-            return generationService
+            return GenerationServiceImpl(strategy)
         }
     }
 
@@ -25,10 +27,8 @@ class GeneratorService : GenerationService {
     }
 
     private var idCounter: Int = 1
-    var generationStrategy: GenerationStrategy =
-        GenerationStrategy.Default
+    private var generationStrategy: GenerationStrategy = GenerationStrategy.Default
     private var debugInstant: Instant = Instant.parse("0001-01-01T00:00:00Z")
-
     private fun resolveIdString(): String = idCounter.toString()
 
     override fun getId(): String {

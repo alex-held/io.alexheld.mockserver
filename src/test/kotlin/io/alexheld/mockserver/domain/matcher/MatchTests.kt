@@ -1,6 +1,5 @@
-package io.alexheld.mockserver.matcher
+package io.alexheld.mockserver.domain.matcher
 
-import io.alexheld.mockserver.domain.matcher.*
 import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.testUtil.*
 import org.amshove.kluent.*

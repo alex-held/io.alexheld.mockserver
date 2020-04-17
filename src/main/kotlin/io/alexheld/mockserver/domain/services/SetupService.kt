@@ -6,6 +6,6 @@ import io.ktor.application.*
 interface SetupService {
     fun list(): List<Setup>
     fun add(setup: Setup): Setup
-    fun delete(id: Int): Setup?
+    fun delete(id: String): Setup?
     fun getMatchingSetup(call: ApplicationCall): Setup?
 }

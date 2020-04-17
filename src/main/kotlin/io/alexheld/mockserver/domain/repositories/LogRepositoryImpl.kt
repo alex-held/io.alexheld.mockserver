@@ -4,26 +4,26 @@ import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.logging.models.*
 
 
-class LogRepositoryImpl : LogRepository {
+class LogRepositoryImpl(private val gen: GenerationService) : LogRepository {
 
     private val logs: MutableList<IdentifiableLog<*>> = mutableListOf()
 
     override fun list(): IdentifiableLog<OperationData> = IdentifiableLog.generateNew(
-            ApiCategory.Log,
-            LogMessageType.Operation,
-            OperationData(ApiOperation.List,
-                logs)
+        ApiCategory.Log,
+        LogMessageType.Operation, OperationData(ApiOperation.List, logs),
+        gen
     )
 
 
     override fun delete(id: String): IdentifiableLog<OperationData> {
         val results: MutableList<IdentifiableLog<*>> = mutableListOf()
-        this.logs.filterTo(results, {log -> log.id == id})
+        this.logs.filterTo(results, { log -> log.id.equals(id) })
 
-        val result = IdentifiableLog
-            .generateNew(ApiCategory.Log, LogMessageType.Operation, OperationData(ApiOperation.Delete, results))
-
-        return result
+        return IdentifiableLog.generateNew(
+            ApiCategory.Log,
+            LogMessageType.Operation, OperationData(ApiOperation.Delete, results),
+            gen
+        )
     }
 
 

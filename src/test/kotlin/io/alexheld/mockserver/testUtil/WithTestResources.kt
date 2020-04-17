@@ -6,7 +6,7 @@ interface WithTestResources {
 
     fun getRootPath(): String
 
-    fun streamResourceFile(fileName: String): InputStream = this::class.java.getResourceAsStream("${getRootPath()}/$fileName.yaml")
+    fun streamResourceFile(fileName: String): InputStream = this::class.java.getResourceAsStream("${getRootPath()}/$fileName")
 
     fun readResource(file: String): String {
         val stream = streamResourceFile(file)

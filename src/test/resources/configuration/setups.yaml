@@ -1,0 +1,33 @@
+---
+request:
+  method: POST
+action:
+  message: Placedholder...
+  statusCode: 400
+---
+timestamp: 1970-01-01T00:00:00Z
+request:
+  method: GET
+action:
+  message: Hello World
+  statusCode: 200
+---
+request:
+  method: GET
+action:
+  message: Hello World!
+  statusCode: 200
+---
+id: 101010
+request:
+  method: GET
+action:
+  message: Not found!
+  statusCode: 400
+---
+timestamp: 1970-01-01T00:00:00Z
+request:
+  method: GET
+action:
+  message: Not found!
+  statusCode: 400

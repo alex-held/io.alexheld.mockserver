@@ -1,10 +1,10 @@
 package io.alexheld.mockserver.domain.repositories
 
 import io.alexheld.mockserver.domain.models.*
-import java.util.*
+import io.alexheld.mockserver.logging.*
 
 
-class SetupRepositoryImpl : SetupRepository {
+class SetupRepositoryImpl(private val gen: GenerationService) : SetupRepository {
 
     private val setups: MutableMap<String, Setup> = mutableMapOf()
 
@@ -13,14 +13,13 @@ class SetupRepositoryImpl : SetupRepository {
     }
 
     override fun add(setup: Setup): Setup {
-        val id = UUID.randomUUID().toString()
-        setup.id = id
-        setups[id] = setup
+        setup.id = gen.getId()
+        setups[setup.id] = setup
         return setup
     }
 
-    override fun delete(id: Int): Setup? {
-        return setups.remove(id.toString())
+    override fun delete(id: String): Setup? {
+        return setups.remove(id)
     }
 
     override fun find(predicate: (Setup) -> Boolean): Setup? {

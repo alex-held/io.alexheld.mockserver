@@ -128,6 +128,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${property("kotlin_version")}")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
     testImplementation("org.amshove.kluent:kluent:$kluent_version")
+    testImplementation("io.mockk:mockk:1.9.3")
     //testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
 
     // TEST

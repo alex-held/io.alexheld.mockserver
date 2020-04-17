@@ -25,9 +25,9 @@ fun Route.setups(setupService: SetupService) {
         }
 
         delete("/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull()
+            val id = call.parameters["id"]
 
-            if (id is Int) {
+            if (id is String) {
                 val deleted = setupService.delete(id)
                 if (deleted is Setup)
                     call.respond(HttpStatusCode.OK, deleted)

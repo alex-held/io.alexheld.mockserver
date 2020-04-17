@@ -9,7 +9,7 @@ import io.ktor.request.*
 import org.apache.logging.log4j.kotlin.*
 
 
-class SetupServiceImpl(private val repository: SetupRepository, private val logService: LogService) : SetupService, Logging {
+class SetupServiceImpl(private val repository: SetupRepository, private val logService: LogService, private val gen: GenerationService) : SetupService, Logging {
 
 
     override fun list(): List<Setup> {
@@ -17,7 +17,9 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val log = IdentifiableLog.generateNew(
             ApiCategory.Setup,
             LogMessageType.Setup_Created,
-            OperationData(ApiOperation.List,  setups.toMutableList()))
+            OperationData(ApiOperation.List,  setups.toMutableList()),
+            gen
+        )
 
         logService.add(log)
         return setups
@@ -29,23 +31,29 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val log = IdentifiableLog.generateNew(
             ApiCategory.Setup,
             LogMessageType.Setup_Created,
-            SetupCreatedData(created))
+            SetupCreatedData(created),
+            gen
+        )
 
         logService.add(log)
         return created
     }
 
-    override fun delete(id: Int): Setup? {
+    override fun delete(id: String): Setup? {
         val deleted = repository.delete(id)
 
         val log = try {
              IdentifiableLog.generateNew(
                 ApiCategory.Setup,
-                LogMessageType.Setup_Deleted, SetupDeletedData(deleted!!))
+                LogMessageType.Setup_Deleted, SetupDeletedData(deleted!!),
+                 gen
+             )
         } catch (e: Exception) {
             IdentifiableLog.generateNew(
                 ApiCategory.Setup,
-                LogMessageType.Setup_Deleted, ExceptionData.fromException(e))
+                LogMessageType.Setup_Deleted, ExceptionData.fromException(e),
+                gen
+            )
         }
         logService.add(log)
         return deleted

@@ -17,11 +17,10 @@ data class IdentifiableLog<TData : DataContainerData>(
 
     companion object {
 
-
-        fun <T : DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T): IdentifiableLog<T> {
-            val id = Generator.getId()
-            val time = Generator.getTimestampString()
-            val log = IdentifiableLog<T>(id, time.toString(), apiCategory, type, null, data)
+        fun <T : DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T, gen: GenerationService): IdentifiableLog<T> {
+            val id = gen.getId()
+            val time = gen.getTimestampString()
+            val log = IdentifiableLog<T>(id, time, apiCategory, type, null, data)
 
             log.data = data
             log.type = data.getType()
@@ -32,7 +31,5 @@ data class IdentifiableLog<TData : DataContainerData>(
 
             return log
         }
-
-
     }
 }

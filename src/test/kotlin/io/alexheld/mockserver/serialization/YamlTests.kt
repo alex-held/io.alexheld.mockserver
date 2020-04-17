@@ -1,19 +1,13 @@
 package io.alexheld.mockserver.serialization
 
-import io.alexheld.mockserver.domain.models.*
-import io.alexheld.mockserver.logging.*
-import io.alexheld.mockserver.logging.models.*
 import io.alexheld.mockserver.testUtil.*
-import org.junit.jupiter.api.*
-import org.junit.jupiter.params.provider.*
-import java.time.*
-import java.util.stream.*
 
 
 class YamlTests : WithTestResources {
 
     override fun getRootPath(): String= "/logging/yaml"
 
+/*
 
     companion object {
 
@@ -82,6 +76,7 @@ class YamlTests : WithTestResources {
             )
         )
     }
+*/
 
 /*    @Test
     fun `should deserialize yaml to setupCreatedL`() {

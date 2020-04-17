@@ -5,6 +5,6 @@ import io.alexheld.mockserver.domain.models.*
 interface SetupRepository {
     fun list(): List<Setup>
     fun add(setup: Setup): Setup
-    fun delete(id: Int): Setup?
+    fun delete(id: String): Setup?
     fun find(predicate: (Setup) -> Boolean): Setup?
 }

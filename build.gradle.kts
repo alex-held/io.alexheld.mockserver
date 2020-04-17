@@ -15,17 +15,6 @@ extra["springCloudVersion"] = "Greenwich.SR5"
 extra["vaadinVersion"] = "14.1.20"
 
 
-
-
-
-/*
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-    }
-}*/
-
 val kotliV = "1.3.70"
 
 buildscript {
@@ -53,7 +42,6 @@ plugins {
 
     id("org.springframework.boot") version "2.1.13.RELEASE"
     id("io.spring.dependency-management") version "1.0.6.RELEASE"
-//    id("org.asciidoctor.convert") version "1.5.8"
     id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
     kotlin("jvm") version "1.3.70"
     kotlin("plugin.spring")  version "1.3.70"
@@ -64,7 +52,6 @@ plugins {
 
     application
     java
-    //id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
 }
 
 
@@ -88,8 +75,6 @@ configurations {
     }
 }
 
-
-
 repositories {
     jcenter()
     mavenCentral()
@@ -98,20 +83,19 @@ repositories {
     maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
 }
 
-
 dependencies {
-    // ---
 
+    // ---
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-host-common:$ktor_version")
 
     implementation("org.koin:koin-ktor:$koin_version")
-    implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.11.0")
+   // implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("koriit.kotlin:ktor-logging:0.3.0")
 
-    // implementation("org.snakeyaml:snakeyaml-engine:2.1")
 
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -127,6 +111,9 @@ dependencies {
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${property("kotlin_version")}")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
+    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+
     testImplementation("org.amshove.kluent:kluent:$kluent_version")
     testImplementation("io.mockk:mockk:1.9.3")
     //testImplementation("io.ktor:ktor-server-test-host:$ktor_version")

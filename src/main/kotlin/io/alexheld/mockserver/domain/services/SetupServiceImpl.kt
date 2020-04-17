@@ -4,6 +4,7 @@ import io.alexheld.mockserver.domain.models.*
 import io.alexheld.mockserver.domain.repositories.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.logging.models.*
+import io.alexheld.mockserver.responses.*
 import io.ktor.application.*
 import io.ktor.request.*
 import org.apache.logging.log4j.kotlin.*
@@ -13,49 +14,28 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
 
     override fun list(): List<Setup> {
         val setups = repository.list()
-        val log = IdentifiableLog.generateNew(
-            ApiCategory.Setup,
-            LogMessageType.Setup_Created,
-            OperationData(ApiOperation.List, setups.toMutableList()),
-            gen
-        )
-
-        logService.add(log)
+        logService.addNew { it.createOperation(ApiCategory.Setup, OperationData(ApiOperation.List, setups)) }
         return setups
     }
 
     override fun add(setup: Setup): Setup {
-
         val created = repository.add(setup)
-        val log = IdentifiableLog.generateNew(
-            ApiCategory.Setup,
-            LogMessageType.Setup_Created,
-            SetupCreatedData(created),
-            gen
-        )
-
-        logService.add(log)
+        logService.addNew { it.createEvent(ApiCategory.Setup, LogMessageType.Setup_Created, SetupCreatedData(setup)) }
         return created
     }
 
-    override fun delete(id: String): Setup? {
+    override fun delete(id: String): GenericResponse<Setup> {
         val deleted = repository.delete(id)
 
-        val log = try {
-            IdentifiableLog.generateNew(
-                ApiCategory.Setup,
-                LogMessageType.Setup_Deleted, SetupDeletedData(deleted!!),
-                gen
-            )
-        } catch (e: Exception) {
-            IdentifiableLog.generateNew(
-                ApiCategory.Setup,
-                LogMessageType.Setup_Deleted, ExceptionData.fromException(e),
-                gen
-            )
+        try {
+            logService.addNew { it.createEvent(ApiCategory.Setup, LogMessageType.Setup_Deleted, SetupDeletedData(deleted.data.orNull()!!)) }
+            return deleted
+        }catch (e: Exception){
+            logService.addNew { it.createEvent(ApiCategory.Setup, LogMessageType.Exception, ExceptionData(e)) }
+            return deleted
         }
-        logService.add(log)
-        return deleted
+
+
     }
 
     override fun getMatchingSetup(call: ApplicationCall): Setup? {

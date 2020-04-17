@@ -19,6 +19,7 @@ class LogDataContainerTests : WithTestResources {
     companion object {
 
         val gen: GenerationService = GenerationServiceImpl.createDebugGeneration(GenerationServiceImpl.GenerationStrategy.Debug_Constant)
+
         private fun <T : DataContainerData> createSubject(type: LogMessageType, container: T): IdentifiableLog<T> =
             IdentifiableLog.generateNew(ApiCategory.Log, LogMessageType.Operation, container, gen)
 

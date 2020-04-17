@@ -13,6 +13,11 @@ fun Route.setups(setupService: SetupService) {
 
     route("/setups") {
 
+        intercept(ApplicationCallPipeline.Features) {
+
+        } // verify admin privileges
+
+
         get {
             val setups = setupService.list()
             call.respond(HttpStatusCode.OK, setups)

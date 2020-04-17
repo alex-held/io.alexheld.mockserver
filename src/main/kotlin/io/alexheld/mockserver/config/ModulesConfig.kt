@@ -9,6 +9,8 @@ object ModulesConfig {
     val setupModule = module {
         singleBy<SetupRepository, SetupRepositoryImpl>()
         singleBy<SetupService, SetupServiceImpl>()
+        single { GenerationServiceImpl(GenerationServiceImpl.GenerationStrategy.Default) }
+        single { LogFactory(get()) }
         singleBy<LogRepository, LogRepositoryImpl>()
         singleBy<LogService, LogServiceImpl>()
     }

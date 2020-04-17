@@ -9,7 +9,7 @@ class LogServiceImpl(private val logRepository: LogRepository) : LogService {
 
     override fun list(): IdentifiableLog<OperationData> = logRepository.list()
     override fun delete(id: String): IdentifiableLog<OperationData> = logRepository.delete(id)
-    override fun<T: IdentifiableLog<*>> add(log: T): T = logRepository.add(log)
+    override fun <T : IdentifiableLog<*>> add(log: T): T = logRepository.add(log)
 
     fun tryLog(log: IdentifiableLog<*>): String? {
         println(Yaml.serialize(log))

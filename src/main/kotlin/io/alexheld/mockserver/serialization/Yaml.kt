@@ -6,11 +6,6 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.dataformat.yaml.*
 import com.fasterxml.jackson.datatype.jsr310.*
 import com.fasterxml.jackson.module.kotlin.*
-import kotlin.reflect.*
-
-
-inline fun <reified T> Yaml.deserialize(yaml: String, injectableValues: MutableMap<String, Any>? = null): T =
-    Yaml.getReader(T::class).with(InjectableValues.Std(injectableValues)).readValue(yaml)
 
 
 object Yaml {
@@ -50,7 +45,4 @@ object Yaml {
         .registerModule(JavaTimeModule())
         .findAndRegisterModules()
         .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY) as YAMLMapper
-
-    fun getReader(type: KClass<*>) = mapper.readerFor(type.java)
-
 }

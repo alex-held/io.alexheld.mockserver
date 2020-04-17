@@ -1,5 +1,6 @@
 package io.alexheld.mockserver.domain.repositories
 
+import io.alexheld.mockserver.domain.services.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.logging.models.*
 
@@ -27,7 +28,7 @@ class LogRepositoryImpl(private val gen: GenerationService) : LogRepository {
     }
 
 
-    override fun<T: IdentifiableLog<*>> add(log: T) : T {
+    override fun <T : IdentifiableLog<*>> add(log: T): T {
         logs.add(log)
         return log
     }

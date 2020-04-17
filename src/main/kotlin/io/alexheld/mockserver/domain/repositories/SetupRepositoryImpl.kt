@@ -1,7 +1,7 @@
 package io.alexheld.mockserver.domain.repositories
 
 import io.alexheld.mockserver.domain.models.*
-import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.domain.services.*
 
 
 class SetupRepositoryImpl(private val gen: GenerationService) : SetupRepository {

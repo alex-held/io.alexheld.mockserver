@@ -13,16 +13,18 @@ data class SetupDeletedData(val setup: Setup) : DataContainerData {
     override fun getType(): LogMessageType = LogMessageType.Setup_Deleted
 
 }
+
 data class ExceptionData(val message: String? = null) : DataContainerData {
 
     companion object {
         fun fromException(exception: Exception): ExceptionData = ExceptionData(exception.localizedMessage)
     }
+
     override fun getType(): LogMessageType = LogMessageType.Exception
 }
 
 
-data class RequestReceivedData(val requestReceived: Request): DataContainerData {
+data class RequestReceivedData(val requestReceived: Request) : DataContainerData {
     override fun getType(): LogMessageType = LogMessageType.Request_Received
 
 }
@@ -31,12 +33,12 @@ data class RequestMatchedData(
     var requestReceived: Request,
     var setup: Setup,
     var actionExecuted: Action
-): DataContainerData {
+) : DataContainerData {
     override fun getType(): LogMessageType = LogMessageType.Request_Matched
 
 }
 
-data class ActionData(val action: Action): DataContainerData {
+data class ActionData(val action: Action) : DataContainerData {
     override fun getType(): LogMessageType = LogMessageType.Action_Response
 
 }

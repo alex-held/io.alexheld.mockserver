@@ -1,6 +1,7 @@
 package io.alexheld.mockserver.logging
 
 import io.alexheld.mockserver.domain.models.*
+import io.alexheld.mockserver.domain.services.*
 import io.alexheld.mockserver.logging.models.*
 import io.alexheld.mockserver.serialization.*
 import io.alexheld.mockserver.testUtil.*
@@ -17,7 +18,7 @@ class LogDataContainerTests : WithTestResources {
 
     companion object {
 
-        val gen: GenerationService = Generator.createDebugGeneration(Generator.GenerationStrategy.Debug_Constant)
+        val gen: GenerationService = GeneratorService.createDebugGeneration(GeneratorService.GenerationStrategy.Debug_Constant)
         private fun <T : DataContainerData> createSubject(type: LogMessageType, container: T): IdentifiableLog<T> =
             IdentifiableLog.generateNew(ApiCategory.Log, LogMessageType.Operation, container, gen)
 

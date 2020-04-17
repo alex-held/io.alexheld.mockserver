@@ -1,6 +1,6 @@
 package io.alexheld.mockserver.configuration.file
 
-import io.alexheld.mockserver.logging.*
+import io.alexheld.mockserver.domain.services.*
 import io.alexheld.mockserver.testUtil.*
 import io.mockk.*
 import org.amshove.kluent.*
@@ -9,8 +9,8 @@ import org.junit.jupiter.api.*
 
 class FileConfigurationTests : WithTestResources {
 
-    private fun createSubject(content: String, str: Generator.GenerationStrategy? = null) =
-        FileConfigurationRepository("/some/path/to/config/dir/with/setups.yaml", createMockFileSystem(content),  Generator.createDebugGeneration(str ?: Generator
+    private fun createSubject(content: String, str: GeneratorService.GenerationStrategy? = null) =
+        FileConfigurationRepository("/some/path/to/config/dir/with/setups.yaml", createMockFileSystem(content),  GeneratorService.createDebugGeneration(str ?: GeneratorService
             .GenerationStrategy.Debug_Constant))
 
 
@@ -33,7 +33,7 @@ class FileConfigurationTests : WithTestResources {
             "0004-01-01T00:00:00Z",
             "0005-01-01T00:00:00Z").map { Instant.parse(it) })*/
         // Arrange
-        val subject = createSubject(readResource("setups.yaml"), Generator.GenerationStrategy.Debug_Counter)
+        val subject = createSubject(readResource("setups.yaml"), GeneratorService.GenerationStrategy.Debug_Counter)
 
         // Act
         val config = subject.get()
@@ -65,7 +65,7 @@ request:
   method: GET
 action:
   statusCode: 400
-""", Generator.GenerationStrategy.Debug_Counter)
+""", GeneratorService.GenerationStrategy.Debug_Counter)
 
         // Act
         val config = subject.get()
@@ -89,7 +89,7 @@ action:
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
-""",Generator.GenerationStrategy.Debug_Counter)
+""", GeneratorService.GenerationStrategy.Debug_Counter)
 
         // Act
         val config = subject.get()
@@ -113,7 +113,7 @@ timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
 """,
-            Generator.GenerationStrategy.Debug_Counter)
+            GeneratorService.GenerationStrategy.Debug_Counter)
 
         // Act
         val config = subject.get()
@@ -137,7 +137,7 @@ id: 101010
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
-""", Generator.GenerationStrategy.Debug_Counter)
+""", GeneratorService.GenerationStrategy.Debug_Counter)
 
         // Act
         val config = subject.get()
@@ -159,7 +159,7 @@ action:
 id: 1234
 action:
   statusCode: 400
-""", Generator.GenerationStrategy.Debug_Counter)
+""", GeneratorService.GenerationStrategy.Debug_Counter)
 
         // Act
         val config = subject.get()
@@ -181,7 +181,7 @@ action:
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
-""", Generator.GenerationStrategy.Debug_Counter)
+""", GeneratorService.GenerationStrategy.Debug_Counter)
 
 
         // Act

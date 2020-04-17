@@ -4,6 +4,9 @@ import java.time.*
 
 interface MetadataMixin
 
+/**
+ * Adds an [ApiCategory] to a [IdentifiableLog]
+ */
 interface WithCategory : MetadataMixin {
     val apiCategory: ApiCategory
 }
@@ -12,7 +15,7 @@ interface WithCategory : MetadataMixin {
 /**
  * Adds minimal metadata to a [IdentifiableLog]
  */
-interface WithLogMetadata : MetadataMixin{
+interface WithLogMetadata : MetadataMixin {
     var id: String
     var timestamp: Instant
     var type: LogMessageType

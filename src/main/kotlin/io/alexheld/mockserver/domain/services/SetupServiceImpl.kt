@@ -17,7 +17,7 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val log = IdentifiableLog.generateNew(
             ApiCategory.Setup,
             LogMessageType.Setup_Created,
-            OperationData(ApiOperation.List,  setups.toMutableList()),
+            OperationData(ApiOperation.List, setups.toMutableList()),
             gen
         )
 
@@ -43,11 +43,11 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val deleted = repository.delete(id)
 
         val log = try {
-             IdentifiableLog.generateNew(
+            IdentifiableLog.generateNew(
                 ApiCategory.Setup,
                 LogMessageType.Setup_Deleted, SetupDeletedData(deleted!!),
-                 gen
-             )
+                gen
+            )
         } catch (e: Exception) {
             IdentifiableLog.generateNew(
                 ApiCategory.Setup,

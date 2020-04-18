@@ -1,3 +1,4 @@
+/*
 package io.alexheld.mockserver.features
 
 import io.alexheld.mockserver.config.*
@@ -24,9 +25,11 @@ class Mock(val pipeline: Application) : ApplicationCallPipeline(), KoinComponent
 
     }
 
-    /**
+    */
+/**
      * Installable feature for [Mock]
-     */
+     *//*
+
     @Suppress("PublicApiImplicitType")
     companion object Feature : ApplicationFeature<Application, Mock, Mock> {
 
@@ -44,3 +47,4 @@ class Mock(val pipeline: Application) : ApplicationCallPipeline(), KoinComponent
         }
     }
 }
+*/

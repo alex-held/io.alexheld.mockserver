@@ -5,12 +5,9 @@ import io.alexheld.mockserver.domain.repositories.*
 import io.alexheld.mockserver.logging.*
 import io.alexheld.mockserver.logging.models.*
 import io.alexheld.mockserver.responses.*
-import io.ktor.application.*
-import io.ktor.request.*
-import org.apache.logging.log4j.kotlin.*
 
 
-class SetupServiceImpl(private val repository: SetupRepository, private val logService: LogService, private val gen: GenerationService) : SetupService, Logging {
+class SetupServiceImpl(private val repository: SetupRepository, private val logService: LogService, private val gen: GenerationService) : SetupService {
 
     override fun list(): List<Setup> {
         val setups = repository.list()
@@ -28,7 +25,7 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
         val deleted = repository.delete(id)
 
         try {
-            logService.addNew { it.createEvent(ApiCategory.Setup, LogMessageType.Setup_Deleted, SetupDeletedData(deleted.data.orNull()!!)) }
+            logService.addNew { it.createEvent(ApiCategory.Setup, LogMessageType.Setup_Deleted, SetupDeletedData(deleted.data!!)) }
             return deleted
         }catch (e: Exception){
             logService.addNew { it.createEvent(ApiCategory.Setup, LogMessageType.Exception, ExceptionData(e)) }
@@ -38,11 +35,11 @@ class SetupServiceImpl(private val repository: SetupRepository, private val logS
 
     }
 
-    override fun getMatchingSetup(call: ApplicationCall): Setup? {
+    override fun getMatchingSetup(call: Setup): Setup? {
         return repository.find { setup ->
             return@find setup.request != null
-                    && setup.request?.method == call.request.httpMethod.value
-                    && setup.request?.path == call.request.path()
+                    && setup.request?.method == call.request?.method
+                    && setup.request?.path == call.request?.path
         }
     }
 }

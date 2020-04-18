@@ -3,7 +3,7 @@ package io.alexheld.mockserver.features
 import java.io.*
 
 
-open class ConsoleAdapter  {
+open class ConsoleAdapter {
 
     /*
      see: https://gist.github.com/alex-held/e8693fa8841e122cfcea40df252bd1d4

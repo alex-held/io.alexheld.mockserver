@@ -1,9 +1,8 @@
+/*
 package io.alexheld.mockserver.domain.services
 
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.util.pipeline.*
+import org.eclipse.jetty.websocket.api.*
+import org.gradle.internal.impldep.com.google.api.client.http.*
 import org.koin.core.*
 
 class MockService : KoinComponent {
@@ -20,7 +19,7 @@ class MockService : KoinComponent {
         val setup = setupService.getMatchingSetup(context.call)
 
         if (setup != null) {
-            context.call.respond(HttpStatusCode.OK, setup)
+            context.call.respond(HttpStatusCodes.STATUS_CODE_OK, setup)
         } else {
             context.call.respondText("NO MATCHING SETUP CONFIGURED", contentType = ContentType.Text.Plain, status = HttpStatusCode.NotFound)
         }
@@ -28,3 +27,4 @@ class MockService : KoinComponent {
 
 }
 
+*/

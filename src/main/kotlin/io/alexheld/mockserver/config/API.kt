@@ -1,9 +1,9 @@
+/*
 package io.alexheld.mockserver.config
 
 import io.alexheld.mockserver.api.*
 import io.alexheld.mockserver.domain.services.*
-import io.ktor.routing.*
-import org.koin.ktor.ext.*
+import org.apache.logging.log4j.core.appender.routing.*
 
 fun Route.api() {
 
@@ -14,3 +14,4 @@ fun Route.api() {
     logs(logService)
 }
 
+*/

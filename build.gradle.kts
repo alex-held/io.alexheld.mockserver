@@ -1,58 +1,64 @@
-import org.jetbrains.kotlin.gradle.tasks.*
-
-val koin_version: String by project
-val ktor_version: String by project
-val logback_version: String by project
-val kluent_version: String by project
-
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 extra["arrow_version"] = "0.10.4"
-extra["kotlin_version"] = "1.3.70"
+extra["mongodb_version"] = "4.0.2"
+extra["kotlin_version"] = "1.3.72"
+extra["log4j_version"] = "2.12.1"
+extra["http4k_version"] = "3.196.0"
+extra["jaxb_version"] = "2.3.0"
 extra["jackson_version"] = "2.10.2"
-extra["snippetsDir"] = file("build/generated-snippets")
+extra["kluent_version"] = "1.60"
+extra["koin_version"] = "2.1.0"
 extra["azureVersion"] = "2.1.7"
-extra["springCloudVersion"] = "Greenwich.SR5"
-extra["vaadinVersion"] = "14.1.20"
 
-
-val kotliV = "1.3.70"
 
 buildscript {
 
     repositories {
         jcenter()
         mavenCentral()
+        //maven { url = uri("https://plugins.gradle.org/m2/") }
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", "1.3.70"))
-        classpath(kotlin("serialization","1.3.70"))
-        //     classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8")
+        classpath(kotlin("gradle-plugin", version = "1.3.72"))
+        classpath("org.jetbrains.kotlin:kotlin-allopen:1.3.72")
     }
-
-
 }
 
-
-fun Project.versionOf(dependency: String): String = extra.get("${dependency}_version") as String
-
+//fun Project.versionOf(dependency: String): String = extra.get("${dependency}_version") as String
 
 
 plugins {
+    `kotlin-dsl`
+    jacoco
 
-    id("org.springframework.boot") version "2.1.13.RELEASE"
-    id("io.spring.dependency-management") version "1.0.6.RELEASE"
-    id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
-    kotlin("jvm") version "1.3.70"
-    kotlin("plugin.spring")  version "1.3.70"
-    kotlin("plugin.allopen")  version "1.3.70"
-    kotlin("plugin.jpa")  version "1.3.70"
-    kotlin("plugin.serialization")  version "1.3.70"
-    kotlin("kapt")  version "1.3.70"
+    id("org.springframework.boot") version "2.2.6.RELEASE"
+    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    kotlin("jvm") version "1.3.72"
+    kotlin("plugin.spring") version "1.3.72"
+    kotlin("kapt") version "1.3.72"
 
+   // id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
+  //  kotlin("plugin.jpa")  version "1.3.70"
+   // kotlin("plugin.serialization")  version "1.3.70"
+
+
+  //  id("com.github.ben-manes.versions") version "0.26.0"
+  //  id("com.adarshr.test-logger") version "2.0.0"
     application
     java
 }
+
+
+val developmentOnly by configurations.creating
+    configurations {
+    runtimeClasspath {
+        extendsFrom(developmentOnly)
+    }
+}
+
+
 
 
 java {
@@ -61,120 +67,120 @@ java {
 }
 
 application {
+    mainClassName = "io.alexheld.mockserver.MainKt"
     group = "io.alexheld.mockserver"
-    mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
-val developmentOnly by configurations.creating
-configurations {
-    runtimeClasspath {
-        extendsFrom(developmentOnly)
-    }
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
+
+
 
 repositories {
     jcenter()
     mavenCentral()
-    maven { url = uri("https://repo.spring.io/milestone") }
-    maven { url = uri("https://repo.spring.io/snapshot") }
-    maven { url = uri("https://dl.bintray.com/kotlin/ktor") }
+    gradlePluginPortal()
 }
 
 dependencies {
 
-    // ---
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-jackson:$ktor_version")
-    implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-server-host-common:$ktor_version")
+    // koin
+    implementation("org.koin:koin-core:${property("koin_version")}")
+    implementation("org.koin:koin-core-ext:${property("koin_version")}")
 
-    implementation("org.koin:koin-ktor:$koin_version")
-   // implementation("org.apache.logging.log4j:log4j-api-kotlin:1.0.0")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("koriit.kotlin:ktor-logging:0.3.0")
-
-
+    // kotlin
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+   // implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${property("jackson_version")}")
+    // jwt
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+    // xml
+    implementation("javax.xml.bind:jaxb-api:${property("jaxb_version")}")
+    implementation("com.sun.xml.bind:jaxb-core:${property("jaxb_version")}")
+    implementation("com.sun.xml.bind:jaxb-impl:${property("jaxb_version")}")
+
+    // http4k
+    implementation("org.http4k:http4k-core:${property("http4k_version")}")
+    implementation("org.http4k:http4k-server-jetty:${property("http4k_version")}")
+    implementation("org.http4k:http4k-format-jackson:${property("http4k_version")}")
+    implementation("org.http4k:http4k-client-apache:${property("http4k_version")}")
+
+    // log4j
+    implementation("org.apache.logging.log4j:log4j-core:${property("log4j_version")}")
+    implementation("org.apache.logging.log4j:log4j-api:${property("log4j_version")}")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:${property("log4j_version")}")
+    // infrastructure
+
+    // arrow
+    implementation("io.arrow-kt:arrow-core:${property("arrow_version")}")
+    implementation ("io.arrow-kt:arrow-syntax:${property("arrow_version")}")
+
+    // jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${property("jackson_version")}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-joda:${property("jackson_version")}")
     implementation("com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:${property("jackson_version")}")
     implementation("com.fasterxml.jackson.core:jackson-databind:${property("jackson_version")}")
     implementation("com.fasterxml.jackson.core:jackson-annotations:${property("jackson_version")}")
     implementation("com.fasterxml.jackson.core:jackson-core:${property("jackson_version")}")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${property("jackson_version")}")
 
+
+    // == == == ==
+    // T E S T
+    // == == == ==
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${property("kotlin_version")}")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
-    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 
-    testImplementation("org.amshove.kluent:kluent:$kluent_version")
+    testImplementation("org.amshove.kluent:kluent:${property("kluent_version")}")
     testImplementation("io.mockk:mockk:1.9.3")
-    //testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
-
-    // TEST
+    //testImplementation("org.koin:koin-test:${property("koin_version")}")
 
 
-    // ----- JAVA ------ //
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-batch")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("org.springframework.boot:spring-boot-starter-groovy-templates")
-    implementation("org.springframework.boot:spring-boot-starter-integration")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    compileOnly("org.projectlombok:lombok")
-
-
-    implementation("io.arrow-kt:arrow-core:${property("arrow_version")}")
-    implementation ("io.arrow-kt:arrow-syntax:${property("arrow_version")}")
-    kapt("io.arrow-kt:arrow-meta:${property("arrow_version")}")
-
-    //implementation("com.vaadin:vaadin-spring-boot-starter")
-    // implementation("com.microsoft.azure:azure-spring-boot-starter")
 
 
     // Annotation
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    annotationProcessor("org.projectlombok:lombok")
-
-
-    // test //
-  //  testImplementation("org.springframework.batch:spring-batch-test")
-//    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
-  //  testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
-   // testImplementation("org.springframework.integration:spring-integration-test")
-    //testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
- /*   testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-    }*/
-
-    // Support
-
-
+    //kapt("io.arrow-kt:arrow-meta:${property("arrow_version")}")
+    /*compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")*/
 }
 
+
+
+/*
 
 kapt {
-    useBuildCache = false
+    this.useBuildCache = false
     this.useLightAnalysis = true
     this.strictMode = false
-    correctErrorTypes = true
-
+    this.correctErrorTypes = true
 }
+*/
 
+
+/*
 dependencyManagement {
     imports {
-       // mavenBom("com.vaadin:vaadin-bom:${property("vaadinVersion")}")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
         mavenBom("com.microsoft.azure:azure-spring-boot-bom:${property("azureVersion")}")
+    }
+}*/
+/*
+
+
+tasks.wrapper.configure {
+    this.gradleVersion = "6.3"
+    this.distributionType = Wrapper.DistributionType.ALL
+    this.distributionBase = Wrapper.PathBase.GRADLE_USER_HOME
+}
+*/
+
+
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
     }
 }
 
@@ -184,14 +190,17 @@ tasks.withType<Test> {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+     //   freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
     }
 }
 
 
-tasks.wrapper.configure {
-    this.gradleVersion = "6.2.2"
-    this.distributionType = Wrapper.DistributionType.ALL
-    this.distributionBase = org.gradle.api.tasks.wrapper.Wrapper.PathBase.GRADLE_USER_HOME
-}
+/*
+
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions.jvmTarget = "1.8"
+
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
+*/

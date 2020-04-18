@@ -1,3 +1,4 @@
+/*
 package io.alexheld.mockserver.api
 
 import io.alexheld.mockserver.domain.models.*
@@ -42,3 +43,4 @@ fun Route.setups(setupService: SetupService) {
     }
 
 }
+*/

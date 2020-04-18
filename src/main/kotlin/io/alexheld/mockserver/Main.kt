@@ -1,26 +1,59 @@
 package io.alexheld.mockserver
 
 import io.alexheld.mockserver.config.*
-import io.alexheld.mockserver.features.*
-import io.alexheld.mockserver.responses.*
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.jackson.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.sessions.*
-import io.ktor.util.*
-import org.koin.ktor.ext.*
-import java.util.*
+//import org.apache.logging.log4j.core.config.*
+import org.http4k.core.*
+import org.http4k.routing.*
+import org.http4k.server.*
+import org.slf4j.*
 
 /**
  * Entry point of the application: main method that starts an embedded server using Netty,
  * processes the application.conf file, interprets the command line args if available
  * and loads the application modules.
  */
+fun main() {
+    val server = startApp(MOCK_ENVIRONMENT_DEV)
+    server.block()
+}
+
+class Router(val setupHandler: SetupHandler) {
+
+    private val contexts = RequestContexts()
+    operator fun invoke(): RoutingHttpHandler = CatchHttpExceptions()
+}
+
+
+class SetupHandler
+
+fun startApp(config: AppConfig): Http4kServer {
+
+    // logging
+   // Configurator.initialize(null, config.logConfig)
+    val logger = LoggerFactory.getLogger("main")
+   // val context = DbContext.connectOrCreate(config.db)
+
+
+    val setupHandler = SetupHandler()
+
+    val app = Router(
+        setupHandler
+    )()
+
+
+    // server startup message
+    logger.info("Starting server...")
+    val server = app.asServer(Jetty(config.port))
+    logger.info("Server started on port ${config.port}")
+    return server
+}
+
+
+/*
+
+
+
+
 fun main(args: Array<String>): Unit {
 
     val env = applicationEngineEnvironment {
@@ -92,3 +125,4 @@ fun Application.module() {
     install(Mock)
 
 }
+*/

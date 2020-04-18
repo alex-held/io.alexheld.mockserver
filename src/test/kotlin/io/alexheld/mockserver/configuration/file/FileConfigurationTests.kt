@@ -10,8 +10,10 @@ import org.junit.jupiter.api.*
 class FileConfigurationTests : WithTestResources {
 
     private fun createSubject(content: String, str: GenerationServiceImpl.GenerationStrategy? = null) =
-        FileConfigurationRepository("/some/path/to/config/dir/with/setups.yaml", createMockFileSystem(content),  GenerationServiceImpl.createDebugGeneration(str ?: GenerationServiceImpl
-            .GenerationStrategy.Debug_Constant))
+        FileConfigurationRepository("/some/path/to/config/dir/with/setups.yaml",
+            createMockFileSystem(content),
+            GenerationServiceImpl.createDebugGeneration(str ?: GenerationServiceImpl
+                .GenerationStrategy.Debug_Constant))
 
 
     private fun createMockFileSystem(content: String): FileSystemService {
@@ -22,16 +24,7 @@ class FileConfigurationTests : WithTestResources {
 
 
     @Test
-    fun `get() should read setups from configuration file`(){
-
-      /*  val genMock: GenerationService = mock()
-        whenever(genMock.getId()).thenReturn("1", "2", "3", "4", "5")
-        whenever(genMock.getTimestamp()).doReturnConsecutively(listOf(
-            "0001-01-01T00:00:00Z",
-            "0002-01-01T00:00:00Z",
-            "0003-01-01T00:00:00Z",
-            "0004-01-01T00:00:00Z",
-            "0005-01-01T00:00:00Z").map { Instant.parse(it) })*/
+    fun `get() should read setups from configuration file`() {
         // Arrange
         val subject = createSubject(readResource("setups.yaml"), GenerationServiceImpl.GenerationStrategy.Debug_Counter)
 
@@ -46,13 +39,12 @@ class FileConfigurationTests : WithTestResources {
     }
 
 
-
     @Test
-    fun `should deserializer`(){
+    fun `should deserializer`() {
 
         // Arrange
         val subject = createSubject(
-"""
+            """
 ---
 id: 101010
 request:
@@ -80,12 +72,11 @@ action:
     }
 
 
-
     @Test
-    fun `when config does not provide Id, it should generate an Id`(){
+    fun `when config does not provide Id, it should generate an Id`() {
         // Arrange
         val subject = createSubject(
-"""
+            """
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
@@ -101,13 +92,12 @@ action:
     }
 
 
-
     @Test
-    fun `when config does contain an Id, it should generate an Id`(){
+    fun `when config does contain an Id, it should generate an Id`() {
 
         // Arrange
         val subject = createSubject(
-"""
+            """
 ---
 timestamp: 1970-01-01T00:00:00Z
 action:
@@ -126,9 +116,8 @@ action:
     }
 
 
-
     @Test
-    fun `when config contains an Id, it should not override it`(){
+    fun `when config contains an Id, it should not override it`() {
 
         // Arrange
         val subject = createSubject("""
@@ -151,11 +140,11 @@ action:
 
 
     @Test
-    fun `when config does not contain a timestamp, it should generate one`(){
+    fun `when config does not contain a timestamp, it should generate one`() {
 
         // Arrange
         val subject = createSubject(
-"""
+            """
 id: 1234
 action:
   statusCode: 400
@@ -173,11 +162,11 @@ action:
 
 
     @Test
-    fun `when config contains a timestamp, it should not override it`(){
+    fun `when config contains a timestamp, it should not override it`() {
 
         // Arrange
         val subject = createSubject(
-"""
+            """
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400

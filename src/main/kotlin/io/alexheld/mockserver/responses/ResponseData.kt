@@ -1,9 +1,6 @@
 package io.alexheld.mockserver.responses
 
-import arrow.core.*
 import kotlin.reflect.*
-
-
 
 
 open class Response(val errors: MutableList<Error>) {
@@ -12,18 +9,11 @@ open class Response(val errors: MutableList<Error>) {
     val isError: Boolean get() = errors.size > 0
 }
 
-open class GenericResponse<T>(errors: MutableList<Error>) : Response() {
+open class GenericResponse<T>(val data: T?) : Response() {
 
-    var data: Option<T>
-
-    init {
-        data = none()
+    constructor (errors: MutableList<Error>) : this(null){
+        this.errors.addAll(errors)
     }
-
-    constructor(responseData: T) : this(mutableListOf()) {
-        data = Some(responseData)
-    }
-
 }
 
 

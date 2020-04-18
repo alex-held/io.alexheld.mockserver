@@ -1,11 +1,8 @@
+/*
 package io.alexheld.mockserver.features
 
 import io.alexheld.mockserver.*
 import io.alexheld.mockserver.responses.*
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
-import io.ktor.util.*
 import org.junit.jupiter.api.Test
 import kotlin.test.*
 
@@ -31,3 +28,4 @@ class ErrorResponseHandlerFeatureTest {
     }
 
 }
+*/

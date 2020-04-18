@@ -1,19 +1,12 @@
 package io.alexheld.mockserver.features
 
-import io.alexheld.mockserver.responses.*
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.util.*
-import io.ktor.util.pipeline.*
 import org.koin.core.*
 
 
-typealias ResponseAttributeKey = (Unit) -> AttributeKey<Response>
 
-const val RESPONSE_ATT_KEY: String = "RESPONSE_ATT_KEY"
+/*
 
+*/
 /**
  * Handles requests which return either a [GenericErrorResponse] or an [ErrorResponse] gracefully.
  *
@@ -22,7 +15,8 @@ const val RESPONSE_ATT_KEY: String = "RESPONSE_ATT_KEY"
  * install(ErrorResponseHandler) {
  *    this.loggerFactory = inject()
  * }
- */
+ *//*
+
 class ErrorResponseHandler(val config: Configuration) : ApplicationCallPipeline(), KoinComponent {
 
     // Body of the feature
@@ -53,17 +47,21 @@ class ErrorResponseHandler(val config: Configuration) : ApplicationCallPipeline(
     }
 
 
-    /**
+    */
+/**
      * [ErrorResponseHandler] feature's configuration
-     */
+     *//*
+
     class Configuration {
         var message: String  ="Hello World!"
     }
 
 
-    /**
+    */
+/**
      * Installable feature for [ErrorResponseHandler]
-     */
+     *//*
+
     companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, ErrorResponseHandler> {
 
         override val key: AttributeKey<ErrorResponseHandler> = AttributeKey("ErrorResponseHandler")
@@ -86,3 +84,4 @@ class ErrorResponseHandler(val config: Configuration) : ApplicationCallPipeline(
 
     }
 }
+*/

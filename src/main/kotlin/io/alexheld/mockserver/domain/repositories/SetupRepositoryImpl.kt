@@ -15,7 +15,7 @@ class SetupRepositoryImpl(private val gen: GenerationService) : SetupRepository 
 
     override fun add(setup: Setup): Setup {
         setup.id = gen.getId()
-        setups[setup.id] = setup
+        setups[setup.id!!] = setup
         return setup
     }
 

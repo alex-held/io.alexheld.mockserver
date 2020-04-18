@@ -1,12 +1,11 @@
 package io.alexheld.mockserver.features
 
 import io.alexheld.mockserver.responses.*
-import org.apache.logging.log4j.kotlin.*
 
 /**
  * Provides human readable information via [System.out] and [System.err] to the user.
  */
-class MockServerLogger<T> : ConsoleAdapter(), Logging {
+class MockServerLogger<T> : ConsoleAdapter() {
 
     /**
      * Logs human readable error information of [error]  via [System.err] to the user

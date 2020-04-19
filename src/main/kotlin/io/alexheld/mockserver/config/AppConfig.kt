@@ -10,7 +10,7 @@ data class AppConfig(
 val MOCK_ENVIRONMENT_DEV = AppConfig(
     logConfig = "log4j2-local.yaml",
     db = DbConfig(
-        url = "jdbc:h2:~/conduit-db/conduit",
+        connectionString = "jdbc:h2:~/conduit-db/conduit",
         database = "org.h2.Driver"
     ),
     port = 9000

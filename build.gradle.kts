@@ -138,6 +138,7 @@ dependencies {
     //testImplementation("org.koin:koin-test:${property("koin_version")}")
 
 
+    implementation("org.litote.kmongo:kmongo:4.0.0")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 

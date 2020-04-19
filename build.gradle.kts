@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.*
 
 extra["arrow_version"] = "0.10.4"
 extra["mongodb_version"] = "4.0.2"
@@ -10,6 +10,7 @@ extra["jackson_version"] = "2.10.2"
 extra["kluent_version"] = "1.60"
 extra["koin_version"] = "2.1.0"
 extra["azureVersion"] = "2.1.7"
+extra["junit_version"] = "5.6.2"
 
 
 buildscript {
@@ -17,32 +18,24 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        //maven { url = uri("https://plugins.gradle.org/m2/") }
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.72"))
-        classpath("org.jetbrains.kotlin:kotlin-allopen:1.3.72")
+     //   classpath(kotlin("gradle-plugin", "1.3.72"))
+      //  classpath("org.jetbrains.kotlin:kotlin-allopen:1.3.72")
     }
 }
 
-//fun Project.versionOf(dependency: String): String = extra.get("${dependency}_version") as String
-
 
 plugins {
-    `kotlin-dsl`
-    jacoco
-
     id("org.springframework.boot") version "2.2.6.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("org.gradle.kotlin.kotlin-dsl") version "1.3.6"
+
+
     kotlin("jvm") version "1.3.72"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("kapt") version "1.3.72"
-
-   // id("org.gradle.kotlin.kotlin-dsl") version "1.3.3"
-  //  kotlin("plugin.jpa")  version "1.3.70"
-   // kotlin("plugin.serialization")  version "1.3.70"
-
 
   //  id("com.github.ben-manes.versions") version "0.26.0"
   //  id("com.adarshr.test-logger") version "2.0.0"
@@ -51,18 +44,9 @@ plugins {
 }
 
 
-val developmentOnly by configurations.creating
-    configurations {
-    runtimeClasspath {
-        extendsFrom(developmentOnly)
-    }
-}
-
-
-
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = javaversio //JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
@@ -71,6 +55,16 @@ application {
     group = "io.alexheld.mockserver"
 }
 
+
+val developmentOnly by configurations.creating
+configurations {
+    runtimeClasspath {
+        extendsFrom(developmentOnly)
+    }
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
 
 
 
@@ -129,17 +123,31 @@ dependencies {
     // == == == ==
     // T E S T
     // == == == ==
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${property("kotlin_version")}")
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 
     testImplementation("org.amshove.kluent:kluent:${property("kluent_version")}")
     testImplementation("io.mockk:mockk:1.9.3")
-    //testImplementation("org.koin:koin-test:${property("koin_version")}")
 
 
+    // Test container + Junit5
+
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:${property("junit_version")}")
+    testImplementation( "org.junit.jupiter:junit-jupiter-params:${property("junit_version")}")
+    testRuntimeOnly( "org.junit.jupiter:junit-jupiter-engine:${property("junit_version")}")
+    //testImplementation("org.junit.jupiter:junit-jupiter:${property("junit_version")}")
+   // testRuntimeOnly( "org.junit.vintage:junit-vintage-engine:${property("junit_version")}")
+    // testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${property("kotlin_version")}")
+
+
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+    testImplementation("org.testcontainers:testcontainers:1.14.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.14.0")
+
+
+    // Infra
     implementation("org.litote.kmongo:kmongo:4.0.0")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    // Tools
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 
@@ -149,59 +157,20 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")*/
 }
 
-
-
 /*
-
-kapt {
-    this.useBuildCache = false
-    this.useLightAnalysis = true
-    this.strictMode = false
-    this.correctErrorTypes = true
-}
-*/
-
-
-/*
-dependencyManagement {
-    imports {
-        mavenBom("com.microsoft.azure:azure-spring-boot-bom:${property("azureVersion")}")
-    }
-}*/
-/*
-
-
-tasks.wrapper.configure {
-    this.gradleVersion = "6.3"
-    this.distributionType = Wrapper.DistributionType.ALL
-    this.distributionBase = Wrapper.PathBase.GRADLE_USER_HOME
-}
-*/
-
-
 tasks.jacocoTestReport {
     reports {
         xml.isEnabled = true
     }
-}
+}*/
 
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-     //   freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
-    }
+    kotlinOptions.jvmTarget= "1.8"
+    kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
 }
 
-
-/*
-
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = "1.8"
-
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
-*/

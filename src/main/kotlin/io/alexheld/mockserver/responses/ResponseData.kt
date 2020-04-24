@@ -33,6 +33,7 @@ open class GenericOkResponse<T>(data: T) : GenericResponse<T>(data)
 abstract class Error(val message: String, val errorCode: ErrorCode)
 
 open class OperationFailedErrorResponse(message: String) : Error(message, ErrorCode.Setup_Deletion_Failed)
+open class RepositoryExceptionErrorResponse(message: String) : Error(message, ErrorCode.Setup_Deletion_Failed)
 
 enum class ErrorCode(val code: Int, errorType: KClass<*>) {
     Setup_Deletion_Failed(300, OperationFailedErrorResponse::class)

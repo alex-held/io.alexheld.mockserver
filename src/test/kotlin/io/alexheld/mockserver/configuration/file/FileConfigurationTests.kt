@@ -26,7 +26,7 @@ class   FileConfigurationTests : WithTestResources {
     @Test
     fun `get() should read setups from configuration file`() {
         // Arrange
-        val subject = createSubject(readResource("setups.yaml"), GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+        val subject = createSubject(readResource("setups.yaml"), GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
         // Act
         val config = subject.get()
@@ -34,8 +34,8 @@ class   FileConfigurationTests : WithTestResources {
 
         // Assert
         config.setups.shouldHaveSize(5)
-        config.setups[0].id.shouldBeEqualTo("1")
-        config.setups[4].id.shouldBeEqualTo("4")
+        config.setups[0].id.toString().shouldNotBeNullOrEmpty()
+        config.setups[0].id.toString().shouldNotBeNullOrEmpty()
     }
 
 
@@ -46,7 +46,7 @@ class   FileConfigurationTests : WithTestResources {
         val subject = createSubject(
             """
 ---
-id: 101010
+id: 5ea36d460adb9d50a96ec60c
 request:
   method: GET
 action:
@@ -57,7 +57,7 @@ request:
   method: GET
 action:
   statusCode: 400
-""", GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+""", GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
         // Act
         val config = subject.get()
@@ -65,9 +65,9 @@ action:
 
         // Assert
         config.shouldNotBeNull()
-        config.setups[0].id.shouldBeEqualTo("101010")
-        config.setups[0].timestamp.toString().shouldBeEqualTo("0001-01-01T00:00:00Z")
-        config.setups[1].id.shouldBeEqualTo("1")
+        config.setups[0].id.toString().shouldBeEqualTo("5ea36d460adb9d50a96ec60c")
+        config.setups[0].timestamp.toString().shouldBeEqualTo("1970-01-01T00:00:00Z")
+        config.setups[1].id.toString().shouldNotBeNullOrEmpty()
         config.setups[1].timestamp.toString().shouldBeEqualTo("1970-01-01T00:00:00Z")
     }
 
@@ -80,7 +80,7 @@ action:
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
-""", GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+""", GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
         // Act
         val config = subject.get()
@@ -88,7 +88,7 @@ action:
 
         // Assert
         config.shouldNotBeNull()
-        config.setups[0].id.shouldBeEqualTo("1")
+        config.setups[0].id.toString().shouldNotBeNullOrEmpty()
     }
 
 
@@ -103,7 +103,7 @@ timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
 """,
-            GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+            GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
         // Act
         val config = subject.get()
@@ -111,7 +111,7 @@ action:
 
         // Assert
         config.shouldNotBeNull()
-        config.setups[0].id.shouldBeEqualTo("1")
+        config.setups[0].id.toString().shouldNotBeNullOrEmpty()
         config.setups[0].timestamp.toString().shouldBeEqualTo("1970-01-01T00:00:00Z")
     }
 
@@ -122,11 +122,11 @@ action:
         // Arrange
         val subject = createSubject("""
 ---
-id: 101010
+id: 5ea36d460adb9d50a96ec60c
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
-""", GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+""", GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
         // Act
         val config = subject.get()
@@ -134,7 +134,7 @@ action:
 
         // Assert
         config.shouldNotBeNull()
-        config.setups[0].id.shouldBeEqualTo("101010")
+        config.setups[0].id.toString().shouldBeEqualTo("5ea36d460adb9d50a96ec60c")
         config.setups[0].timestamp.toString().shouldBeEqualTo("1970-01-01T00:00:00Z")
     }
 
@@ -145,10 +145,10 @@ action:
         // Arrange
         val subject = createSubject(
             """
-id: 1234
+id: 5ea36d460adb9d50a96ec60c
 action:
   statusCode: 400
-""", GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+""", GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
         // Act
         val config = subject.get()
@@ -156,8 +156,8 @@ action:
 
         // Assert
         config.shouldNotBeNull()
-        config.setups[0].id.shouldBeEqualTo("1234")
-        config.setups[0].timestamp.toString().shouldBeEqualTo("0001-01-01T00:00:00Z")
+        config.setups[0].id.toString().shouldBeEqualTo("5ea36d460adb9d50a96ec60c")
+        config.setups[0].timestamp.toString().shouldBeEqualTo("1970-01-01T00:00:00Z")
     }
 
 
@@ -170,7 +170,7 @@ action:
 timestamp: 1970-01-01T00:00:00Z
 action:
   statusCode: 400
-""", GenerationServiceImpl.GenerationStrategy.Debug_Counter)
+""", GenerationServiceImpl.GenerationStrategy.Debug_Constant)
 
 
         // Act
@@ -179,7 +179,7 @@ action:
 
         // Assert
         config.shouldNotBeNull()
-        config.setups[0].id.shouldBeEqualTo("1")
+        config.setups[0].id.toString().shouldNotBeNullOrEmpty()
         config.setups[0].timestamp.toString().shouldBeEqualTo("1970-01-01T00:00:00Z")
     }
 

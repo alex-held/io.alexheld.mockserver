@@ -10,7 +10,7 @@ import java.time.*
 class LogFactory(private val gen: GenerationService = GenerationServiceImpl()) {
 
     fun <T: DataContainerData> parse(id: String?, timestamp: String?, apiCategory: ApiCategory, type: LogMessageType, data: T): IdentifiableLog<T> {
-        val log = IdentifiableLog(id ?: gen.getId(),Instant.parse(timestamp) ?: gen.getTimestamp(), apiCategory, type, null, data)
+        val log = IdentifiableLog(gen.newId(id),Instant.parse(timestamp) ?: gen.getTimestamp(), apiCategory, type, null, data)
         log.data = data
         log.type = data.getType()
 
@@ -19,15 +19,15 @@ class LogFactory(private val gen: GenerationService = GenerationServiceImpl()) {
     }
 
     fun createOperation(category: ApiCategory, data: OperationData): IdentifiableLog<OperationData> {
-        return IdentifiableLog(gen.getId(), gen.getTimestamp(), category, LogMessageType.Operation, data.apiOperation, data)
+        return IdentifiableLog(gen.newId(), gen.getTimestamp(), category, LogMessageType.Operation, data.apiOperation, data)
     }
 
     fun<T: DataContainerData> createEvent(category: ApiCategory, type: LogMessageType, data:T): IdentifiableLog<T> {
-        return IdentifiableLog(gen.getId(), gen.getTimestamp(), category, type, null, data)
+        return IdentifiableLog(gen.newId(), gen.getTimestamp(), category, type, null, data)
     }
 
     fun <T : DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T, gen: GenerationService): IdentifiableLog<T> {
-        val id = gen.getId()
+        val id = gen.newId<IdentifiableLog<T>>()
         val time = gen.getTimestamp()
         val log = IdentifiableLog<T>(id, time, apiCategory, type, null, data)
 

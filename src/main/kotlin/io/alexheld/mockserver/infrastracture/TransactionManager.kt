@@ -44,3 +44,27 @@ interface MockServerRepository {
 }
 
 typealias Predicate<T> = (T) -> Boolean
+
+
+
+class MockServerRepositoryImpl(val setups: SetRepository) : MockServerRepository {
+
+    override fun getAllSetups(): GenericResponse<List<Setup>> = setups.findAll()
+
+    override fun findFirstSetup(predicate: Predicate<Setup>): GenericResponse<Setup> {
+        TODO("Not yet implemented")
+    }
+
+    override fun findSetups(predicate: Predicate<Setup>): GenericResponse<List<Setup>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun createSetup(cmd: CreateSetupCommand): GenericResponse<Setup> {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteSetup(cmd: DeleteSetupCommand): GenericResponse<List<Setup>> {
+        TODO("Not yet implemented")
+    }
+
+}

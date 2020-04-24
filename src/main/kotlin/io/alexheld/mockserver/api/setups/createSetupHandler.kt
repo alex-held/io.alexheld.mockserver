@@ -11,7 +11,7 @@ class CreateArticleHandlerImpl(val txManager: MockServerTxManager) : CreateSetup
 
     override fun invoke(command: CreateSetupCommand): Setup {
         return txManager.tx {
-            Setup(null,null, command.request, command.action)
+            Setup(request =  command.request, action =  command.action)
         }
     }
 }

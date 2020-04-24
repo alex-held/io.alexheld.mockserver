@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.dataformat.yaml.*
 import com.fasterxml.jackson.datatype.jsr310.*
 import com.fasterxml.jackson.module.kotlin.*
+import org.litote.kmongo.id.jackson.*
 
 
 object Yaml {
@@ -42,6 +43,7 @@ object Yaml {
         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .build()
         .registerKotlinModule()
+        .registerModule(IdJacksonModule())
         .registerModule(JavaTimeModule())
         .findAndRegisterModules()
         .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY) as YAMLMapper

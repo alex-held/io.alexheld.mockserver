@@ -1,29 +1,27 @@
-package io.alexheld.mockserver.container
+package io.alexheld.mockserver.testUtil.container
 
+import io.alexheld.mockserver.config.*
 import org.springframework.util.*
 import org.testcontainers.containers.*
-import org.testcontainers.containers.output.*
 import java.io.*
 import java.net.*
+import java.util.*
 
 
 class DockerComposeEnvironment(composeYaml: String) : DockerComposeContainer<DockerComposeEnvironment>(composeYaml)
 
 
-class MongoDBTestContainer : GenericContainer<MongoDBTestContainer> {
+class MongoDBTestContainer : GenericContainer<MongoDBTestContainer>, MongoDBConnection {
 
     private val defaultPort = 27017
-
     fun getMappedPort() = this.getMappedPort(defaultPort)
-    fun getConnectionString() = "mongodb://${containerIpAddress}:${getMappedPort()}"
 
     constructor() : super("mongo") {
         this
             .withExposedPorts(defaultPort)
             .withLabels(mutableMapOf(
                 "transientTestContainer" to "yes",
-                "type" to "MongoDB")
-            ).withLogConsumer(Slf4jLogConsumer(logger()))
+                "type" to "MongoDB"))
     }
 
 
@@ -43,6 +41,13 @@ class MongoDBTestContainer : GenericContainer<MongoDBTestContainer> {
                 Thread.sleep(200)
             }
     }
+
+     override val database: String
+        get() = UUID.randomUUID().toString()
+
+     override val connectionString: String
+        get() =  "mongodb://${containerIpAddress}:${getMappedPort()}"
+
 }
 
 

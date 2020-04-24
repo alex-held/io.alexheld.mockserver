@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.*
 import com.fasterxml.jackson.module.kotlin.*
+import org.litote.kmongo.id.jackson.*
 
 fun String.dump(name: String) {
     val size = name.toList().joinToString("-") { _ -> "" }
@@ -20,6 +21,7 @@ fun Any.dumpAsJson(name: String) {
         .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .registerModule(JavaTimeModule())
+        .registerModule(IdJacksonModule())
         .registerKotlinModule()
         .writerWithDefaultPrettyPrinter()
         .writeValueAsString(this)

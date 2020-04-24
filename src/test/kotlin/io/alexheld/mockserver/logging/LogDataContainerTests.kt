@@ -8,6 +8,8 @@ import io.alexheld.mockserver.testUtil.*
 import org.amshove.kluent.*
 import org.junit.jupiter.params.*
 import org.junit.jupiter.params.provider.*
+import org.litote.kmongo.*
+import org.litote.kmongo.id.*
 import java.time.*
 import java.util.stream.*
 
@@ -27,19 +29,21 @@ class LogDataContainerTests : WithTestResources {
                 container,
                 gen)
 
+        private fun id(id: String): Id<Setup> = IdGenerator.defaultGenerator.create(id).cast()
+
         @JvmStatic
         fun logDataContainerData(): Stream<Arguments> = Stream.of(
             Arguments.of(
                 "setup-created.yaml",
                 createSubject(LogMessageType.Setup_Created,
-                    SetupCreatedData(Setup("1", Instant.EPOCH, Request(method = "POST"), Action("Placedholder...", 1))))
+                    SetupCreatedData(Setup(id("5ea36d460adb9d50a96ec60c"), Instant.EPOCH, Request(method = "POST"), Action("Placedholder...", 1))))
             ),
             Arguments.of(
                 "request-matched.yaml",
                 createSubject(LogMessageType.Request_Matched,
                     RequestMatchedData(
                         Request(method = "POST"),
-                        Setup("1", Instant.EPOCH, Request(method = "POST"), Action("Placedholder.." + ".", 1)),
+                        Setup(id("5ea36d460adb9d50a96ec60c"), Instant.EPOCH, Request(method = "POST"), Action("Placedholder.." + ".", 1)),
                         Action("Placedholder...", 1)
                     )
                 )
@@ -47,7 +51,7 @@ class LogDataContainerTests : WithTestResources {
             Arguments.of(
                 "setup-deleted.yaml",
                 createSubject(LogMessageType.Setup_Deleted,
-                    SetupDeletedData(Setup("1", Instant.EPOCH, Request(path = "/some/api"), Action("Hello World!", 1))))
+                    SetupDeletedData(Setup(id("5ea36d460adb9d50a96ec60c"), Instant.EPOCH, Request(path = "/some/api"), Action("Hello World!", 1))))
             ),
             Arguments.of(
                 "exception.yaml",
@@ -61,7 +65,7 @@ class LogDataContainerTests : WithTestResources {
                         createSubject(LogMessageType.Setup_Created,
                             SetupCreatedData(
                                 Setup(
-                                    "1",
+                                    id("5ea36d460adb9d50a96ec60c"),
                                     Instant.EPOCH,
                                     Request(method = "POST", path = "/some/api"),
                                     Action(message = "Hello World!", statusCode = 202)
@@ -99,6 +103,4 @@ class LogDataContainerTests : WithTestResources {
         // Act
         actual.shouldNotBeBlank().shouldBeEqualTo(expected)
     }
-
-
 }

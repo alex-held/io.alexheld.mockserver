@@ -7,7 +7,7 @@ import org.amshove.kluent.*
 import org.junit.jupiter.api.*
 
 
-class FileConfigurationTests : WithTestResources {
+class   FileConfigurationTests : WithTestResources {
 
     private fun createSubject(content: String, str: GenerationServiceImpl.GenerationStrategy? = null) =
         FileConfigurationRepository("/some/path/to/config/dir/with/setups.yaml",

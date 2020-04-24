@@ -2,7 +2,7 @@ package io.alexheld.mockserver.domain.services
 
 import io.alexheld.mockserver.testUtil.*
 import org.amshove.kluent.*
-import org.junit.jupiter.api.*
+import kotlin.test.Test
 import java.time.*
 import java.util.*
 

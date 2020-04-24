@@ -33,10 +33,10 @@ data class IdentifiableLog<TData : DataContainerData>(
             return log
         }
 
-        fun <T : DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T, gen: GenerationService): IdentifiableLog<T> {
+         fun <T: DataContainerData> generateNew(apiCategory: ApiCategory, type: LogMessageType, data: T, gen: GenerationService): IdentifiableLog<T> {
             val id = gen.getId()
             val time = gen.getTimestamp()
-            val log = IdentifiableLog<T>(id, time, apiCategory, type, null, data)
+            val log = IdentifiableLog(id, time, apiCategory, type, null, data)
 
             log.data = data
             log.type = data.getType()

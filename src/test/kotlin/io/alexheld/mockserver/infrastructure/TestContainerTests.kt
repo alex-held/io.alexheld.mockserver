@@ -1,14 +1,10 @@
-package io.alexheld.mockserver.container
+package io.alexheld.mockserver.infrastructure
 
-import io.alexheld.mockserver.config.*
-import io.alexheld.mockserver.domain.models.*
-import io.alexheld.mockserver.infrastructure.*
-import io.alexheld.mockserver.testUtil.*
+import io.alexheld.mockserver.container.*
 import org.amshove.kluent.*
+import org.junit.jupiter.api.*
 
-import kotlin.test.Test
-
-
+@testc
 class TestContainerTests {
 
 
@@ -18,10 +14,10 @@ class TestContainerTests {
     @Test
     fun shouldWork(){
         val value = true
-        println("The value is '$value'.")
         value.shouldBeTrue()
     }
 
+/*
 
 
     @Test
@@ -35,8 +31,10 @@ class TestContainerTests {
             "mockserver"))
 
         // Act
-        val actual = sut.createSetup(Request(method = "POST"), Action("Placeholder...", 1))
+        val actual = sut.createSetup(Request(method = "POST"),
+            Action("Placeholder...", 1))
         actual.dumpAsJson("createSetup")
     }
+*/
 
 }
